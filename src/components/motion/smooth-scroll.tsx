@@ -3,7 +3,11 @@
 import { useEffect } from "react"
 import Lenis from "lenis"
 
-/** Buttery inertial scrolling, disabled when the OS asks for reduced motion. */
+/**
+ * Buttery inertial scrolling, disabled when the OS asks for reduced
+ * motion. The instance is parked on window.__lenis so chrome like the
+ * mobile dock's back-to-top can drive an eased scroll (GRØNN base).
+ */
 export function SmoothScroll() {
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
@@ -13,6 +17,7 @@ export function SmoothScroll() {
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
     })
+    ;(window as unknown as { __lenis?: Lenis }).__lenis = lenis
 
     let raf = 0
     const loop = (time: number) => {
@@ -24,6 +29,7 @@ export function SmoothScroll() {
     return () => {
       cancelAnimationFrame(raf)
       lenis.destroy()
+      delete (window as unknown as { __lenis?: Lenis }).__lenis
     }
   }, [])
 

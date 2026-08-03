@@ -35,7 +35,7 @@ const COLUMNS = [
 export function Footer() {
   const stats = totalStats()
   return (
-    <footer className="relative mt-32 border-t border-line">
+    <footer className="relative mt-32 border-t border-line pb-28 md:pb-0">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
         <div className="grid gap-12 md:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div>

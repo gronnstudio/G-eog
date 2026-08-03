@@ -15,6 +15,13 @@ export const EASE_CRISP = [0.4, 0, 0.2, 1] as const
 /** Gentle ease-in for elements leaving the viewport. */
 export const EASE_EXIT = [0.4, 0, 1, 1] as const
 
+/** Expo-out reveal, shared with the GRØNN base components. */
+export const EASE_REVEAL = [0.16, 1, 0.3, 1] as const
+
+/** The curtain menu's open/close sweep (GRØNN base). */
+export const EASE_CURTAIN = [0.76, 0, 0.24, 1] as const
+export const DURATION_CURTAIN = 0.7
+
 export const DURATION = {
   instant: 0.12,
   fast: 0.24,

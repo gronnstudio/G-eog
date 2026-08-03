@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
-import { Inter, JetBrains_Mono, Playfair_Display } from "next/font/google"
+import { Geist_Mono, Montserrat } from "next/font/google"
+import localFont from "next/font/local"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import "./globals.css"
 
@@ -7,16 +8,24 @@ import { Providers } from "@/components/providers"
 import { SmoothScroll } from "@/components/motion/smooth-scroll"
 import { CommandPaletteProvider } from "@/components/search/command-palette"
 import { Header } from "@/components/layout/header"
+import { MobileDock } from "@/components/layout/mobile-dock"
 import { Footer } from "@/components/layout/footer"
 import { RegisterSW } from "@/components/register-sw"
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+// Type system shared with GRØNN Studio: Syne SemiBold for headings,
+// Montserrat for body/interface, Geist Mono for technical annotations.
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
   subsets: ["latin"],
+  weight: ["400"],
+})
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] })
+const syne = localFont({
+  src: "../fonts/Syne-SemiBold.ttf",
+  variable: "--font-syne",
+  weight: "600",
   display: "swap",
 })
-const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "swap" })
-const mono = JetBrains_Mono({ variable: "--font-mono", subsets: ["latin"], display: "swap" })
 
 const SITE = "https://equilibrium.gronn.studio"
 
@@ -61,7 +70,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.variable} ${playfair.variable} ${mono.variable} h-full`}
+      className={`${montserrat.variable} ${geistMono.variable} ${syne.variable} h-full`}
     >
       <body className="min-h-full">
         {/* Pre-paint theme seed to avoid a flash of the wrong ground. */}
@@ -84,6 +93,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Header />
             <main id="main">{children}</main>
             <Footer />
+            <MobileDock />
           </CommandPaletteProvider>
         </Providers>
         <SpeedInsights />
