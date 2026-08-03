@@ -6,22 +6,25 @@ import { usePathname } from "next/navigation"
 import { AnimatePresence, motion } from "framer-motion"
 import { Search } from "lucide-react"
 
+import { LanguageToggle } from "@/components/language-toggle"
+import { useT } from "@/components/language-provider"
 import { LetterFlip } from "@/components/motion/letter-flip"
 import { ThemeModePicker } from "@/components/theme-toggle"
 import { useCommandPalette } from "@/components/search/command-palette"
+import type { L } from "@/lib/i18n"
 import { ARTICLES, getCategory, totalStats } from "@/lib/knowledge"
 import { DURATION_CURTAIN, EASE_CURTAIN } from "@/lib/motion"
 import { useFocusTrap } from "@/lib/use-focus-trap"
 import { useReducedMotion } from "@/lib/use-reduced-motion"
 import { cn } from "@/lib/utils"
 
-const NAV = [
-  { href: "/", label: "Home" },
-  { href: "/explore", label: "Explore" },
-  { href: "/knowledge", label: "Knowledge" },
-  { href: "/learn", label: "Learn" },
-  { href: "/community", label: "Community" },
-  { href: "/about", label: "About" },
+const NAV: { href: string; label: L }[] = [
+  { href: "/", label: { en: "Home", nl: "Home" } },
+  { href: "/explore", label: { en: "Explore", nl: "Verken" } },
+  { href: "/knowledge", label: { en: "Knowledge", nl: "Kennis" } },
+  { href: "/learn", label: { en: "Learn", nl: "Leren" } },
+  { href: "/community", label: { en: "Community", nl: "Community" } },
+  { href: "/about", label: { en: "About", nl: "Over" } },
 ]
 
 // Topographic contour lines for the menu backdrop (GRØNN base).
@@ -34,6 +37,7 @@ const CONTOURS = [
 
 export function Header() {
   const pathname = usePathname()
+  const t = useT()
   const { open: openSearch } = useCommandPalette()
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -128,11 +132,15 @@ export function Header() {
                     pathname.startsWith(item.href) ? "text-foreground" : "text-muted",
                   )}
                 >
-                  <span className="sr-only">{item.label}</span>
-                  <LetterFlip text={item.label} />
+                  <span className="sr-only">{t(item.label)}</span>
+                  <LetterFlip text={t(item.label)} />
                 </Link>
               ))}
             </nav>
+
+            <span className="hidden sm:block">
+              <LanguageToggle />
+            </span>
 
             <button
               type="button"
@@ -140,7 +148,7 @@ export function Header() {
               className="tap-target hidden items-center gap-2 rounded-full border border-line px-4 py-2.5 text-sm text-muted transition-colors hover:text-foreground sm:flex"
             >
               <Search className="h-4 w-4" />
-              <span className="hidden lg:inline">Search</span>
+              <span className="hidden lg:inline">{t({ en: "Search", nl: "Zoeken" })}</span>
               <kbd className="hidden rounded border border-line px-1.5 font-mono text-[10px] text-faint lg:inline">
                 ⌘K
               </kbd>
@@ -150,7 +158,7 @@ export function Header() {
               href="/explore"
               className="tap-target hidden rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-on-accent transition-transform hover:scale-[1.03] sm:inline-block"
             >
-              Explore the Graph
+              {t({ en: "Explore the Graph", nl: "Verken de graaf" })}
             </Link>
           </div>
 
@@ -177,7 +185,7 @@ export function Header() {
               />
             </span>
             <span className="font-mono text-xs uppercase tracking-wider">
-              {open ? "Close" : "Menu"}
+              {open ? t({ en: "Close", nl: "Sluit" }) : "Menu"}
             </span>
           </button>
         </div>
@@ -241,7 +249,7 @@ export function Header() {
                       <span className="font-mono text-xs tracking-[0.25em] text-muted">
                         {String(i + 1).padStart(2, "0")}
                       </span>
-                      {item.label}
+                      {t(item.label)}
                     </Link>
                   </motion.div>
                 ))}
@@ -271,7 +279,7 @@ export function Header() {
                     </div>
                     <div className="p-5">
                       <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-accent">
-                        Featured article
+                        {t({ en: "Featured article", nl: "Uitgelicht artikel" })}
                       </p>
                       <p className="mt-2 font-heading text-lg font-semibold group-hover:text-accent">
                         {featured.title}
@@ -289,10 +297,10 @@ export function Header() {
                   className="group border-l-2 border-accent pl-5 text-left"
                 >
                   <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted">
-                    Search the ecosystem
+                    {t({ en: "Search the ecosystem", nl: "Doorzoek het ecosysteem" })}
                   </p>
                   <p className="mt-2 font-heading text-lg font-semibold leading-snug group-hover:text-accent">
-                    {stats.articles} articles · {stats.connections} connections — press ⌘K
+                    {stats.articles} {t({ en: "articles", nl: "artikelen" })} · {stats.connections} {t({ en: "connections — press ⌘K", nl: "verbindingen — druk ⌘K" })}
                   </p>
                 </button>
 
@@ -316,13 +324,16 @@ export function Header() {
                   <span>CC BY-SA 4.0</span>
                 </div>
 
-                <ThemeModePicker />
+                <div className="flex flex-col gap-4">
+                  <ThemeModePicker />
+                  <LanguageToggle />
+                </div>
 
                 <Link
                   href="/explore"
                   className="inline-block w-fit rounded-full bg-accent px-7 py-3.5 text-sm font-medium text-on-accent transition-transform hover:scale-[1.02]"
                 >
-                  Explore the Graph
+                  {t({ en: "Explore the Graph", nl: "Verken de graaf" })}
                 </Link>
               </motion.aside>
             </div>

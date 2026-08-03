@@ -15,6 +15,15 @@ interface Sim extends GraphNode {
 
 const CSS_HUE = (hue: number, l = 62, s = 45) => `hsl(${hue} ${s}% ${l}%)`
 
+/** #rrggbb (or shorthand) → rgba() at the given alpha, for label pills. */
+function hexToRgba(hex: string, alpha: number): string {
+  const h = hex.replace("#", "").trim()
+  const full = h.length === 3 ? h.split("").map((c) => c + c).join("") : h
+  const n = parseInt(full, 16)
+  if (Number.isNaN(n) || full.length !== 6) return `rgba(20,25,40,${alpha})`
+  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`
+}
+
 /**
  * A calm force-directed knowledge graph on a canvas. Runs a lightweight
  * spring simulation, settles, then idles. Supports pan, wheel-zoom, hover
@@ -173,6 +182,9 @@ export function KnowledgeGraph({
       const styles = getComputedStyle(canvas)
       const ink = styles.color
       const accent = styles.getPropertyValue("--color-accent").trim() || "#bfe3d0"
+      // Semi-opaque background of the current theme, for label pills.
+      const surface = styles.getPropertyValue("--surface").trim() || "#1a2040"
+      const labelBg = hexToRgba(surface, 0.85)
       ctx.clearRect(0, 0, width, height)
       ctx.save()
       ctx.translate(s.offsetX, s.offsetY)
@@ -197,11 +209,13 @@ export function KnowledgeGraph({
         ctx.globalAlpha = 1
       }
 
-      // Nodes
+      // Pass 1 — the node discs. Radius is computed once here and reused
+      // by the label pass, so labels sit exactly above their node.
+      const radiusOf = (n: Sim) => 4 + Math.min(n.degree, 8) * 1.6
       for (const n of nodes) {
         const cat = getCategory(n.category)
         const hue = cat?.hue ?? 150
-        const r = 4 + Math.min(n.degree, 8) * 1.6
+        const r = radiusOf(n)
         const isHover = hoverId === n.id
         const isNeighbor = neighbors?.has(n.id)
         const dimByCat = s.activeCat && n.category !== s.activeCat
@@ -222,16 +236,93 @@ export function KnowledgeGraph({
           ctx.stroke()
         }
         ctx.globalAlpha = 1
-
-        if (isHover || isNeighbor || (!hoverId && n.degree >= 6)) {
-          ctx.globalAlpha = dim ? 0.2 : 0.9
-          ctx.fillStyle = ink
-          ctx.font = "11px ui-sans-serif, system-ui"
-          ctx.textAlign = "center"
-          ctx.fillText(n.label, n.x, n.y - r - 6)
-          ctx.globalAlpha = 1
-        }
       }
+
+      // Pass 2 — labels, drawn on top with collision avoidance so they
+      // never pile into the unreadable stack the old single-pass code
+      // produced on a small canvas. Priority: the hovered node and its
+      // neighbours always win; then, only when nothing is hovered, the
+      // most-connected hubs fill whatever room is left. A label is
+      // dropped if its box would overlap one already placed. The budget
+      // scales with canvas size, so phones show a readable handful and
+      // desktops show more.
+      ctx.font = "600 11px ui-sans-serif, system-ui"
+      ctx.textAlign = "center"
+      ctx.textBaseline = "middle"
+      const placed: { x: number; y: number; w: number; h: number }[] = []
+      const ambientBudget = hoverId ? 0 : Math.max(3, Math.floor(width / 90))
+
+      const candidates = hoverId
+        ? nodes.filter((n) => n.id === hoverId || neighbors?.has(n.id))
+        : [...nodes].sort((a, b) => b.degree - a.degree)
+
+      let ambientShown = 0
+      for (const n of candidates) {
+        const isHover = hoverId === n.id
+        const isNeighbor = neighbors?.has(n.id)
+        if (!hoverId) {
+          if (ambientShown >= ambientBudget) break
+        }
+        const dimByCat = s.activeCat && n.category !== s.activeCat
+        if (dimByCat && !isHover) continue
+
+        const r = radiusOf(n)
+        const tw = ctx.measureText(n.label).width
+        const pad = 5
+        const boxW = tw + pad * 2
+        const boxH = 18
+        const by = n.y - r - 11
+        // Keep the pill on-screen. Work in screen space (pan+zoom applied)
+        // so the decision holds at any zoom: centre the label over the
+        // node, but if that would run past either edge, anchor it to the
+        // side that fits — measured against the label's real width, not a
+        // fixed margin, so even the longest titles stay readable.
+        const screenX = s.offsetX + n.x * s.scale
+        const halfW = (boxW * s.scale) / 2
+        const anchor: "left" | "right" | "center" =
+          screenX + halfW > width - 8
+            ? "right"
+            : screenX - halfW < 8
+              ? "left"
+              : "center"
+        const bx =
+          anchor === "center" ? n.x : anchor === "right" ? n.x - r - 4 : n.x + r + 4
+        let boxX =
+          anchor === "center" ? bx - boxW / 2 : anchor === "right" ? bx - boxW : bx
+        // Final clamp in screen space, converted back to world x, so a
+        // label wider than its margin can never spill off either edge.
+        const minWorldX = (8 - s.offsetX) / s.scale
+        const maxWorldX = (width - 8 - s.offsetX) / s.scale - boxW
+        if (boxX < minWorldX) boxX = minWorldX
+        if (boxX > maxWorldX) boxX = Math.max(minWorldX, maxWorldX)
+        const box = { x: boxX, y: by - boxH / 2, w: boxW, h: boxH }
+
+        const collides = placed.some(
+          (p) =>
+            box.x < p.x + p.w &&
+            box.x + box.w > p.x &&
+            box.y < p.y + p.h &&
+            box.y + box.h > p.y,
+        )
+        if (collides && !isHover) continue
+        placed.push(box)
+        if (!isHover && !isNeighbor) ambientShown++
+
+        // Rounded background pill for legibility over edges/nodes.
+        const rr = 6
+        ctx.globalAlpha = isHover ? 0.96 : 0.82
+        ctx.fillStyle = labelBg
+        ctx.beginPath()
+        ctx.roundRect(box.x, box.y, box.w, box.h, rr)
+        ctx.fill()
+
+        ctx.globalAlpha = 1
+        ctx.fillStyle = ink
+        ctx.textAlign = "left"
+        ctx.fillText(n.label, box.x + pad, by + 0.5)
+      }
+      ctx.globalAlpha = 1
+      ctx.textBaseline = "alphabetic"
       ctx.restore()
     }
 

@@ -31,6 +31,22 @@ export function categoryStats(id: CategoryId) {
   return { articles: articles.length, connections, minutes }
 }
 
+/**
+ * Sequential neighbours for prev/next paging. Walks the article's own
+ * category first (the natural reading order of a domain); if the category
+ * has a single article, falls back to the full corpus so paging never
+ * dead-ends. No wrap-around — the first article has no previous.
+ */
+export function articleNeighbors(article: Article): {
+  prev: Article | undefined
+  next: Article | undefined
+} {
+  const inCat = articlesInCategory(article.category)
+  const list = inCat.length > 1 ? inCat : ARTICLES
+  const i = list.findIndex((a) => a.slug === article.slug)
+  return { prev: i > 0 ? list[i - 1] : undefined, next: i < list.length - 1 ? list[i + 1] : undefined }
+}
+
 /** Resolve related slugs to full articles, dropping any that don't exist. */
 export function relatedArticles(article: Article): Article[] {
   return article.related

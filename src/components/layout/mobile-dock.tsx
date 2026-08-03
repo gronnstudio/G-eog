@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation"
 import { AnimatePresence, motion } from "framer-motion"
 import type Lenis from "lenis"
 
+import { LanguageToggle } from "@/components/language-toggle"
+import { useT } from "@/components/language-provider"
 import { ThemeModePicker } from "@/components/theme-toggle"
 import { useCommandPalette } from "@/components/search/command-palette"
 import { EASE_REVEAL } from "@/lib/motion"
@@ -74,24 +76,25 @@ const icons = {
 }
 
 const PRIMARY = [
-  { href: "/knowledge", label: "Knowledge" },
-  { href: "/learn", label: "Learn" },
-  { href: "/community", label: "Community" },
-  { href: "/about", label: "About" },
+  { href: "/knowledge", label: { en: "Knowledge", nl: "Kennis" } },
+  { href: "/learn", label: { en: "Learn", nl: "Leren" } },
+  { href: "/community", label: { en: "Community", nl: "Community" } },
+  { href: "/about", label: { en: "About", nl: "Over" } },
 ]
 
 const SECONDARY = [
-  { href: "/explore", label: "Knowledge Graph" },
-  { href: "/knowledge/soil", label: "Soil" },
-  { href: "/knowledge/water", label: "Water" },
-  { href: "/knowledge/fungi", label: "Fungi" },
-  { href: "/knowledge/permaculture", label: "Permaculture" },
+  { href: "/explore", label: { en: "Knowledge Graph", nl: "Kennisgraaf" } },
+  { href: "/knowledge/soil", label: { en: "Soil", nl: "Bodem" } },
+  { href: "/knowledge/water", label: { en: "Water", nl: "Water" } },
+  { href: "/knowledge/fungi", label: { en: "Fungi", nl: "Schimmels" } },
+  { href: "/knowledge/permaculture", label: { en: "Permaculture", nl: "Permacultuur" } },
 ]
 
 export function MobileDock() {
   const [menuOpen, setMenuOpen] = useState(false)
   const pathname = usePathname()
   const reduced = useReducedMotion()
+  const t = useT()
   const { open: openSearch } = useCommandPalette()
 
   // A viewport deep → the back-to-top arrow takes the grid slot.
@@ -202,7 +205,7 @@ export function MobileDock() {
               }}
             >
               <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.25em] text-muted">
-                Navigate
+                {t({ en: "Navigate", nl: "Navigeer" })}
               </p>
               <nav className="grid grid-cols-2 gap-x-4 gap-y-1">
                 {PRIMARY.map((item) => (
@@ -215,7 +218,7 @@ export function MobileDock() {
                       active(item.href) ? "text-accent" : "text-foreground",
                     )}
                   >
-                    {item.label}
+                    {t(item.label)}
                   </Link>
                 ))}
               </nav>
@@ -233,7 +236,7 @@ export function MobileDock() {
                         : "border-line text-muted hover:border-accent/40 hover:text-foreground active:border-accent/40 active:text-foreground",
                     )}
                   >
-                    {item.label}
+                    {t(item.label)}
                   </Link>
                 ))}
                 <button
@@ -244,11 +247,12 @@ export function MobileDock() {
                   }}
                   className="tap-target flex items-center gap-1.5 rounded-full border border-line px-3.5 py-1.5 text-xs tracking-wide text-muted transition-colors duration-300 hover:border-accent/40 hover:text-foreground active:border-accent/40 active:text-foreground"
                 >
-                  {icons.search} Search
+                  {icons.search} {t({ en: "Search", nl: "Zoeken" })}
                 </button>
               </nav>
               <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-4 border-t border-line px-3 pt-5">
                 <ThemeModePicker />
+                <LanguageToggle />
                 <a
                   href="https://github.com/gronnstudio/g-eog"
                   target="_blank"

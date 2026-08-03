@@ -3,6 +3,7 @@
 import type { ReactNode } from "react"
 import { ThemeProvider } from "next-themes"
 
+import { LanguageProvider } from "@/components/language-provider"
 import { ThemeModeProvider } from "@/components/theme-mode-provider"
 import { ALL_THEME_NAMES, NIGHT_THEME } from "@/lib/themes"
 
@@ -21,7 +22,9 @@ export function Providers({ children }: { children: ReactNode }) {
       enableSystem={false}
       disableTransitionOnChange
     >
-      <ThemeModeProvider>{children}</ThemeModeProvider>
+      <ThemeModeProvider>
+        <LanguageProvider>{children}</LanguageProvider>
+      </ThemeModeProvider>
     </ThemeProvider>
   )
 }

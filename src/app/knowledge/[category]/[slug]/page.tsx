@@ -2,7 +2,10 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import {
+  ArrowLeft,
+  ArrowRight,
   BookMarked,
+  ChevronRight,
   Clock,
   FileText,
   GitPullRequest,
@@ -17,10 +20,13 @@ import { ArticleCard } from "@/components/knowledge/article-card"
 import { DifficultyBadge } from "@/components/ui/badges"
 import {
   ARTICLES,
+  articleNeighbors,
   getArticle,
   getCategory,
   relatedArticles,
 } from "@/lib/knowledge"
+
+const SITE = "https://equilibrium.gronn.studio"
 
 export function generateStaticParams() {
   return ARTICLES.map((a) => ({ category: a.category, slug: a.slug }))
@@ -54,7 +60,18 @@ export default async function ArticlePage({
 
   const cat = getCategory(article.category)
   const related = relatedArticles(article)
+  const { prev, next } = articleNeighbors(article)
   const sourcePath = `content/${article.category}/${article.slug}.mdx`
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Knowledge", item: `${SITE}/knowledge` },
+      { "@type": "ListItem", position: 2, name: cat?.title, item: `${SITE}/knowledge/${article.category}` },
+      { "@type": "ListItem", position: 3, name: article.title, item: `${SITE}/knowledge/${article.category}/${article.slug}` },
+    ],
+  }
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -80,6 +97,7 @@ export default async function ArticlePage({
     <article className="pt-24">
       <ReadingProgress />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
 
       {/* Header */}
       <header className="relative overflow-hidden">
@@ -88,12 +106,16 @@ export default async function ArticlePage({
           style={{ background: `radial-gradient(50% 60% at 50% 0%, hsl(${cat?.hue ?? 150} 50% 40%), transparent 70%)` }}
         />
         <div className="relative mx-auto max-w-3xl px-4 py-12 sm:px-6">
-          <nav className="flex items-center gap-2 text-sm text-muted">
+          <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted">
+            <Link href="/" className="hover:text-foreground">Home</Link>
+            <ChevronRight className="h-3.5 w-3.5 text-faint" />
             <Link href="/knowledge" className="hover:text-foreground">Knowledge</Link>
-            <span className="text-faint">/</span>
+            <ChevronRight className="h-3.5 w-3.5 text-faint" />
             <Link href={`/knowledge/${article.category}`} className="hover:text-foreground">
               {cat?.title}
             </Link>
+            <ChevronRight className="h-3.5 w-3.5 text-faint" />
+            <span className="truncate text-foreground" aria-current="page">{article.title}</span>
           </nav>
           <h1 className="mt-6 text-balance font-heading text-4xl leading-tight text-foreground sm:text-5xl">
             {article.title}
@@ -214,6 +236,49 @@ export default async function ArticlePage({
           </div>
         </aside>
       </div>
+
+      {/* Prev / next pager — sequential movement through the domain */}
+      {(prev || next) && (
+        <nav
+          aria-label="Article navigation"
+          className="mx-auto grid max-w-6xl gap-4 px-4 pb-4 sm:px-6 md:grid-cols-2"
+        >
+          {prev ? (
+            <Link
+              href={`/knowledge/${prev.category}/${prev.slug}`}
+              className="group flex items-center gap-4 rounded-2xl border border-line bg-surface/40 p-5 transition-colors hover:border-accent/40 hover:bg-surface-2"
+            >
+              <ArrowLeft className="h-5 w-5 shrink-0 text-muted transition-transform group-hover:-translate-x-1 group-hover:text-accent" />
+              <span className="min-w-0">
+                <span className="block font-mono text-xs uppercase tracking-widest text-faint">
+                  Previous
+                </span>
+                <span className="mt-1 block truncate font-heading text-lg text-foreground">
+                  {prev.title}
+                </span>
+              </span>
+            </Link>
+          ) : (
+            <span className="hidden md:block" />
+          )}
+          {next && (
+            <Link
+              href={`/knowledge/${next.category}/${next.slug}`}
+              className="group flex items-center justify-end gap-4 rounded-2xl border border-line bg-surface/40 p-5 text-right transition-colors hover:border-accent/40 hover:bg-surface-2"
+            >
+              <span className="min-w-0">
+                <span className="block font-mono text-xs uppercase tracking-widest text-faint">
+                  Next
+                </span>
+                <span className="mt-1 block truncate font-heading text-lg text-foreground">
+                  {next.title}
+                </span>
+              </span>
+              <ArrowRight className="h-5 w-5 shrink-0 text-muted transition-transform group-hover:translate-x-1 group-hover:text-accent" />
+            </Link>
+          )}
+        </nav>
+      )}
 
       {/* Connections */}
       {related.length > 0 && (

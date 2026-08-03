@@ -1213,4 +1213,51 @@ export const ARTICLES: Article[] = [
       { id: "leopold-1949", authors: "Leopold, A.", year: 1949, title: "A Sand County Almanac", source: "Oxford University Press" },
     ],
   },
+  {
+    slug: "no-till-agriculture",
+    title: "No-Till Agriculture",
+    category: "soil",
+    summary:
+      "By growing food without ploughing, no-till farming keeps soil structure, fungal networks and stored carbon intact — feeding crops through biology rather than disturbance.",
+    difficulty: "intermediate",
+    readingMinutes: 8,
+    updated: "2026-02-02",
+    contributors: ["Dr. Elaine Rourke", "Sofia Marchetti"],
+    tags: ["soil-health", "regenerative-agriculture", "carbon", "cover-crops", "erosion"],
+    related: ["soil-food-web", "compost-science", "nutrient-cycling", "carbon-sequestration", "regenerative-grazing"],
+    sections: [
+      {
+        body: [
+          "For most of agricultural history, preparing a field meant turning it over. The plough buries weeds, warms the seedbed and creates a clean tilth — and for those short-term gains it has been civilisation's signature tool. But every pass also shatters the soil's living architecture, and a growing movement of farmers now grows more food by leaving the ground unturned.",
+          "No-till agriculture plants seed directly into the residue of the previous crop, through a thin slot rather than an inverted furrow. What looks like doing less is in fact a different theory of fertility: one that treats the soil as a living system to be protected rather than a medium to be rebuilt each season.",
+        ],
+      },
+      {
+        heading: "Why the plough costs more than it gives",
+        body: [
+          "Tillage slices apart the fungal hyphae and crumb structure that give healthy soil its sponge-like ability to hold air and water. It also exposes buried organic matter to a rush of oxygen, letting microbes burn through stored carbon and release it to the atmosphere — a large, invisible emission from farmland worldwide.",
+          "The bared, loosened surface then erodes. Wind and rain carry away the finest, most fertile fraction, silting rivers and forcing farmers to replace lost nutrients with bought fertiliser. Much of the twentieth century's soil loss can be read as the compounding interest on the plough.",
+        ],
+      },
+      {
+        heading: "Farming through biology",
+        body: [
+          "Left undisturbed, the soil food web rebuilds the structure tillage used to provide. Roots and fungi open channels for water; earthworms and microbes cement aggregates; and a permanent cover of residue keeps the surface cool and moist. Infiltration rises, runoff falls, and the land grows more drought-resilient season on season.",
+          "No-till rarely travels alone. It works best braided with cover crops that keep living roots in the ground year-round and with diverse rotations that starve pests and feed the microbiome — the wider toolkit of regenerative agriculture.",
+        ],
+      },
+      {
+        heading: "The honest trade-offs",
+        body: [
+          "The transition is not frictionless. Many farmers lean on herbicides to terminate cover crops in place of tillage, and no-till done without the accompanying diversity can simply swap one dependency for another. Cold, wet soils may also warm more slowly under residue, delaying spring planting.",
+          "The evidence is nonetheless clear that, paired with continuous cover and living roots, reduced disturbance rebuilds organic matter, sequesters carbon and cuts erosion dramatically. The plough's clean field was always borrowed against the soil's future; no-till is one way of beginning to pay it back.",
+        ],
+      },
+    ],
+    citations: [
+      { id: "montgomery-2017", authors: "Montgomery, D. R.", year: 2017, title: "Growing a Revolution: Bringing Our Soil Back to Life", source: "W. W. Norton" },
+      { id: "lal-2004", authors: "Lal, R.", year: 2004, title: "Soil carbon sequestration impacts on global climate change and food security", source: "Science 304" },
+      { id: "fao-2015", authors: "FAO", year: 2015, title: "Status of the World's Soil Resources", source: "Food and Agriculture Organization of the United Nations" },
+    ],
+  },
 ]
