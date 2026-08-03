@@ -19,6 +19,7 @@ import { Header } from "@/components/layout/header"
 import { MobileDock } from "@/components/layout/mobile-dock"
 import { Footer } from "@/components/layout/footer"
 import { RegisterSW } from "@/components/register-sw"
+import { PullToRefresh } from "@/components/pull-to-refresh"
 
 // Type system shared with GRØNN Studio: Syne SemiBold for headings,
 // Montserrat for body/interface, Geist Mono for technical annotations.
@@ -93,6 +94,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `try{if(localStorage.getItem(${JSON.stringify(THEME_MODE_KEY)})!=="manual"){var h=new Date().getHours();localStorage.setItem(${JSON.stringify(THEME_KEY)},h>=${DAY_START_HOUR}&&h<${NIGHT_START_HOUR}?${JSON.stringify(DAY_THEME)}:${JSON.stringify(NIGHT_THEME)})}}catch(e){}`,
           }}
         />
+        {/* Pre-paint locale seed: reflect a returning visitor's stored
+            language onto <html lang/dir> before first paint, so an Arabic
+            reader never flashes left-to-right. Only "ar" is RTL today. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var l=localStorage.getItem("eog-locale");if(l){document.documentElement.lang=l;document.documentElement.dir=l==="ar"?"rtl":"ltr"}}catch(e){}`,
+          }}
+        />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }} />
         <a
           href="#main"
@@ -104,6 +113,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <RegisterSW />
           <SmoothScroll />
           <CommandPaletteProvider>
+            <PullToRefresh />
             <Header />
             <main id="main">{children}</main>
             <Footer />

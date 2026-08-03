@@ -7,25 +7,24 @@ import { AnimatePresence, motion } from "framer-motion"
 import { Search } from "lucide-react"
 
 import { LanguageToggle } from "@/components/language-toggle"
-import { useT } from "@/components/language-provider"
+import { useUI } from "@/components/language-provider"
 import { LetterFlip } from "@/components/motion/letter-flip"
 import { ThemeModePicker } from "@/components/theme-toggle"
 import { useCommandPalette } from "@/components/search/command-palette"
-import type { L } from "@/lib/i18n"
 import { ARTICLES, getCategory, totalStats } from "@/lib/knowledge"
 import { DURATION_CURTAIN, EASE_CURTAIN } from "@/lib/motion"
 import { useFocusTrap } from "@/lib/use-focus-trap"
 import { useReducedMotion } from "@/lib/use-reduced-motion"
 import { cn } from "@/lib/utils"
 
-const NAV: { href: string; label: L }[] = [
-  { href: "/", label: { en: "Home", nl: "Home" } },
-  { href: "/explore", label: { en: "Explore", nl: "Verken" } },
-  { href: "/knowledge", label: { en: "Knowledge", nl: "Kennis" } },
-  { href: "/learn", label: { en: "Learn", nl: "Leren" } },
-  { href: "/community", label: { en: "Community", nl: "Community" } },
-  { href: "/about", label: { en: "About", nl: "Over" } },
-]
+const NAV = [
+  { href: "/", key: "nav_home" },
+  { href: "/explore", key: "nav_explore" },
+  { href: "/knowledge", key: "nav_knowledge" },
+  { href: "/learn", key: "nav_learn" },
+  { href: "/community", key: "nav_community" },
+  { href: "/about", key: "nav_about" },
+] as const
 
 // Topographic contour lines for the menu backdrop (GRØNN base).
 const CONTOURS = [
@@ -37,7 +36,7 @@ const CONTOURS = [
 
 export function Header() {
   const pathname = usePathname()
-  const t = useT()
+  const ui = useUI()
   const { open: openSearch } = useCommandPalette()
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -132,8 +131,8 @@ export function Header() {
                     pathname.startsWith(item.href) ? "text-foreground" : "text-muted",
                   )}
                 >
-                  <span className="sr-only">{t(item.label)}</span>
-                  <LetterFlip text={t(item.label)} />
+                  <span className="sr-only">{ui(item.key)}</span>
+                  <LetterFlip text={ui(item.key)} />
                 </Link>
               ))}
             </nav>
@@ -148,7 +147,7 @@ export function Header() {
               className="tap-target hidden items-center gap-2 rounded-full border border-line px-4 py-2.5 text-sm text-muted transition-colors hover:text-foreground sm:flex"
             >
               <Search className="h-4 w-4" />
-              <span className="hidden lg:inline">{t({ en: "Search", nl: "Zoeken" })}</span>
+              <span className="hidden lg:inline">{ui("search")}</span>
               <kbd className="hidden rounded border border-line px-1.5 font-mono text-[10px] text-faint lg:inline">
                 ⌘K
               </kbd>
@@ -158,7 +157,7 @@ export function Header() {
               href="/explore"
               className="tap-target hidden rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-on-accent transition-transform hover:scale-[1.03] sm:inline-block"
             >
-              {t({ en: "Explore the Graph", nl: "Verken de graaf" })}
+              {ui("exploreGraph")}
             </Link>
           </div>
 
@@ -185,7 +184,7 @@ export function Header() {
               />
             </span>
             <span className="font-mono text-xs uppercase tracking-wider">
-              {open ? t({ en: "Close", nl: "Sluit" }) : "Menu"}
+              {open ? ui("close") : ui("menu")}
             </span>
           </button>
         </div>
@@ -249,7 +248,7 @@ export function Header() {
                       <span className="font-mono text-xs tracking-[0.25em] text-muted">
                         {String(i + 1).padStart(2, "0")}
                       </span>
-                      {t(item.label)}
+                      {ui(item.key)}
                     </Link>
                   </motion.div>
                 ))}
@@ -279,7 +278,7 @@ export function Header() {
                     </div>
                     <div className="p-5">
                       <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-accent">
-                        {t({ en: "Featured article", nl: "Uitgelicht artikel" })}
+                        {ui("featuredArticle")}
                       </p>
                       <p className="mt-2 font-heading text-lg font-semibold group-hover:text-accent">
                         {featured.title}
@@ -297,10 +296,10 @@ export function Header() {
                   className="group border-l-2 border-accent pl-5 text-left"
                 >
                   <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted">
-                    {t({ en: "Search the ecosystem", nl: "Doorzoek het ecosysteem" })}
+                    {ui("searchEcosystem")}
                   </p>
                   <p className="mt-2 font-heading text-lg font-semibold leading-snug group-hover:text-accent">
-                    {stats.articles} {t({ en: "articles", nl: "artikelen" })} · {stats.connections} {t({ en: "connections — press ⌘K", nl: "verbindingen — druk ⌘K" })}
+                    {stats.articles} {ui("statArticles")} · {stats.connections} {ui("statConnections")} · ⌘K
                   </p>
                 </button>
 
@@ -333,7 +332,7 @@ export function Header() {
                   href="/explore"
                   className="inline-block w-fit rounded-full bg-accent px-7 py-3.5 text-sm font-medium text-on-accent transition-transform hover:scale-[1.02]"
                 >
-                  {t({ en: "Explore the Graph", nl: "Verken de graaf" })}
+                  {ui("exploreGraph")}
                 </Link>
               </motion.aside>
             </div>

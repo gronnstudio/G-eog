@@ -5,18 +5,15 @@ import { motion } from "framer-motion"
 import { ArrowUpRight, Compass, Sparkles } from "lucide-react"
 
 import { EcosystemField } from "./ecosystem-field"
-import { useLanguage, useT } from "@/components/language-provider"
+import { useLanguage, useUI } from "@/components/language-provider"
 import { EASE_ORGANIC } from "@/lib/motion"
-
-const WORDS = {
-  en: ["Knowledge", "grows", "when", "everything", "connects."],
-  nl: ["Kennis", "groeit", "als", "alles", "verbindt."],
-}
 
 export function Hero({ stats }: { stats: { articles: number; categories: number; connections: number } }) {
   const { locale } = useLanguage()
-  const t = useT()
-  const words = WORDS[locale]
+  const ui = useUI()
+  // Split the localized headline into words for the staggered reveal —
+  // works for any language and word count.
+  const words = ui("heroHeadline").split(" ")
   return (
     <section className="relative flex min-h-[100svh] items-center overflow-hidden">
       <div className="eog-aurora absolute inset-0" />
@@ -31,7 +28,7 @@ export function Hero({ stats }: { stats: { articles: number; categories: number;
           className="mb-6 inline-flex items-center gap-2 rounded-full border border-line px-4 py-1.5 font-mono text-xs uppercase tracking-widest text-muted"
         >
           <Sparkles className="h-3.5 w-3.5 text-accent" />
-          {t({ en: "The living knowledge ecosystem", nl: "Het levende kennisecosysteem" })}
+          {ui("heroKicker")}
         </motion.p>
 
         <h1 className="max-w-4xl font-heading text-[clamp(2.75rem,7vw,6.5rem)] leading-[0.98] text-foreground">
@@ -54,10 +51,7 @@ export function Hero({ stats }: { stats: { articles: number; categories: number;
           transition={{ duration: 0.8, ease: EASE_ORGANIC, delay: 0.7 }}
           className="mt-8 max-w-xl text-pretty text-lg leading-relaxed text-muted sm:text-xl"
         >
-          {t({
-            en: "Equilibrium makes humanity's ecological knowledge freely accessible, beautifully organized and endlessly connected. Explore soil, water, forests, fungi and climate as one living graph.",
-            nl: "Equilibrium maakt de ecologische kennis van de mensheid vrij toegankelijk, prachtig geordend en eindeloos verbonden. Verken bodem, water, bossen, schimmels en klimaat als één levende graaf.",
-          })}
+          {ui("heroBody")}
         </motion.p>
 
         <motion.div
@@ -71,19 +65,19 @@ export function Hero({ stats }: { stats: { articles: number; categories: number;
             className="group inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 font-medium text-on-accent transition-transform hover:scale-[1.02]"
           >
             <Compass className="h-4 w-4" />
-            {t({ en: "Explore the graph", nl: "Verken de graaf" })}
+            {ui("exploreGraph")}
           </Link>
           <Link
             href="/learn"
             className="inline-flex items-center gap-2 rounded-full border border-line px-6 py-3 font-medium text-foreground transition-colors hover:bg-surface-2"
           >
-            {t({ en: "Start learning", nl: "Begin met leren" })}
+            {ui("startLearning")}
           </Link>
           <Link
             href="/community"
             className="group inline-flex items-center gap-1 px-2 py-3 text-muted transition-colors hover:text-foreground"
           >
-            {t({ en: "Contribute", nl: "Draag bij" })}
+            {ui("contribute")}
             <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </Link>
         </motion.div>
@@ -95,9 +89,9 @@ export function Hero({ stats }: { stats: { articles: number; categories: number;
           className="mt-16 flex flex-wrap gap-x-12 gap-y-4"
         >
           {[
-            { k: t({ en: "Articles", nl: "Artikelen" }), v: stats.articles },
-            { k: t({ en: "Domains", nl: "Domeinen" }), v: stats.categories },
-            { k: t({ en: "Connections", nl: "Verbindingen" }), v: stats.connections },
+            { k: ui("statArticles"), v: stats.articles },
+            { k: ui("statDomains"), v: stats.categories },
+            { k: ui("statConnections"), v: stats.connections },
           ].map((s) => (
             <div key={s.k}>
               <dt className="font-mono text-xs uppercase tracking-widest text-faint">{s.k}</dt>

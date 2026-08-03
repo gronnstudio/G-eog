@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import type Lenis from "lenis"
 
 import { LanguageToggle } from "@/components/language-toggle"
-import { useT } from "@/components/language-provider"
+import { useT, useUI } from "@/components/language-provider"
 import { ThemeModePicker } from "@/components/theme-toggle"
 import { useCommandPalette } from "@/components/search/command-palette"
 import { EASE_REVEAL } from "@/lib/motion"
@@ -76,11 +76,11 @@ const icons = {
 }
 
 const PRIMARY = [
-  { href: "/knowledge", label: { en: "Knowledge", nl: "Kennis" } },
-  { href: "/learn", label: { en: "Learn", nl: "Leren" } },
-  { href: "/community", label: { en: "Community", nl: "Community" } },
-  { href: "/about", label: { en: "About", nl: "Over" } },
-]
+  { href: "/knowledge", key: "nav_knowledge" },
+  { href: "/learn", key: "nav_learn" },
+  { href: "/community", key: "nav_community" },
+  { href: "/about", key: "nav_about" },
+] as const
 
 const SECONDARY = [
   { href: "/explore", label: { en: "Knowledge Graph", nl: "Kennisgraaf" } },
@@ -95,6 +95,7 @@ export function MobileDock() {
   const pathname = usePathname()
   const reduced = useReducedMotion()
   const t = useT()
+  const ui = useUI()
   const { open: openSearch } = useCommandPalette()
 
   // A viewport deep → the back-to-top arrow takes the grid slot.
@@ -205,7 +206,7 @@ export function MobileDock() {
               }}
             >
               <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.25em] text-muted">
-                {t({ en: "Navigate", nl: "Navigeer" })}
+                {ui("navigate")}
               </p>
               <nav className="grid grid-cols-2 gap-x-4 gap-y-1">
                 {PRIMARY.map((item) => (
@@ -218,7 +219,7 @@ export function MobileDock() {
                       active(item.href) ? "text-accent" : "text-foreground",
                     )}
                   >
-                    {t(item.label)}
+                    {ui(item.key)}
                   </Link>
                 ))}
               </nav>
@@ -247,7 +248,7 @@ export function MobileDock() {
                   }}
                   className="tap-target flex items-center gap-1.5 rounded-full border border-line px-3.5 py-1.5 text-xs tracking-wide text-muted transition-colors duration-300 hover:border-accent/40 hover:text-foreground active:border-accent/40 active:text-foreground"
                 >
-                  {icons.search} {t({ en: "Search", nl: "Zoeken" })}
+                  {icons.search} {ui("search")}
                 </button>
               </nav>
               <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-4 border-t border-line px-3 pt-5">
