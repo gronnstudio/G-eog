@@ -4,18 +4,28 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useSyncExternalStore,
   type ReactNode,
 } from "react"
 
 import {
   DEFAULT_LOCALE,
+  LOCALE_BY_CODE,
   LOCALE_KEY,
+  UI,
   isLocale,
   pick,
   type L,
   type Locale,
 } from "@/lib/i18n"
+
+/** Reflect the active locale onto the document (lang + rtl direction). */
+function applyLocale(locale: Locale) {
+  const el = document.documentElement
+  el.lang = locale
+  el.dir = LOCALE_BY_CODE.get(locale)?.rtl ? "rtl" : "ltr"
+}
 
 // The locale lives in localStorage (external mutable state), so it is
 // read through useSyncExternalStore rather than copied into React state
@@ -55,9 +65,16 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     try {
       localStorage.setItem(LOCALE_KEY, next)
     } catch {}
-    document.documentElement.lang = next
+    applyLocale(next)
     listeners.forEach((notify) => notify())
   }, [])
+
+  // Keep <html lang/dir> in step with the stored locale after hydration
+  // (the server renders English/ltr; a returning RTL visitor needs the
+  // direction flipped without a click).
+  useEffect(() => {
+    applyLocale(locale)
+  }, [locale])
 
   return (
     <LanguageContext.Provider value={{ locale, setLocale }}>
@@ -74,4 +91,13 @@ export function useLanguage() {
 export function useT() {
   const { locale } = useContext(LanguageContext)
   return useCallback((l: L) => pick(l, locale), [locale])
+}
+
+/**
+ * Resolve a key from the shared UI dictionary in the current locale:
+ *   const ui = useUI(); ui("nav_home")
+ */
+export function useUI() {
+  const { locale } = useContext(LanguageContext)
+  return useCallback((key: keyof typeof UI) => pick(UI[key], locale), [locale])
 }

@@ -1,46 +1,105 @@
 "use client"
 
+import { useEffect, useRef, useState } from "react"
+import { Check, ChevronDown } from "lucide-react"
+
 import { useLanguage, useT } from "@/components/language-provider"
-import { LOCALES } from "@/lib/i18n"
+import { LOCALES, LOCALE_BY_CODE } from "@/lib/i18n"
+import { useMounted } from "@/lib/use-mounted"
 import { cn } from "@/lib/utils"
 
 /**
- * Language switcher, taken over from the Equilibrium/GRØNN base — but as
- * a scrollable pill rail rather than the sliding two-segment control: the
- * languages sit on one horizontally scrollable, snap-aligned track (room
- * for more locales later), and the active one is a tinted pill. No thumb,
- * no slider — selection is a plain tap.
+ * Language switcher as a flag dropdown across the world's most-spoken
+ * languages. A compact trigger (flag · code · chevron) opens a scrollable
+ * panel listing every locale by flag, endonym and code — the pattern from
+ * the design reference. Selecting one persists it, flips the active pill,
+ * and (for Arabic) turns the whole document RTL via the provider.
  */
-export function LanguageToggle({ className = "" }: { className?: string }) {
+export function LanguageToggle({ align = "end" }: { align?: "start" | "end" }) {
   const { locale, setLocale } = useLanguage()
   const t = useT()
+  const mounted = useMounted()
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  const current = LOCALE_BY_CODE.get(locale) ?? LOCALES[0]
+
+  // Close on outside click / Escape.
+  useEffect(() => {
+    if (!open) return
+    const onDown = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false)
+    document.addEventListener("mousedown", onDown)
+    document.addEventListener("keydown", onKey)
+    return () => {
+      document.removeEventListener("mousedown", onDown)
+      document.removeEventListener("keydown", onKey)
+    }
+  }, [open])
 
   return (
-    <div
-      role="group"
-      aria-label={t({ en: "Language", nl: "Taal" })}
-      className={cn(
-        "no-scrollbar flex max-w-44 snap-x snap-mandatory items-center gap-1 overflow-x-auto rounded-full border border-line p-1",
-        className,
-      )}
-    >
-      {LOCALES.map((option) => (
-        <button
-          key={option.locale}
-          type="button"
-          onClick={() => setLocale(option.locale)}
-          aria-pressed={locale === option.locale}
-          aria-label={option.name}
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        aria-label={t({ en: "Language", nl: "Taal" })}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+        className="tap-target flex items-center gap-2 rounded-full border border-line px-3 py-1.5 text-sm text-foreground transition-colors hover:bg-surface-2"
+      >
+        <span className="text-base leading-none">{current.flag}</span>
+        <span className="font-mono text-xs uppercase tracking-wider text-muted">
+          {mounted ? current.locale : "en"}
+        </span>
+        <ChevronDown
+          className={cn("h-3.5 w-3.5 text-faint transition-transform", open && "rotate-180")}
+        />
+      </button>
+
+      {open && (
+        <ul
+          role="listbox"
+          aria-label={t({ en: "Language", nl: "Taal" })}
+          dir="ltr"
           className={cn(
-            "tap-target min-w-11 shrink-0 snap-start rounded-full px-2.5 py-1 font-mono text-[11px] uppercase tracking-wider transition-colors",
-            locale === option.locale
-              ? "bg-accent text-on-accent"
-              : "text-muted hover:text-foreground active:text-foreground",
+            "eog-glass no-scrollbar absolute z-[80] mt-2 max-h-72 w-60 overflow-y-auto rounded-2xl p-1.5 shadow-float",
+            align === "end" ? "right-0" : "left-0",
           )}
         >
-          {option.locale}
-        </button>
-      ))}
+          {LOCALES.map((l) => {
+            const active = mounted && l.locale === locale
+            return (
+              <li key={l.locale}>
+                <button
+                  type="button"
+                  role="option"
+                  aria-selected={active}
+                  onClick={() => {
+                    setLocale(l.locale)
+                    setOpen(false)
+                  }}
+                  className={cn(
+                    "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors",
+                    active ? "bg-accent-soft" : "hover:bg-surface-2",
+                  )}
+                >
+                  <span className="text-lg leading-none">{l.flag}</span>
+                  <span className="flex-1 truncate text-sm text-foreground">{l.name}</span>
+                  {active ? (
+                    <Check className="h-4 w-4 text-accent" />
+                  ) : (
+                    <span className="font-mono text-[11px] uppercase tracking-wider text-faint">
+                      {l.locale}
+                    </span>
+                  )}
+                </button>
+              </li>
+            )
+          })}
+        </ul>
+      )}
     </div>
   )
 }
