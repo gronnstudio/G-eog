@@ -36,6 +36,7 @@ export function KnowledgeGraph({
   const wrapRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
   const [hover, setHover] = useState<string | null>(null)
+  const zoomRef = useRef<(factor: number) => void>(() => {})
   const activeCat = activeCategory
 
   const graph = useMemo(() => buildGraph(), [])
@@ -257,6 +258,8 @@ export function KnowledgeGraph({
       return best
     }
 
+    let downX = 0
+    let downY = 0
     const onMove = (e: PointerEvent) => {
       const s = state.current
       if (s.dragging) {
@@ -276,15 +279,19 @@ export function KnowledgeGraph({
       s.dragging = true
       s.lastX = e.clientX
       s.lastY = e.clientY
+      downX = e.clientX
+      downY = e.clientY
       canvas.style.cursor = "grabbing"
       canvas.setPointerCapture(e.pointerId)
     }
     const onUp = (e: PointerEvent) => {
       const s = state.current
-      const moved = Math.hypot(e.clientX - s.lastX, e.clientY - s.lastY)
+      // Distance from where the press STARTED — lastX/lastY tracks every
+      // move, so measuring against it made a long pan register as a tap.
+      const moved = Math.hypot(e.clientX - downX, e.clientY - downY)
       s.dragging = false
       canvas.style.cursor = "grab"
-      if (interactive && moved < 4) {
+      if (interactive && moved < 6) {
         const n = pick(e.clientX, e.clientY)
         if (n) {
           const art = ARTICLES.find((a) => a.slug === n.id)
@@ -293,6 +300,10 @@ export function KnowledgeGraph({
       }
     }
     const onWheel = (e: WheelEvent) => {
+      // Plain wheel keeps scrolling the page — a graph that hijacks the
+      // wheel makes the section a scroll trap. Zoom rides ⌘/Ctrl+scroll,
+      // which is also what trackpad pinch reports (ctrlKey: true).
+      if (!e.ctrlKey && !e.metaKey) return
       e.preventDefault()
       const s = state.current
       const rect = canvas.getBoundingClientRect()
@@ -305,10 +316,30 @@ export function KnowledgeGraph({
       s.scale = next
     }
 
+    // With touch-action: pan-y the browser reclaims vertical swipes and
+    // fires pointercancel mid-drag — reset so the graph isn't left in a
+    // phantom dragging state.
+    const onCancel = () => {
+      state.current.dragging = false
+      canvas.style.cursor = "grab"
+    }
+
+    // Button zoom (mobile has no ⌘+wheel): zoom about the canvas centre.
+    zoomRef.current = (factor: number) => {
+      const s = state.current
+      const next = Math.min(3, Math.max(0.4, s.scale * factor))
+      const mx = width / 2
+      const my = height / 2
+      s.offsetX = mx - (mx - s.offsetX) * (next / s.scale)
+      s.offsetY = my - (my - s.offsetY) * (next / s.scale)
+      s.scale = next
+    }
+
     if (interactive) {
       canvas.addEventListener("pointermove", onMove)
       canvas.addEventListener("pointerdown", onDown)
       canvas.addEventListener("pointerup", onUp)
+      canvas.addEventListener("pointercancel", onCancel)
       canvas.addEventListener("wheel", onWheel, { passive: false })
     }
     const ro = new ResizeObserver(resize)
@@ -332,6 +363,7 @@ export function KnowledgeGraph({
         canvas.removeEventListener("pointermove", onMove)
         canvas.removeEventListener("pointerdown", onDown)
         canvas.removeEventListener("pointerup", onUp)
+        canvas.removeEventListener("pointercancel", onCancel)
         canvas.removeEventListener("wheel", onWheel)
       }
     }
@@ -341,12 +373,38 @@ export function KnowledgeGraph({
 
   return (
     <div ref={wrapRef} className="relative w-full overflow-hidden rounded-2xl border border-line bg-surface/40">
-      <canvas ref={canvasRef} className="block touch-none" role="img" aria-label="Interactive knowledge graph of ecological topics and their connections" />
+      {/* pan-y, not none: a phone visitor swiping vertically over the
+          (near full-screen) canvas must still scroll the page — the
+          graph pans on horizontal drags and mouse drags only. */}
+      <canvas
+        ref={canvasRef}
+        className="block [touch-action:pan-y]"
+        role="img"
+        aria-label="Interactive knowledge graph of ecological topics and their connections"
+      />
       {interactive && (
         <div className="pointer-events-none absolute inset-0">
-          <p className="absolute left-4 top-4 font-mono text-[11px] uppercase tracking-widest text-faint">
-            Scroll to zoom · drag to pan · click a node
+          <p className="absolute left-4 top-4 hidden font-mono text-[11px] uppercase tracking-widest text-faint sm:block">
+            ⌘/Ctrl + scroll to zoom · drag to pan · click a node
           </p>
+          <div className="pointer-events-auto absolute right-3 top-3 flex flex-col gap-1.5">
+            <button
+              type="button"
+              aria-label="Zoom in"
+              onClick={() => zoomRef.current(1.25)}
+              className="glass grid h-9 w-9 place-items-center rounded-full text-lg leading-none text-foreground transition-colors hover:text-accent"
+            >
+              +
+            </button>
+            <button
+              type="button"
+              aria-label="Zoom out"
+              onClick={() => zoomRef.current(0.8)}
+              className="glass grid h-9 w-9 place-items-center rounded-full text-lg leading-none text-foreground transition-colors hover:text-accent"
+            >
+              −
+            </button>
+          </div>
           {hoverArticle && (
             <div className="eog-glass pointer-events-none absolute bottom-4 left-4 max-w-xs rounded-xl px-4 py-3 shadow-float">
               <p className="text-xs font-medium uppercase tracking-wide text-accent">
