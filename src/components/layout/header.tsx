@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import { Search } from "lucide-react"
 
 import { LetterFlip } from "@/components/motion/letter-flip"
-import { ThemeToggle } from "@/components/theme-toggle"
+import { ThemeModePicker } from "@/components/theme-toggle"
 import { useCommandPalette } from "@/components/search/command-palette"
 import { ARTICLES, getCategory, totalStats } from "@/lib/knowledge"
 import { DURATION_CURTAIN, EASE_CURTAIN } from "@/lib/motion"
@@ -148,7 +148,7 @@ export function Header() {
 
             <Link
               href="/explore"
-              className="tap-target hidden rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-forest transition-transform hover:scale-[1.03] sm:inline-block"
+              className="tap-target hidden rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-on-accent transition-transform hover:scale-[1.03] sm:inline-block"
             >
               Explore the Graph
             </Link>
@@ -316,13 +316,11 @@ export function Header() {
                   <span>CC BY-SA 4.0</span>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-3">
-                  <ThemeToggle />
-                </div>
+                <ThemeModePicker />
 
                 <Link
                   href="/explore"
-                  className="inline-block w-fit rounded-full bg-accent px-7 py-3.5 text-sm font-medium text-forest transition-transform hover:scale-[1.02]"
+                  className="inline-block w-fit rounded-full bg-accent px-7 py-3.5 text-sm font-medium text-on-accent transition-transform hover:scale-[1.02]"
                 >
                   Explore the Graph
                 </Link>

@@ -23,11 +23,14 @@ adaptive, discoverable, beautiful and open.
 ## Design language
 
 Apple × National Geographic × Linear × Arc × Obsidian. Minimal, premium,
-editorial, immersive, organic, scientific, calm. **Dark mode first** (Deep
-Forest), with a fully audited light mode (Daylight).
+editorial, immersive, organic, scientific, calm. **Time-of-day theming**: two
+palettes — **Golden Hour** (warm cream, day) and **Blue Hour** (deep indigo,
+night and default) — auto-selected from the visitor's clock (07:00–19:00 =
+day), with a permanent manual override. Both palettes are fully
+contrast-audited.
 
 - **Palette** — Deep Forest `#0D1B14`, Moss `#1F5136`, Fern `#4D8B63`, Sage `#B8D8C2`, Stone `#EDEDE8`, Warm White `#FAFAF7`; Sky / Amber / Rust accents only where necessary.
-- **Typography** — Playfair Display headings, Inter body, JetBrains Mono for technical annotations, on a fluid `clamp()` scale.
+- **Typography** — Syne SemiBold headings, Montserrat body, Geist Mono for technical annotations (shared with GRØNN Studio), on a fluid `clamp()` scale.
 - **Motion** — one small vocabulary of physics-based easings, 60fps, always purposeful, always honouring `prefers-reduced-motion`.
 
 Full design system lives in [`docs/02-design-system.md`](docs/02-design-system.md).

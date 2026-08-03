@@ -5,6 +5,14 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import "./globals.css"
 
 import { Providers } from "@/components/providers"
+import {
+  DAY_START_HOUR,
+  DAY_THEME,
+  NIGHT_START_HOUR,
+  NIGHT_THEME,
+  THEME_KEY,
+  THEME_MODE_KEY,
+} from "@/lib/themes"
 import { SmoothScroll } from "@/components/motion/smooth-scroll"
 import { CommandPaletteProvider } from "@/components/search/command-palette"
 import { Header } from "@/components/layout/header"
@@ -73,16 +81,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${montserrat.variable} ${geistMono.variable} ${syne.variable} h-full`}
     >
       <body className="min-h-full">
-        {/* Pre-paint theme seed to avoid a flash of the wrong ground. */}
+        {/* Time-of-day default (GRØNN base). Unless the visitor has
+            overruled it, seed next-themes' storage from their own clock
+            BEFORE its script runs — this element precedes <Providers>, so
+            the palette is decided pre-paint and an auto visitor never
+            sees a flash of the wrong ground. Hours come from
+            src/lib/themes.ts so the boundaries cannot drift from
+            resolveAutoTheme(). */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var t=localStorage.getItem('theme')||'dark';document.documentElement.classList.add(t)}catch(e){document.documentElement.classList.add('dark')}`,
+            __html: `try{if(localStorage.getItem(${JSON.stringify(THEME_MODE_KEY)})!=="manual"){var h=new Date().getHours();localStorage.setItem(${JSON.stringify(THEME_KEY)},h>=${DAY_START_HOUR}&&h<${NIGHT_START_HOUR}?${JSON.stringify(DAY_THEME)}:${JSON.stringify(NIGHT_THEME)})}}catch(e){}`,
           }}
         />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }} />
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-full focus:bg-accent focus:px-4 focus:py-2 focus:text-forest"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-full focus:bg-accent focus:px-4 focus:py-2 focus:text-on-accent"
         >
           Skip to content
         </a>

@@ -83,7 +83,7 @@ export default function AboutPage() {
       </div>
 
       <div className="mt-12 text-center">
-        <Link href="/explore" className="rounded-full bg-accent px-6 py-3 font-medium text-forest transition-transform hover:scale-[1.02]">
+        <Link href="/explore" className="rounded-full bg-accent px-6 py-3 font-medium text-on-accent transition-transform hover:scale-[1.02]">
           Enter the ecosystem
         </Link>
       </div>

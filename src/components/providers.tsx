@@ -3,21 +3,25 @@
 import type { ReactNode } from "react"
 import { ThemeProvider } from "next-themes"
 
+import { ThemeModeProvider } from "@/components/theme-mode-provider"
+import { ALL_THEME_NAMES, NIGHT_THEME } from "@/lib/themes"
+
 /**
- * Dark mode first: the resting theme is "dark" (Deep Forest). Visitors can
- * switch to "light" (Daylight); next-themes persists the choice and the
- * pre-paint script in layout.tsx prevents any flash of the wrong ground.
+ * Time-of-day theming (GRØNN base): Golden Hour by day, Blue Hour after
+ * dark, following the visitor's clock unless they overrule it. The
+ * pre-paint script in layout.tsx has already seeded next-themes' storage,
+ * so defaultTheme is only what a storage-less browser gets.
  */
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider
       attribute="class"
-      defaultTheme="dark"
-      themes={["dark", "light"]}
+      themes={ALL_THEME_NAMES}
+      defaultTheme={NIGHT_THEME}
       enableSystem={false}
       disableTransitionOnChange
     >
-      {children}
+      <ThemeModeProvider>{children}</ThemeModeProvider>
     </ThemeProvider>
   )
 }

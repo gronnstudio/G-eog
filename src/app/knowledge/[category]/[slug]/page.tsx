@@ -185,7 +185,7 @@ export default async function ArticlePage({
                 {article.contributors.map((name) => (
                   <li key={name} className="flex items-center gap-2 text-sm text-muted">
                     <span
-                      className="grid h-6 w-6 place-items-center rounded-full text-[10px] font-medium text-forest"
+                      className="grid h-6 w-6 place-items-center rounded-full text-[10px] font-medium text-on-accent"
                       style={{ background: `hsl(${cat?.hue ?? 150} 45% 62%)` }}
                     >
                       {name.split(" ").map((p) => p[0]).slice(0, 2).join("")}

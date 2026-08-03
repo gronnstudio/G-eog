@@ -26,7 +26,7 @@ src/components/
 | `PageShell` | `{ width: 'prose' \| 'wide' \| 'full' }` | prose = 68ch article measure; wide = 1200px; full = graph. |
 | `Section` | `{ eyebrow?, title?, children }` | Owns section rhythm spacing; never nest Sections. |
 | `Breadcrumbs` | `{ trail: {label, href}[] }` | Emits BreadcrumbList JSON-LD. |
-| `ThemeToggle` | — | Writes `data-theme`; respects system default; no flash (inline script in root layout). |
+| `ThemeToggle` | — | Palette picker: Auto / Golden Hour / Blue Hour. Auto follows the clock (07:00–19:00 = Golden Hour); picking a palette writes `"eog-theme-mode": "manual"` permanently until Auto is re-selected. No flash (pre-paint script in root layout); `ThemeModeProvider` re-syncs every 60s and on `visibilitychange` while auto. |
 | `SkipLink` | — | First focusable element on every page. |
 
 ## 2. Primitives (`primitives/`)
@@ -35,7 +35,7 @@ The UI kit — the only place raw interactive HTML gets wrapped.
 
 | Component | Props sketch | Rules |
 |---|---|---|
-| `Button` | `{ variant: 'primary'\|'secondary'\|'ghost'\|'danger', size: 'sm'\|'md'\|'lg', asChild? }` | Primary = Fern fill/`#0D1B14` text (dark). One primary per view region. |
+| `Button` | `{ variant: 'primary'\|'secondary'\|'ghost'\|'danger', size: 'sm'\|'md'\|'lg', asChild? }` | Primary = `--accent` fill with `--on-accent` text (flips per palette: deep green/cream in Golden Hour, pale sage/indigo in Blue Hour). One primary per view region. |
 | `IconButton` | `{ label: string /* required, aria */ }` | Never without `label`. |
 | `Link` | wraps `next/link` | External links get `rel="noopener"` + arrow-up-right glyph. |
 | `Input`, `Textarea` | `{ error?: string }` | 1px `--border-strong`, focus `--ring` 2px offset 2px. |

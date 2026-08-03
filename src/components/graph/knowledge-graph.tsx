@@ -167,6 +167,11 @@ export function KnowledgeGraph({
 
     const draw = () => {
       const s = state.current
+      // Theme-aware inks, read live so a Golden ↔ Blue Hour switch
+      // repaints without a remount (the canvas carries text-foreground).
+      const styles = getComputedStyle(canvas)
+      const ink = styles.color
+      const accent = styles.getPropertyValue("--color-accent").trim() || "#bfe3d0"
       ctx.clearRect(0, 0, width, height)
       ctx.save()
       ctx.translate(s.offsetX, s.offsetY)
@@ -184,11 +189,11 @@ export function KnowledgeGraph({
         ctx.beginPath()
         ctx.moveTo(a.x, a.y)
         ctx.lineTo(b.x, b.y)
-        ctx.strokeStyle = lit
-          ? "rgba(108,179,137,0.55)"
-          : "rgba(140,160,150,0.14)"
+        ctx.globalAlpha = lit ? 0.6 : 0.14
+        ctx.strokeStyle = lit ? accent : ink
         ctx.lineWidth = lit ? 1.4 : 0.7
         ctx.stroke()
+        ctx.globalAlpha = 1
       }
 
       // Nodes
@@ -219,7 +224,7 @@ export function KnowledgeGraph({
 
         if (isHover || isNeighbor || (!hoverId && n.degree >= 6)) {
           ctx.globalAlpha = dim ? 0.2 : 0.9
-          ctx.fillStyle = "rgba(238,243,238,0.92)"
+          ctx.fillStyle = ink
           ctx.font = "11px ui-sans-serif, system-ui"
           ctx.textAlign = "center"
           ctx.fillText(n.label, n.x, n.y - r - 6)

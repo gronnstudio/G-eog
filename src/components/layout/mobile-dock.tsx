@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation"
 import { AnimatePresence, motion } from "framer-motion"
 import type Lenis from "lenis"
 
-import { ThemeToggle } from "@/components/theme-toggle"
+import { ThemeModePicker } from "@/components/theme-toggle"
 import { useCommandPalette } from "@/components/search/command-palette"
 import { EASE_REVEAL } from "@/lib/motion"
 import { useFocusTrap } from "@/lib/use-focus-trap"
@@ -248,7 +248,7 @@ export function MobileDock() {
                 </button>
               </nav>
               <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-4 border-t border-line px-3 pt-5">
-                <ThemeToggle />
+                <ThemeModePicker />
                 <a
                   href="https://github.com/gronnstudio/g-eog"
                   target="_blank"
@@ -354,7 +354,7 @@ export function MobileDock() {
                 "flex h-11 w-14 shrink-0 items-center justify-center rounded-full transition duration-300 active:scale-90",
                 active("/explore")
                   ? "bg-fern text-warm"
-                  : "bg-accent text-forest hover:bg-fern hover:text-warm active:bg-fern active:text-warm",
+                  : "bg-accent text-on-accent hover:bg-fern hover:text-warm active:bg-fern active:text-warm",
               )}
             >
               {icons.graph}

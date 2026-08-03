@@ -12,7 +12,7 @@ export default function NotFound() {
           get you back to the living graph.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Link href="/" className="rounded-full bg-accent px-6 py-3 font-medium text-forest">
+          <Link href="/" className="rounded-full bg-accent px-6 py-3 font-medium text-on-accent">
             Return home
           </Link>
           <Link href="/explore" className="rounded-full border border-line px-6 py-3 font-medium text-foreground">

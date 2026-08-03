@@ -12,9 +12,9 @@ A node (article, species profile, technique) has exactly one canonical URL under
 
 ## 1. Global navigation
 
-**Header (persistent, glass):** Logo → `/` · Explore · Knowledge · Learn · Community · Search trigger (Cmd-K) · Theme toggle · Auth avatar.
+**Header (persistent, glass):** Logo → `/` · Explore · Knowledge · Learn · Community · Search trigger (Cmd-K) · Theme picker (Auto · Golden Hour · Blue Hour) · Auth avatar.
 **Footer:** About, Contribute, License (CC BY-SA 4.0), GitHub, RSS, Sitemap, GRØNN Studio credit.
-**Cmd-K palette:** available on every route; searches articles, categories, paths, and actions ("Toggle theme", "Random article", "Go to graph").
+**Cmd-K palette:** available on every route; searches articles, categories, paths, and actions ("Switch palette (Auto / Golden Hour / Blue Hour)", "Random article", "Go to graph").
 
 ## 2. Complete sitemap
 

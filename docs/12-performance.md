@@ -22,7 +22,7 @@ Enforced by: `next build` bundle analysis diff in CI (fails on > 5% route JS gro
 
 ## 2. Rendering strategy (Server Components + streaming)
 
-- **RSC by default.** Client components only for: palette, theme toggle, graph, TOC observer, bookmarks/notes/highlights, checkpoints, discussion forms. Everything else — article bodies, listings, panels — ships zero JS.
+- **RSC by default.** Client components only for: palette, theme mode picker (`ThemeModeProvider` + toggle), graph, TOC observer, bookmarks/notes/highlights, checkpoints, discussion forms. Everything else — article bodies, listings, panels — ships zero JS.
 - **Static generation** for all knowledge/learn/about routes via `generateStaticParams`; content changes redeploy (git-based content makes builds deterministic). ISR (1h) only on aggregate pages (home, community feed sections).
 - **Streaming:** dynamic islands (discussion, community feed, personal state) wrapped in `Suspense` with geometry-exact skeletons; the article itself never waits on them. `loading.tsx` per route group.
 - Personalized bits (bookmark state, progress) hydrate client-side from `/api/v1/me/*` after paint — pages are cacheable for everyone; no per-user server rendering of static content.
@@ -60,7 +60,7 @@ Per `07-api-architecture.md` §2: static pages on Vercel's CDN; edge runtime for
 
 ## 8. PWA & offline
 
-- `manifest.webmanifest` (installable, `display: standalone`, Deep Forest theme color) + service worker (Serwist):
+- `manifest.webmanifest` (installable, `display: standalone`, Blue Hour `#10152e` theme color (the default palette's background)) + service worker (Serwist):
   - **Precache:** app shell, fonts, Tier-0 search index (`09` §1), offline page.
   - **Runtime:** stale-while-revalidate for pages and `graph/full` (IndexedDB, keyed by deploy hash); cache-first for images (LRU 50MB); network-only for `/me/*` and AI.
   - **Offline UX:** previously read articles + bookmarked articles (proactively cached on bookmark) readable offline; `/offline` fallback offers the local search index; progress made offline queues in IndexedDB and syncs via Background Sync when online.

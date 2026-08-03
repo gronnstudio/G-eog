@@ -1,6 +1,6 @@
 # Design System
 
-Design language: **Apple × National Geographic × Linear × Arc × Obsidian** — minimal, premium, editorial, immersive, organic, scientific, calm. **Dark mode first**: dark is the default and the design source of truth; light mode is derived, never the reverse.
+Design language: **Apple × National Geographic × Linear × Arc × Obsidian** — minimal, premium, editorial, immersive, organic, scientific, calm. **Time-of-day theming**: two palettes — **Golden Hour** (day) and **Blue Hour** (night) — auto-selected from the visitor's clock, with Blue Hour as the default fallback and the design source of truth.
 
 Tokens are defined as CSS custom properties in `src/app/globals.css` and mapped into Tailwind CSS 4 via `@theme`.
 
@@ -8,49 +8,74 @@ Tokens are defined as CSS custom properties in `src/app/globals.css` and mapped 
 
 ## 1. Color
 
-### 1.1 Brand palette (raw)
+### 1.1 Brand constants (raw)
+
+Brand constants are fixed reference colors — they identify the brand across marks, illustration, duotones, and category tones. They are **not** page tokens: Deep Forest is no longer the page background token.
 
 | Name | Hex | Role |
 |---|---|---|
-| Deep Forest | `#0D1B14` | Dark canvas |
+| Deep Forest | `#0D1B14` | Brand anchor — marks, duotones, illustration |
 | Moss | `#1F5136` | Brand primary dark / fills |
 | Fern | `#4D8B63` | Brand primary / interactive |
-| Sage | `#B8D8C2` | Brand tint / dark-mode accents |
-| Stone | `#EDEDE8` | Light surfaces |
-| Warm White | `#FAFAF7` | Light canvas |
+| Sage | `#B8D8C2` | Brand tint |
+| Stone | `#EDEDE8` | Neutral surfaces (brand collateral) |
+| Warm White | `#FAFAF7` | Neutral canvas (brand collateral) |
 
-Accents — use sparingly, only where semantics demand: Sky Blue `#6FA8DC` (water/info), Amber `#D9A441` (energy/warning), Rust `#B4552D` (danger/erosion). Never as decoration.
+Accents — use sparingly, only where semantics demand: Sky `#6ea8c7` (water/info), Amber `#e0a458` (energy/warning), Rust `#c2603f` (danger/erosion). Never as decoration.
 
-### 1.2 Semantic tokens
+### 1.2 Time-of-day palettes
 
-| Token | Dark | Light | Notes |
-|---|---|---|---|
-| `--bg` | `#0D1B14` | `#FAFAF7` | Page canvas |
-| `--bg-raised` | `#12241A` | `#FFFFFF` | Cards, panels |
-| `--bg-overlay` | `#162E21` | `#EDEDE8` | Popovers, palette |
-| `--bg-inset` | `#0A150F` | `#E4E4DD` | Wells, code blocks |
-| `--fg` | `#EDEDE8` | `#12241A` | Primary text |
-| `--fg-muted` | `#9FB8A8` | `#4A5D51` | Secondary text |
-| `--fg-faint` | `#5F7A6A` | `#7C8B81` | Tertiary/meta — decorative only below 18px |
-| `--accent` | `#4D8B63` | `#1F5136` | Interactive default |
-| `--accent-hover` | `#5FA377` | `#2A6847` | |
-| `--accent-fg` | `#B8D8C2` | `#1F5136` | Links/text on canvas |
-| `--border` | `#24382C` | `#D8D8CE` | 1px hairlines |
-| `--border-strong` | `#33503F` | `#B9BDB2` | Inputs, focus adjacency |
-| `--ring` | `#B8D8C2` | `#1F5136` | Focus ring, 2px |
-| `--info` | `#6FA8DC` | `#2F6CA3` | |
-| `--warning` | `#D9A441` | `#8A6414` | |
-| `--danger` | `#C86A45` | `#9A3F1C` | Rust ramp |
-| `--success` | `#4D8B63` | `#1F5136` | Reuses brand green |
+Two palettes replace the previous static dark/light pair:
 
-### 1.3 Contrast notes (WCAG, against usage background)
+- **Golden Hour** — the day palette: warm cream surfaces, deep green accent.
+- **Blue Hour** — the night palette and the **default fallback**: deep indigo surfaces, pale sage accent.
 
-- `--fg` `#EDEDE8` on `#0D1B14`: **15.2:1** — AAA all sizes.
-- `--fg-muted` `#9FB8A8` on `#0D1B14`: **8.4:1** — AAA body.
-- `--accent-fg` `#B8D8C2` on `#0D1B14`: **11.6:1** — AAA; this is why dark-mode links use Sage, not Fern.
-- Fern `#4D8B63` on `#0D1B14`: **4.6:1** — AA only → allowed for UI glyphs/borders and text ≥ 18.66px bold; body links must use `--accent-fg`.
-- Light mode: `#12241A` on `#FAFAF7`: **14.8:1** AAA; `#1F5136` on `#FAFAF7`: **8.1:1** AAA.
-- Every new token pair must pass 7:1 (body) / 4.5:1 (large text) — enforced by the contrast audit script (`11-accessibility.md`).
+The palette is auto-selected from the visitor's clock: **07:00–19:00 local time = Golden Hour**, otherwise Blue Hour. The Tailwind `dark` variant maps to `.bluehour` (and legacy `.dark`).
+
+**Auto/manual mechanic:**
+
+- A pre-paint inline script in `layout.tsx` seeds next-themes' `"theme"` localStorage key from the clock — unless the stored mode is manual — so first paint is always correct (no flash).
+- `ThemeModeProvider` re-syncs the palette on a 60-second interval and on `visibilitychange` while in auto mode.
+- Choosing any palette explicitly writes `"eog-theme-mode": "manual"` to localStorage — a **permanent** override that persists until the user picks Auto again. Auto mode stores `"eog-theme-mode": "auto"`.
+
+#### Golden Hour tokens (day)
+
+| Token | Value | Notes |
+|---|---|---|
+| `--background` | `#f8efdc` | Page canvas |
+| `--surface` | `#fdf8ee` | Cards, panels |
+| `--surface-2` | `#f1e6cf` | Wells, insets, popovers |
+| `--foreground` | `#1d1810` | Primary text |
+| `--muted` | `#58503e` | Secondary text |
+| `--faint` | `#8a7f66` | Tertiary/meta — decorative only below 18px |
+| `--line` | `rgba(29,24,16,0.14)` | 1px hairlines |
+| `--accent` | `#175c3d` | Deep green — interactive default |
+| `--accent-soft` | `rgba(23,92,61,0.10)` | Accent tints, hover washes |
+| `--on-accent` | `#f8efdc` | Text/icons on accent fills |
+
+#### Blue Hour tokens (night, default)
+
+| Token | Value | Notes |
+|---|---|---|
+| `--background` | `#10152e` | Page canvas |
+| `--surface` | `#1a2040` | Cards, panels |
+| `--surface-2` | `#232a52` | Wells, insets, popovers |
+| `--foreground` | `#eceffa` | Primary text |
+| `--muted` | `#9ba5c8` | Secondary text |
+| `--faint` | `#626d94` | Tertiary/meta — decorative only below 18px |
+| `--line` | `rgba(236,239,250,0.12)` | 1px hairlines |
+| `--accent` | `#bfe3d0` | Pale sage — interactive default |
+| `--accent-soft` | `rgba(191,227,208,0.12)` | Accent tints, hover washes |
+| `--on-accent` | `#10152e` | Text/icons on accent fills |
+
+**Why `--on-accent` exists:** the accent flips polarity between palettes — deep green on cream in Golden Hour, pale sage on indigo in Blue Hour — so text sitting on an accent fill must flip too. `--on-accent` is cream (`#f8efdc`) in Golden Hour and indigo (`#10152e`) in Blue Hour. Never hardcode white or `--foreground` on accent fills.
+
+### 1.3 Contrast expectations (WCAG, against usage background)
+
+- **All body text pairs meet AA (4.5:1) at minimum** in both palettes; `--foreground` on `--background` targets AAA in each.
+- `--faint` is decorative-only below 18px in both palettes.
+- `--on-accent` on `--accent` must meet 4.5:1 in both palettes — verified in the audit manifest like any other pair.
+- Every new token pair must pass the contrast audit script (`11-accessibility.md`) before merge.
 
 ### 1.4 Category tones
 Each of the 24 categories gets a hue-shifted tint of Fern (±20° hue, fixed L/C in OKLCH: `oklch(0.62 0.09 h)`) used for graph nodes, category chips, and OG art. Generated once, stored in `src/lib/category-tones.ts` — never hand-picked per component.
@@ -94,7 +119,7 @@ Nested radius rule: inner = outer − padding (never equal).
 
 ## 5. Shadows & elevation
 
-Dark mode elevates with **lighter surface + hairline**, not heavy shadow. Shadows carry a green cast, never pure black.
+Blue Hour elevates with **lighter surface + hairline**, not heavy shadow. Shadows carry a green cast, never pure black.
 
 ```css
 --shadow-sm: 0 1px 2px oklch(0.1 0.03 160 / 0.5);
@@ -103,11 +128,11 @@ Dark mode elevates with **lighter surface + hairline**, not heavy shadow. Shadow
 --shadow-glow: 0 0 24px -6px oklch(0.62 0.09 160 / 0.35); /* graph node focus only */
 ```
 
-Light mode swaps alpha to 0.10 / 0.12 / 0.16. Elevation levels: 0 canvas, 1 raised (`--shadow-sm` + border), 2 overlay (`--shadow-md`), 3 modal/palette (`--shadow-lg` + scrim `oklch(0.05 0.02 160 / 0.6)` with 8px backdrop blur).
+Golden Hour swaps alpha to 0.10 / 0.12 / 0.16. Elevation levels: 0 canvas, 1 raised (`--shadow-sm` + border), 2 overlay (`--shadow-md`), 3 modal/palette (`--shadow-lg` + scrim `oklch(0.05 0.02 160 / 0.6)` with 8px backdrop blur).
 
 ## 6. Glass rules
 
-Glass = `backdrop-filter: blur(16px) saturate(1.4)` over `--bg` at 72% alpha, 1px `--border` bottom hairline. Allowed **only** on: sticky header, Cmd-K palette, graph HUD controls. Never on article content, cards, or anything containing body text. Always provide solid fallback via `@supports not (backdrop-filter: blur(1px))`.
+Glass = `backdrop-filter: blur(16px) saturate(1.4)` over `--background` at 72% alpha, 1px `--line` bottom hairline. Allowed **only** on: sticky header, Cmd-K palette, graph HUD controls. Never on article content, cards, or anything containing body text. Always provide solid fallback via `@supports not (backdrop-filter: blur(1px))`.
 
 ## 7. Iconography
 

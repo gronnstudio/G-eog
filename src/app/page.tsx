@@ -146,7 +146,7 @@ export default function HomePage() {
               contribution strengthens the whole ecosystem.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <Link href="/community" className="rounded-full bg-accent px-6 py-3 font-medium text-forest transition-transform hover:scale-[1.02]">
+              <Link href="/community" className="rounded-full bg-accent px-6 py-3 font-medium text-on-accent transition-transform hover:scale-[1.02]">
                 Become a contributor
               </Link>
               <Link href="/explore" className="rounded-full border border-line px-6 py-3 font-medium text-foreground transition-colors hover:bg-surface-2">

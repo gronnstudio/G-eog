@@ -6,9 +6,9 @@ Target: **WCAG 2.2 AA as the hard floor, AAA wherever achievable** — specifica
 
 ## 1. Contrast (AAA-first)
 
-- All body text pairs meet **7:1**; large text (≥ 24px / 18.66px bold) meets **4.5:1**; UI glyphs/borders meet **3:1**. Verified values per token pair in `02-design-system.md` §1.3.
-- Consequences already baked into the system: dark-mode links are Sage `#B8D8C2` (11.6:1), not Fern (4.6:1); `--fg-faint` is decorative-only below 18px; category tones are used on chips/nodes, never as body-text color.
-- **Audit approach:** `scripts/contrast-audit.ts` parses `globals.css` tokens, computes every declared foreground/background pairing (pairs are declared in a manifest — no guessing), fails CI below threshold. Storybook-free visual checks via Playwright + `axe-core` on 12 representative pages, both themes, both motion modes. Manual quarterly pass with Windows High Contrast / `forced-colors: active` (system colors respected; focus/selected states re-expressed via `outline` and `forced-color-adjust`).
+- All body text pairs meet **4.5:1 (AA) at minimum, 7:1 (AAA) wherever achievable** — primary text on canvas targets AAA in both palettes; large text (≥ 24px / 18.66px bold) meets **4.5:1**; UI glyphs/borders meet **3:1**. Verified values per token pair in `02-design-system.md` §1.3.
+- Consequences already baked into the system: Blue Hour links use the pale-sage `--accent` `#bfe3d0`, not Fern; Golden Hour links use the deep-green `--accent` `#175c3d`; `--faint` is decorative-only below 18px in both palettes; category tones are used on chips/nodes, never as body-text color. All body text meets AA (4.5:1) at minimum in both palettes.
+- **Audit approach:** `scripts/contrast-audit.ts` parses `globals.css` tokens, computes every declared foreground/background pairing (pairs are declared in a manifest — no guessing), fails CI below threshold. Storybook-free visual checks via Playwright + `axe-core` on 12 representative pages, both time-of-day palettes (Golden Hour, Blue Hour), both motion modes. Manual quarterly pass with Windows High Contrast / `forced-colors: active` (system colors respected; focus/selected states re-expressed via `outline` and `forced-color-adjust`).
 
 ## 2. Keyboard navigation map
 
@@ -63,7 +63,7 @@ Per `04-animation-guidelines.md` §1.5 — central `motion-safe` layer: crossfad
 ## 7. Process & tooling
 
 1. **Lint:** `eslint-plugin-jsx-a11y` strict; custom rules: no `outline:none`, no icon-button without label.
-2. **CI:** `axe-core` via Playwright on the 12-page golden set × {dark, light} × {motion, reduced} — zero serious/critical violations to merge; contrast audit script (§1).
+2. **CI:** `axe-core` via Playwright on the 12-page golden set × {Golden Hour, Blue Hour} × {motion, reduced} — zero serious/critical violations to merge; contrast audit script (§1).
 3. **Manual cadence:** monthly NVDA + VoiceOver pass on one new surface; quarterly full pass including graph keyboard parity; findings filed with `a11y` label, treated as bugs (priority ≥ functional bugs).
 4. **Definition of done** for any component PR includes: keyboard path, SR announcement text, reduced-motion variant, contrast check — listed in the PR template.
 5. Accessibility statement at `/about#accessibility` with contact for barriers and known-issues list — honest and current.

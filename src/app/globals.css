@@ -6,7 +6,7 @@
   ("Daylight") is a first-class, fully audited alternative.
 */
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:is(.dark *, .bluehour *));
 
 @theme inline {
   /* Semantic tokens — resolved from the palette blocks below. */
@@ -19,6 +19,10 @@
   --color-line: var(--line);
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
+  /* Text/icons sitting ON a filled accent surface. The accent flips from
+     deep green (Golden Hour) to pale sage (Blue Hour), so its ink must
+     flip with it or every filled CTA fails contrast in one theme. */
+  --color-on-accent: var(--on-accent);
 
   /* Brand constants — identical across themes. */
   --color-forest: #0d1b14;
@@ -60,32 +64,39 @@
   --ease-organic: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* ---------------- Dark (default): Deep Forest ---------------- */
+/* The two Hours, ported from GRØNN Studio and adapted to Equilibrium's
+   token set. Blue Hour doubles as the :root fallback (and `.dark` stays
+   an alias) so a storage-less first paint lands on the night ground. */
+
+/* ---------------- Blue Hour (night, default): deep indigo ------------ */
 :root,
-.dark {
-  --background: #0d1b14;
-  --surface: #10231a;
-  --surface-2: #142c20;
-  --foreground: #eef3ee;
-  --muted: #9db3a5;
-  --faint: #5f7568;
-  --line: rgba(184, 216, 194, 0.12);
-  --accent: #6cb389;
-  --accent-soft: rgba(108, 179, 137, 0.14);
+.dark,
+.bluehour {
+  --background: #10152e;
+  --surface: #1a2040;
+  --surface-2: #232a52;
+  --foreground: #eceffa;
+  --muted: #9ba5c8;
+  --faint: #626d94;
+  --line: rgba(236, 239, 250, 0.12);
+  --accent: #bfe3d0;
+  --accent-soft: rgba(191, 227, 208, 0.12);
+  --on-accent: #10152e;
   color-scheme: dark;
 }
 
-/* ---------------- Light: Daylight ---------------- */
-.light {
-  --background: #fafaf7;
-  --surface: #ffffff;
-  --surface-2: #f2f4ef;
-  --foreground: #14231b;
-  --muted: #4c6355;
-  --faint: #8aa093;
-  --line: rgba(31, 81, 54, 0.14);
-  --accent: #1f5136;
-  --accent-soft: rgba(31, 81, 54, 0.08);
+/* ---------------- Golden Hour (day): warm cream ---------------------- */
+.goldenhour {
+  --background: #f8efdc;
+  --surface: #fdf8ee;
+  --surface-2: #f1e6cf;
+  --foreground: #1d1810;
+  --muted: #58503e;
+  --faint: #8a7f66;
+  --line: rgba(29, 24, 16, 0.14);
+  --accent: #175c3d;
+  --accent-soft: rgba(23, 92, 61, 0.1);
+  --on-accent: #f8efdc;
   color-scheme: light;
 }
 
@@ -135,7 +146,7 @@ h1, h2, h3, h4 {
     radial-gradient(70% 60% at 50% 100%, rgba(31, 81, 54, 0.22), transparent 70%);
 }
 
-.light .eog-aurora {
+.goldenhour .eog-aurora {
   background:
     radial-gradient(60% 50% at 15% 10%, rgba(77, 139, 99, 0.12), transparent 70%),
     radial-gradient(50% 45% at 85% 20%, rgba(110, 168, 199, 0.08), transparent 70%),
