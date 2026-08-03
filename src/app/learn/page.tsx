@@ -56,7 +56,16 @@ export default function LearnPage() {
                       </span>
                       <div className="min-w-0 flex-1">
                         <p className="truncate font-medium text-foreground">
-                          {article?.title ?? step.slug}
+                          {article?.title ??
+                            step.slug
+                              .split("-")
+                              .map((w) => w[0].toUpperCase() + w.slice(1))
+                              .join(" ")}
+                          {!article && (
+                            <span className="ml-2 rounded-full border border-line px-2 py-0.5 align-middle font-mono text-[10px] uppercase tracking-wide text-faint">
+                              Soon
+                            </span>
+                          )}
                         </p>
                         <p className="truncate text-sm text-muted">{step.note}</p>
                       </div>

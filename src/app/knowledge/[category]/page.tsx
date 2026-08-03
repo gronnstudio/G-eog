@@ -59,9 +59,13 @@ export default async function CategoryPage({
           style={{ background: `radial-gradient(60% 60% at 20% 0%, hsl(${cat.hue} 50% 40%), transparent 70%)` }}
         />
         <div className="relative mx-auto max-w-7xl px-4 pb-14 sm:px-6">
-          <Link href="/knowledge" className="text-sm text-muted transition-colors hover:text-foreground">
-            ← All domains
-          </Link>
+          <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted">
+            <Link href="/" className="hover:text-foreground">Home</Link>
+            <Icons.ChevronRight className="h-3.5 w-3.5 text-faint" />
+            <Link href="/knowledge" className="hover:text-foreground">Knowledge</Link>
+            <Icons.ChevronRight className="h-3.5 w-3.5 text-faint" />
+            <span className="text-foreground" aria-current="page">{cat.title}</span>
+          </nav>
           <div className="mt-8 flex items-start gap-5">
             <div
               className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl"
