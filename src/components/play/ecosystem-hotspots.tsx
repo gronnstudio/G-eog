@@ -185,7 +185,7 @@ function Hotspots() {
         return (
           <div
             key={h.id}
-            className="absolute"
+            className={cn("absolute", isActive ? "z-30" : "z-10")}
             style={{ left: `${h.x}%`, top: `${h.y}%`, transform: "translate(-50%, -50%)" }}
           >
             <button
@@ -193,11 +193,21 @@ function Hotspots() {
               aria-label={h.label}
               aria-expanded={isActive}
               onClick={() => setActive((cur) => (cur === h.id ? null : h.id))}
-              onMouseEnter={() => setActive(h.id)}
-              onFocus={() => setActive(h.id)}
+              // Hover-to-open on mouse only. On touch the synthesized
+              // mouseenter used to fire alongside the tap and cancel it
+              // out, so a tap opened then instantly closed the card.
+              onPointerEnter={(e) => {
+                if (e.pointerType === "mouse") setActive(h.id)
+              }}
+              onPointerLeave={(e) => {
+                if (e.pointerType === "mouse") setActive((cur) => (cur === h.id ? null : cur))
+              }}
               className={cn(
-                "relative grid h-5 w-5 place-items-center rounded-full",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                "relative grid h-5 w-5 place-items-center rounded-full transition-opacity duration-300",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+                // Fade the other dots while a card is open so they don't
+                // clutter or bleed through the reading surface.
+                active && !isActive && "opacity-30",
               )}
             >
               {/* Pulse / static ring */}
@@ -226,14 +236,15 @@ function Hotspots() {
                 transition={{ duration: 0.25, ease: EASE_ORGANIC }}
                 role="tooltip"
                 className={cn(
-                  "eog-glass absolute z-10 w-56 rounded-xl px-4 py-3 text-start shadow-float",
-                  h.x > 60 ? "end-6" : "start-6",
+                  // Solid, opaque surface — the translucent glass was
+                  // unreadable over the busy diagram.
+                  "absolute z-30 w-56 max-w-[70vw] rounded-xl border border-line bg-surface px-4 py-3 text-start shadow-float",
                   h.y > 60 ? "bottom-4" : "top-4"
                 )}
                 style={h.x > 60 ? { right: "1.5rem" } : { left: "1.5rem" }}
               >
                 <p className="text-sm font-semibold text-foreground">{h.label}</p>
-                <p className="mt-1 text-xs leading-relaxed text-muted">{h.blurb}</p>
+                <p className="mt-1 text-xs leading-relaxed text-foreground/75">{h.blurb}</p>
                 {h.href && (
                   <Link
                     href={h.href}

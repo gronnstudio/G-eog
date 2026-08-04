@@ -148,13 +148,13 @@ export function RegenerationSlider({ before, after }: RegenerationSliderProps = 
         )}
         style={{ left: `${split}%` }}
       >
-        {/* Vertical bar */}
-        <span className="absolute inset-y-0 w-0.5 -translate-x-1/2 bg-white/90 shadow-[0_0_0_1px_rgba(0,0,0,0.15)]" />
-        {/* Circular grip */}
-        <span className="relative grid h-10 w-10 -translate-x-1/2 place-items-center rounded-full border border-line bg-surface shadow-float ring-2 ring-transparent [div[role=slider]:focus-visible_&]:ring-accent">
-          <span className="flex items-center text-foreground">
+        {/* Vertical divider — a hair thinner and softer than pure white */}
+        <span className="absolute inset-y-0 w-px -translate-x-1/2 bg-white/75 shadow-[0_0_6px_rgba(0,0,0,0.25)]" />
+        {/* Circular grip — outward chevrons with a clear gap, accent-tinted */}
+        <span className="relative grid h-11 w-11 -translate-x-1/2 place-items-center rounded-full border border-white/60 bg-surface shadow-float ring-1 ring-black/10 [div[role=slider]:focus-visible_&]:ring-2 [div[role=slider]:focus-visible_&]:ring-accent">
+          <span className="flex items-center gap-0.5 text-accent">
             <ChevronLeft className="h-4 w-4" aria-hidden="true" />
-            <ChevronRight className="-ml-1 h-4 w-4" aria-hidden="true" />
+            <ChevronRight className="h-4 w-4" aria-hidden="true" />
           </span>
         </span>
       </div>
