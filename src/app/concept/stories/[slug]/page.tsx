@@ -27,6 +27,8 @@ export async function generateMetadata({
     title: `${s.title} — Field Story`,
     description: s.subtitle,
     openGraph: { title: s.title, description: s.subtitle, type: "article" },
+    // Hidden concept: reachable by direct URL but kept out of search.
+    robots: { index: false, follow: false },
   }
 }
 
@@ -52,7 +54,7 @@ export default async function StoryPage({
     contentLocation: { "@type": "Place", name: story.place },
     author: story.guardians.map((g) => ({ "@type": "Person", name: g.name })),
     isAccessibleForFree: true,
-    url: `${SITE}/stories/${story.slug}`,
+    url: `${SITE}/concept/stories/${story.slug}`,
   }
 
   return (
@@ -63,7 +65,7 @@ export default async function StoryPage({
       <nav aria-label="Breadcrumb" className="mx-auto flex max-w-5xl items-center gap-2 px-4 pt-24 text-sm text-muted sm:px-6">
         <Link href="/" className="hover:text-foreground">Home</Link>
         <ChevronRight className="h-3.5 w-3.5 text-faint" />
-        <Link href="/stories" className="hover:text-foreground">Stories</Link>
+        <Link href="/concept/stories" className="hover:text-foreground">Stories</Link>
         <ChevronRight className="h-3.5 w-3.5 text-faint" />
         <span className="truncate text-foreground" aria-current="page">{story.title}</span>
       </nav>
@@ -183,7 +185,7 @@ export default async function StoryPage({
       )}
 
       <div className="mx-auto max-w-6xl px-4 pb-8 sm:px-6">
-        <Link href="/stories" className="group inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-foreground">
+        <Link href="/concept/stories" className="group inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-foreground">
           <ArrowRight className="h-4 w-4 rotate-180" />
           All field stories
         </Link>

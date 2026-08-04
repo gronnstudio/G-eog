@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   title: "Field Stories",
   description:
     "Immersive, place-based stories of regeneration in the real world — where the science of Equilibrium becomes a living landscape you can walk through.",
+  // Hidden concept: reachable by direct URL but kept out of search.
+  robots: { index: false, follow: false },
 }
 
 export default function StoriesPage() {
@@ -30,7 +32,7 @@ export default function StoriesPage() {
           return (
             <Reveal key={story.slug} delay={(i % 2) * 0.08}>
               <Link
-                href={`/stories/${story.slug}`}
+                href={`/concept/stories/${story.slug}`}
                 className="group relative flex min-h-[22rem] flex-col justify-end overflow-hidden rounded-3xl border border-line p-8 transition-transform duration-500 hover:-translate-y-1"
               >
                 {/* Ambient art */}
