@@ -316,6 +316,19 @@ h1, h2, h3, h4 {
   color: var(--color-accent);
 }
 
+/* Bidi safety net for RTL locales. When a string has no translation yet it
+   falls back to English, and English text laid out in an RTL paragraph gets
+   its trailing punctuation and numbers reordered to the wrong end (e.g.
+   "whole." → ".whole", "27 concepts" → "concepts 27"). unicode-bidi:plaintext
+   computes each block's base direction from its own content (the CSS
+   equivalent of dir="auto"), so Arabic runs stay RTL and English fallbacks
+   order correctly. text-align still follows the page direction, so the
+   right-aligned RTL look is preserved. Scoped to [dir="rtl"] — LTR is
+   untouched. */
+[dir="rtl"] :is(h1, h2, h3, h4, h5, h6, p, li, dt, dd, blockquote, figcaption) {
+  unicode-bidi: plaintext;
+}
+
 /* Utility: hide scrollbars on horizontal rails. */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; }
