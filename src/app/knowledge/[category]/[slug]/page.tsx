@@ -17,6 +17,7 @@ import {
 
 import { ReadingProgress } from "@/components/knowledge/reading-progress"
 import { ArticleCard } from "@/components/knowledge/article-card"
+import { ArticleEmbed } from "@/components/knowledge/article-embed"
 import { DifficultyBadge } from "@/components/ui/badges"
 import {
   ARTICLES,
@@ -141,13 +142,17 @@ export default async function ArticlePage({
 
       {/* Body + rail */}
       <div className="mx-auto grid max-w-6xl gap-12 px-4 pb-16 sm:px-6 lg:grid-cols-[minmax(0,1fr)_18rem]">
-        <div className="eog-prose min-w-0">
+        <div className="min-w-0">
+          <div className="eog-prose">
           {article.sections.map((section, i) => (
             <section key={i}>
               {section.heading && <h2>{section.heading}</h2>}
               {section.body.map((para, j) => (
                 <p key={j}>{para}</p>
               ))}
+              {section.embed && (
+                <ArticleEmbed name={section.embed} caption={section.embedCaption} />
+              )}
             </section>
           ))}
 
@@ -182,6 +187,34 @@ export default async function ArticlePage({
                 #{t}
               </span>
             ))}
+          </div>
+          </div>
+
+          {/* Contribute — the sticky rail is desktop-only, so mobile
+              readers get their own on-ramp to editing this page. */}
+          <div className="mt-10 rounded-2xl border border-line bg-surface/40 p-5 lg:hidden">
+            <p className="flex items-center gap-2 font-heading text-lg text-foreground">
+              <GitPullRequest className="h-5 w-5 text-accent" /> Improve this page
+            </p>
+            <p className="mt-1.5 text-sm leading-relaxed text-muted">
+              Every article is open source and freely licensed. Spot an error, add a
+              citation or sharpen a sentence — edits flow through peer review to
+              publication.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <a
+                href={`${GH}/edit/main/${sourcePath}`}
+                className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-medium text-on-accent"
+              >
+                <GitPullRequest className="h-4 w-4" /> Edit on GitHub
+              </a>
+              <Link
+                href="/community"
+                className="inline-flex items-center gap-2 rounded-full border border-line px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-surface-2"
+              >
+                How contributing works
+              </Link>
+            </div>
           </div>
         </div>
 

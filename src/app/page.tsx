@@ -7,6 +7,8 @@ import { CategoryCard } from "@/components/knowledge/category-card"
 import { ArticleCard } from "@/components/knowledge/article-card"
 import { Reveal } from "@/components/motion/reveal"
 import { SectionLabel } from "@/components/ui/badges"
+import { DomainsMarquee } from "@/components/play/domains-marquee"
+import { SuccessionTimeline } from "@/components/play/succession-timeline"
 import { ARTICLES, CATEGORIES, LEARNING_PATHS, totalStats } from "@/lib/knowledge"
 
 export default function HomePage() {
@@ -58,6 +60,21 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Living ribbon */}
+      <section className="border-y border-line bg-surface/20 py-6">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <Reveal>
+            <SectionLabel>Living ribbon</SectionLabel>
+            <p className="mt-3 max-w-xl text-pretty leading-relaxed text-muted">
+              Every domain, drifting past like a current. Hover to pause and pick a thread.
+            </p>
+          </Reveal>
+        </div>
+        <div className="mt-6">
+          <DomainsMarquee />
+        </div>
+      </section>
+
       {/* Categories */}
       <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
         <Reveal>
@@ -96,6 +113,31 @@ export default function HomePage() {
             </Reveal>
           ))}
         </div>
+      </section>
+
+      {/* Ecological succession timeline */}
+      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
+        <Reveal>
+          <SectionLabel>How ecosystems assemble</SectionLabel>
+          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+            <h2 className="max-w-xl font-heading text-4xl text-foreground sm:text-5xl">
+              From bare ground to forest.
+            </h2>
+            <Link
+              href="/knowledge/ecology/ecological-succession"
+              className="group inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-foreground"
+            >
+              Read the full article
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
+          <p className="mt-4 max-w-xl text-pretty leading-relaxed text-muted">
+            Scroll to watch a landscape rebuild itself, one stage at a time — the slow choreography of ecological succession.
+          </p>
+        </Reveal>
+        <Reveal delay={0.1} className="mt-10">
+          <SuccessionTimeline />
+        </Reveal>
       </section>
 
       {/* Learning paths */}

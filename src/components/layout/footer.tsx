@@ -18,6 +18,7 @@ const COLUMNS = [
     links: [
       { href: "/community", label: "How it works" },
       { href: "https://github.com/gronnstudio/g-eog", label: "View on GitHub" },
+      { href: "https://github.com/gronnstudio/g-eog/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22", label: "Good first issues" },
       { href: "/community#peer-review", label: "Peer review" },
       { href: "/about", label: "Our mission" },
     ],

@@ -50,10 +50,20 @@ export interface Citation {
   url?: string
 }
 
+/** Interactive diagrams that can be embedded inline in an article body. */
+export type ArticleEmbed =
+  | "food-forest-layers"
+  | "succession-timeline"
+  | "regeneration-slider"
+
 export interface ArticleSection {
   heading?: string
   /** Paragraphs and lists rendered by the article view. */
   body: string[]
+  /** Optional interactive diagram rendered after this section's prose. */
+  embed?: ArticleEmbed
+  /** Caption shown beneath an embedded diagram. */
+  embedCaption?: string
 }
 
 export interface Article {
