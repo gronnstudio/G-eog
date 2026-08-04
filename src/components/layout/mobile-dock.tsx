@@ -77,6 +77,7 @@ const icons = {
 
 const PRIMARY = [
   { href: "/knowledge", key: "nav_knowledge" },
+  { href: "/stories", key: "nav_stories" },
   { href: "/learn", key: "nav_learn" },
   { href: "/community", key: "nav_community" },
   { href: "/about", key: "nav_about" },

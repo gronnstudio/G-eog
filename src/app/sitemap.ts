@@ -1,11 +1,11 @@
 import type { MetadataRoute } from "next"
 
-import { ARTICLES, CATEGORIES } from "@/lib/knowledge"
+import { ARTICLES, CATEGORIES, STORIES } from "@/lib/knowledge"
 
 const SITE = "https://equilibrium.gronn.studio"
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticRoutes = ["", "/explore", "/knowledge", "/learn", "/community", "/about"].map(
+  const staticRoutes = ["", "/explore", "/knowledge", "/stories", "/learn", "/community", "/about"].map(
     (path) => ({
       url: `${SITE}${path}`,
       lastModified: new Date(),
@@ -28,5 +28,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }))
 
-  return [...staticRoutes, ...categoryRoutes, ...articleRoutes]
+  const storyRoutes = STORIES.map((s) => ({
+    url: `${SITE}/stories/${s.slug}`,
+    lastModified: new Date(s.updated),
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+  }))
+
+  return [...staticRoutes, ...categoryRoutes, ...articleRoutes, ...storyRoutes]
 }

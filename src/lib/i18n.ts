@@ -73,6 +73,7 @@ export const UI = {
   nav_learn: { en: "Learn", nl: "Leren", zh: "学习", hi: "सीखें", es: "Aprender", fr: "Apprendre", ar: "التعلّم", pt: "Aprender", ru: "Учиться", de: "Lernen", ja: "学ぶ" },
   nav_community: { en: "Community", nl: "Gemeenschap", zh: "社区", hi: "समुदाय", es: "Comunidad", fr: "Communauté", ar: "المجتمع", pt: "Comunidade", ru: "Сообщество", de: "Gemeinschaft", ja: "コミュニティ" },
   nav_about: { en: "About", nl: "Over", zh: "关于", hi: "परिचय", es: "Acerca de", fr: "À propos", ar: "حول", pt: "Sobre", ru: "О проекте", de: "Über", ja: "概要" },
+  nav_stories: { en: "Stories", nl: "Verhalen", zh: "故事", hi: "कहानियाँ", es: "Historias", fr: "Récits", ar: "قصص", pt: "Histórias", ru: "Истории", de: "Geschichten", ja: "ストーリー" },
   search: { en: "Search", nl: "Zoeken", zh: "搜索", hi: "खोज", es: "Buscar", fr: "Rechercher", ar: "بحث", pt: "Buscar", ru: "Поиск", de: "Suchen", ja: "検索" },
   exploreGraph: { en: "Explore the Graph", nl: "Verken de graaf", zh: "探索知识图谱", hi: "ग्राफ़ का अन्वेषण करें", es: "Explorar el grafo", fr: "Explorer le graphe", ar: "استكشف الرسم البياني", pt: "Explorar o grafo", ru: "Исследовать граф", de: "Den Graphen entdecken", ja: "グラフを探索する" },
   menu: { en: "Menu", nl: "Menu", zh: "菜单", hi: "मेन्यू", es: "Menú", fr: "Menu", ar: "القائمة", pt: "Menu", ru: "Меню", de: "Menü", ja: "メニュー" },

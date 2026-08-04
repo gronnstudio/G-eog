@@ -7,12 +7,15 @@ import { CategoryCard } from "@/components/knowledge/category-card"
 import { ArticleCard } from "@/components/knowledge/article-card"
 import { Reveal } from "@/components/motion/reveal"
 import { SectionLabel } from "@/components/ui/badges"
-import { ARTICLES, CATEGORIES, LEARNING_PATHS, totalStats } from "@/lib/knowledge"
+import { MapPin } from "lucide-react"
+
+import { ARTICLES, CATEGORIES, LEARNING_PATHS, STORIES, getCategory, totalStats } from "@/lib/knowledge"
 
 export default function HomePage() {
   const stats = totalStats()
   const featured = ARTICLES.slice(0, 6)
   const previewCats = CATEGORIES.slice(0, 8)
+  const stories = STORIES.slice(0, 2)
 
   return (
     <>
@@ -95,6 +98,50 @@ export default function HomePage() {
               <ArticleCard article={a} />
             </Reveal>
           ))}
+        </div>
+      </section>
+
+      {/* Field stories */}
+      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
+        <Reveal>
+          <SectionLabel>Field stories</SectionLabel>
+          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+            <h2 className="max-w-xl font-heading text-4xl text-foreground sm:text-5xl">
+              Where the knowledge becomes a place.
+            </h2>
+            <Link href="/stories" className="group inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-foreground">
+              All stories
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
+        </Reveal>
+        <div className="mt-10 grid gap-6 md:grid-cols-2">
+          {stories.map((story, i) => {
+            const cat = getCategory(story.category)
+            return (
+              <Reveal key={story.slug} delay={(i % 2) * 0.08}>
+                <Link
+                  href={`/stories/${story.slug}`}
+                  className="group relative flex min-h-[20rem] flex-col justify-end overflow-hidden rounded-3xl border border-line p-8 transition-transform duration-500 hover:-translate-y-1"
+                >
+                  <div
+                    className="absolute inset-0 transition-transform duration-700 group-hover:scale-105"
+                    style={{
+                      background: `radial-gradient(70% 60% at 30% 20%, hsl(${story.hue} 45% 30%), transparent 60%), radial-gradient(80% 70% at 90% 100%, hsl(${story.hue} 40% 18%), var(--color-surface))`,
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-forest/70 via-transparent to-transparent" />
+                  <div className="relative">
+                    <p className="flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-sage/90">
+                      <MapPin className="h-3.5 w-3.5" /> {story.place} · {cat?.title}
+                    </p>
+                    <h3 className="mt-3 font-heading text-3xl text-warm">{story.title}</h3>
+                    <p className="mt-2 max-w-md text-pretty text-sage/85">{story.subtitle}</p>
+                  </div>
+                </Link>
+              </Reveal>
+            )
+          })}
         </div>
       </section>
 

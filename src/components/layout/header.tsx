@@ -21,6 +21,7 @@ const NAV = [
   { href: "/", key: "nav_home" },
   { href: "/explore", key: "nav_explore" },
   { href: "/knowledge", key: "nav_knowledge" },
+  { href: "/stories", key: "nav_stories" },
   { href: "/learn", key: "nav_learn" },
   { href: "/community", key: "nav_community" },
   { href: "/about", key: "nav_about" },
