@@ -164,7 +164,12 @@ export function MobileDock() {
   const active = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href)
 
-  const wingsHidden = compact && !menuOpen
+  // While reading near the top the wings fold away (the Instagram tuck).
+  // But once a viewport deep, keep them open — the right wing holds the
+  // back-to-top arrow, and folding it away is exactly what made the
+  // grid→arrow switchout invisible while scrolling. Deep = wings stay,
+  // arrow shows; near the top = tuck as before.
+  const wingsHidden = compact && !menuOpen && !scrolled
   // 2 slots × 56px + the 6px gap between them.
   const WING = 118
 
