@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
+import { createPortal } from "react-dom"
 import { Check, ChevronDown } from "lucide-react"
 
 import { Flag } from "@/components/flag"
@@ -102,21 +103,28 @@ export function LanguageToggle() {
         />
       </button>
 
-      {open && pos && (
-        <ul
-          ref={panelRef}
-          role="listbox"
-          aria-label={t({ en: "Language", nl: "Taal" })}
-          dir="ltr"
-          style={{
-            position: "fixed",
-            left: pos.left,
-            top: pos.top,
-            width: PANEL_W,
-            maxHeight: pos.maxH,
-          }}
-          className="no-scrollbar z-[90] overflow-y-auto rounded-2xl border border-line bg-surface p-1.5 shadow-float"
-        >
+      {open &&
+        pos &&
+        mounted &&
+        createPortal(
+          // Portalled to <body> so the panel escapes the dock sheet's
+          // transformed, z-60 stacking context — otherwise its lower rows
+          // rendered *under* the floating dock pill. As a body child, the
+          // fixed coords are true viewport coords and z-[100] wins.
+          <ul
+            ref={panelRef}
+            role="listbox"
+            aria-label={t({ en: "Language", nl: "Taal" })}
+            dir="ltr"
+            style={{
+              position: "fixed",
+              left: pos.left,
+              top: pos.top,
+              width: PANEL_W,
+              maxHeight: pos.maxH,
+            }}
+            className="no-scrollbar z-[100] overflow-y-auto rounded-2xl border border-line bg-surface p-1.5 shadow-float"
+          >
           {LOCALES.map((l) => {
             const active = mounted && l.locale === locale
             return (
@@ -147,8 +155,9 @@ export function LanguageToggle() {
               </li>
             )
           })}
-        </ul>
-      )}
+          </ul>,
+          document.body,
+        )}
     </>
   )
 }
