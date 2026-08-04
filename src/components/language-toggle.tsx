@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { Check, ChevronDown } from "lucide-react"
 
 import { useLanguage, useT } from "@/components/language-provider"
@@ -8,40 +8,83 @@ import { LOCALES, LOCALE_BY_CODE } from "@/lib/i18n"
 import { useMounted } from "@/lib/use-mounted"
 import { cn } from "@/lib/utils"
 
+const PANEL_W = 240
+const PANEL_MAX_H = 288
+
 /**
  * Language switcher as a flag dropdown across the world's most-spoken
  * languages. A compact trigger (flag · code · chevron) opens a scrollable
- * panel listing every locale by flag, endonym and code — the pattern from
- * the design reference. Selecting one persists it, flips the active pill,
- * and (for Arabic) turns the whole document RTL via the provider.
+ * panel listing every locale by flag, endonym and code. The panel is
+ * positioned with fixed coordinates computed from the trigger and clamped
+ * to the viewport, so it never spills off-screen — whether it lives in
+ * the top-right header, the curtain menu or the bottom dock sheet (where
+ * it opens upward).
  */
-export function LanguageToggle({ align = "end" }: { align?: "start" | "end" }) {
+export function LanguageToggle() {
   const { locale, setLocale } = useLanguage()
   const t = useT()
   const mounted = useMounted()
   const [open, setOpen] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
+  const [pos, setPos] = useState<{ left: number; top: number; maxH: number } | null>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const panelRef = useRef<HTMLUListElement>(null)
 
   const current = LOCALE_BY_CODE.get(locale) ?? LOCALES[0]
 
-  // Close on outside click / Escape.
+  const place = () => {
+    const el = triggerRef.current
+    if (!el) return
+    const r = el.getBoundingClientRect()
+    const vw = window.innerWidth
+    const vh = window.innerHeight
+    const gap = 8
+    const margin = 8
+    // Horizontal: prefer aligning the panel's right edge to the trigger's
+    // (so it hangs left under a right-side control), but clamp into view.
+    let left = r.right - PANEL_W
+    left = Math.min(Math.max(margin, left), vw - PANEL_W - margin)
+    // Vertical: open downward if there's room, else upward.
+    const below = vh - r.bottom - gap - margin
+    const above = r.top - gap - margin
+    const openUp = below < 200 && above > below
+    const maxH = Math.min(PANEL_MAX_H, Math.max(140, openUp ? above : below))
+    const top = openUp ? r.top - gap - maxH : r.bottom + gap
+    setPos({ left, top, maxH })
+  }
+
+  useLayoutEffect(() => {
+    if (open) place()
+  }, [open])
+
   useEffect(() => {
     if (!open) return
     const onDown = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+      const target = e.target as Node
+      if (
+        triggerRef.current?.contains(target) ||
+        panelRef.current?.contains(target)
+      )
+        return
+      setOpen(false)
     }
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false)
+    const reflow = () => place()
     document.addEventListener("mousedown", onDown)
     document.addEventListener("keydown", onKey)
+    window.addEventListener("resize", reflow)
+    window.addEventListener("scroll", reflow, true)
     return () => {
       document.removeEventListener("mousedown", onDown)
       document.removeEventListener("keydown", onKey)
+      window.removeEventListener("resize", reflow)
+      window.removeEventListener("scroll", reflow, true)
     }
   }, [open])
 
   return (
-    <div ref={ref} className="relative">
+    <>
       <button
+        ref={triggerRef}
         type="button"
         aria-label={t({ en: "Language", nl: "Taal" })}
         aria-haspopup="listbox"
@@ -58,15 +101,20 @@ export function LanguageToggle({ align = "end" }: { align?: "start" | "end" }) {
         />
       </button>
 
-      {open && (
+      {open && pos && (
         <ul
+          ref={panelRef}
           role="listbox"
           aria-label={t({ en: "Language", nl: "Taal" })}
           dir="ltr"
-          className={cn(
-            "eog-glass no-scrollbar absolute z-[80] mt-2 max-h-72 w-60 overflow-y-auto rounded-2xl p-1.5 shadow-float",
-            align === "end" ? "right-0" : "left-0",
-          )}
+          style={{
+            position: "fixed",
+            left: pos.left,
+            top: pos.top,
+            width: PANEL_W,
+            maxHeight: pos.maxH,
+          }}
+          className="eog-glass no-scrollbar z-[90] overflow-y-auto rounded-2xl p-1.5 shadow-float"
         >
           {LOCALES.map((l) => {
             const active = mounted && l.locale === locale
@@ -100,6 +148,6 @@ export function LanguageToggle({ align = "end" }: { align?: "start" | "end" }) {
           })}
         </ul>
       )}
-    </div>
+    </>
   )
 }
