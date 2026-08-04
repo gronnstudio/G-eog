@@ -3,6 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { Check, ChevronDown } from "lucide-react"
 
+import { Flag } from "@/components/flag"
 import { useLanguage, useT } from "@/components/language-provider"
 import { LOCALES, LOCALE_BY_CODE } from "@/lib/i18n"
 import { useMounted } from "@/lib/use-mounted"
@@ -92,7 +93,7 @@ export function LanguageToggle() {
         onClick={() => setOpen((v) => !v)}
         className="tap-target flex items-center gap-2 rounded-full border border-line px-3 py-1.5 text-sm text-foreground transition-colors hover:bg-surface-2"
       >
-        <span className="text-base leading-none">{current.flag}</span>
+        <Flag code={mounted ? current.locale : "en"} />
         <span className="font-mono text-xs uppercase tracking-wider text-muted">
           {mounted ? current.locale : "en"}
         </span>
@@ -114,7 +115,7 @@ export function LanguageToggle() {
             width: PANEL_W,
             maxHeight: pos.maxH,
           }}
-          className="eog-glass no-scrollbar z-[90] overflow-y-auto rounded-2xl p-1.5 shadow-float"
+          className="no-scrollbar z-[90] overflow-y-auto rounded-2xl border border-line bg-surface p-1.5 shadow-float"
         >
           {LOCALES.map((l) => {
             const active = mounted && l.locale === locale
@@ -133,7 +134,7 @@ export function LanguageToggle() {
                     active ? "bg-accent-soft" : "hover:bg-surface-2",
                   )}
                 >
-                  <span className="text-lg leading-none">{l.flag}</span>
+                  <Flag code={l.locale} />
                   <span className="flex-1 truncate text-sm text-foreground">{l.name}</span>
                   {active ? (
                     <Check className="h-4 w-4 text-accent" />

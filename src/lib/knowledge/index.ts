@@ -13,6 +13,8 @@ export * from "./types"
 export { CATEGORIES, getCategory } from "./categories"
 export { LEARNING_PATHS } from "./paths"
 export { ARTICLES } from "./articles"
+export { STORIES, getStory } from "./stories"
+export type { Story, StoryChapter, StoryStat, Species, Guardian } from "./stories"
 
 const ARTICLE_BY_SLUG = new Map(ARTICLES.map((a) => [a.slug, a]))
 
