@@ -20,6 +20,8 @@ import { MobileDock } from "@/components/layout/mobile-dock"
 import { Footer } from "@/components/layout/footer"
 import { RegisterSW } from "@/components/register-sw"
 import { PullToRefresh } from "@/components/pull-to-refresh"
+import { Thread } from "@/components/thread"
+import { InstallPrompt } from "@/components/install-prompt"
 
 // Type system shared with GRØNN Studio: Syne SemiBold for headings,
 // Montserrat for body/interface, Geist Mono for technical annotations.
@@ -115,9 +117,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <CommandPaletteProvider>
             <PullToRefresh />
             <Header />
+            <Thread />
             <main id="main">{children}</main>
             <Footer />
             <MobileDock />
+            <InstallPrompt />
           </CommandPaletteProvider>
         </Providers>
         <SpeedInsights />
