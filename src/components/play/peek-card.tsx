@@ -15,8 +15,11 @@ interface PeekCardProps {
 
 /**
  * A category card that, on a fine-pointer desktop, reveals a "peek" panel of
- * related articles when hovered or focused. On touch or with reduced motion,
- * the panel is replaced by a static count and the whole card is a single link.
+ * related articles when hovered or focused. Touch devices have no hover, so
+ * there the panel is shown statically (always open) — otherwise "what's
+ * inside" would never appear on mobile. Reduced motion drops the animation
+ * but keeps the list. The card itself is a link to the category; the peek
+ * links sit above it and stay individually tappable.
  */
 export function PeekCard({ category, articles }: PeekCardProps) {
   const reduced = useReducedMotion()
@@ -74,11 +77,14 @@ export function PeekCard({ category, articles }: PeekCardProps) {
       {reduced || peek.length === 0 ? null : (
         <div
           className={cn(
-            // Height/opacity reveal on hover or keyboard focus (desktop only).
-            "relative z-10 grid grid-rows-[0fr] opacity-0 [@media(pointer:coarse)]:hidden",
+            // Fine pointer: collapsed, revealed on hover or keyboard focus.
+            "relative z-10 grid grid-rows-[0fr] opacity-0",
             "transition-[grid-template-rows,opacity] duration-300 ease-out",
             "group-hover:grid-rows-[1fr] group-hover:opacity-100",
-            "group-focus-within:grid-rows-[1fr] group-focus-within:opacity-100"
+            "group-focus-within:grid-rows-[1fr] group-focus-within:opacity-100",
+            // Touch has no hover — reveal the list statically so mobile
+            // visitors can actually see (and tap) what's inside.
+            "[@media(pointer:coarse)]:grid-rows-[1fr] [@media(pointer:coarse)]:opacity-100"
           )}
         >
           <div className="overflow-hidden">

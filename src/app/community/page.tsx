@@ -1,11 +1,16 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import {
+  ArrowUpRight,
   BadgeCheck,
+  BookOpen,
+  Check,
   GitFork,
   GitPullRequest,
   MessageSquare,
+  PencilLine,
   ScrollText,
+  Sprout,
   Users,
 } from "lucide-react"
 
@@ -25,6 +30,42 @@ const STEPS = [
   { icon: GitPullRequest, title: "Open a pull request", body: "Your change becomes a pull request. Automated checks validate frontmatter, citations and links before a human ever looks." },
   { icon: Users, title: "Peer review", body: "Contributors review each other's work in the open. Discussion happens on the PR, where anyone can weigh in." },
   { icon: BadgeCheck, title: "Expert verification", body: "Domain experts verify facts and sign off. Verified articles carry a mark of trust and enter the graph." },
+]
+
+const START = [
+  {
+    icon: PencilLine,
+    title: "Fix or improve a page",
+    body: "Sharpen a sentence, add a missing citation or correct a fact. Edit the source directly on GitHub.",
+    href: GH,
+  },
+  {
+    icon: Sprout,
+    title: "Pick a good first issue",
+    body: "Small, well-scoped tasks curated for newcomers. A gentle way into the codebase and the content.",
+    href: `${GH}/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22`,
+  },
+  {
+    icon: MessageSquare,
+    title: "Join the discussion",
+    body: "Ask a question, propose a new article or debate an idea. Every contribution starts as a conversation.",
+    href: `${GH}/discussions`,
+  },
+  {
+    icon: BookOpen,
+    title: "Read the contributor guide",
+    body: "How articles are structured, the quality bar and the workflow from fork to verified merge.",
+    href: `${GH}/blob/main/CONTRIBUTING.md`,
+  },
+]
+
+const CHECKLIST = [
+  "One clear idea, explained from the ground up",
+  "Plain, accessible language over jargon",
+  "Claims backed by primary sources you cite",
+  "Related concepts linked so the graph stays connected",
+  "Respect the ~68ch measure — write for calm reading",
+  "Shared freely under CC BY-SA 4.0",
 ]
 
 const ROLES = [
@@ -70,6 +111,55 @@ export default function CommunityPage() {
             </Reveal>
           ))}
         </div>
+      </section>
+
+      {/* Where to start */}
+      <section id="where-to-start" className="mt-20 scroll-mt-28">
+        <Reveal>
+          <SectionLabel>Where to start</SectionLabel>
+        </Reveal>
+        <div className="grid gap-4 md:grid-cols-2">
+          {START.map((s, i) => (
+            <Reveal key={s.title} delay={i * 0.06}>
+              <Link
+                href={s.href}
+                className="group flex h-full flex-col rounded-2xl border border-line bg-surface/40 p-6 transition-colors hover:bg-surface-2"
+              >
+                <div className="flex items-start justify-between">
+                  <s.icon className="h-6 w-6 text-accent" />
+                  <ArrowUpRight className="h-5 w-5 text-faint transition-colors group-hover:text-foreground" />
+                </div>
+                <h3 className="mt-4 font-heading text-xl text-foreground">{s.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted">{s.body}</p>
+              </Link>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* What makes a good article */}
+      <section className="mt-20">
+        <Reveal>
+          <SectionLabel>What makes a good article</SectionLabel>
+        </Reveal>
+        <Reveal>
+          <div className="rounded-2xl border border-line bg-surface/40 p-6 sm:p-8">
+            <p className="max-w-xl text-pretty text-muted">
+              Every page is a small act of teaching. Before you open a pull request, hold your draft
+              against this measure.
+            </p>
+            <ul className="mt-6 grid gap-3 sm:grid-cols-2">
+              {CHECKLIST.map((item) => (
+                <li key={item} className="flex items-start gap-3 text-foreground">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-line text-accent">
+                    <Check className="h-3 w-3" />
+                  </span>
+                  <span className="text-sm leading-relaxed">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Reveal>
       </section>
 
       {/* Roles */}

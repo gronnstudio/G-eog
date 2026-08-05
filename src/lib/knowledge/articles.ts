@@ -8,9 +8,9 @@ export const ARTICLES: Article[] = [
     summary:
       "Beneath every healthy landscape lies a living economy of bacteria, fungi, protozoa and nematodes that trade nutrients with plants and build the structure of fertile ground.",
     difficulty: "foundational",
-    readingMinutes: 9,
-    updated: "2026-01-14",
-    contributors: ["Dr. Elaine Rourke", "Marco Belliveau"],
+    readingMinutes: 13,
+    updated: "2026-08-04",
+    contributors: ["Dr. Elaine Rourke", "Marco Belliveau", "Dr. Priya Chandran"],
     tags: ["soil-biology", "microbes", "fertility", "carbon", "regeneration"],
     related: ["mycorrhizal-networks", "compost-science", "nutrient-cycling", "carbon-sequestration", "nitrogen-fixation"],
     sections: [
@@ -18,6 +18,7 @@ export const ARTICLES: Article[] = [
         body: [
           "A single teaspoon of healthy soil can contain more living organisms than there are people on Earth. This teeming community, collectively called the soil food web, is not a random assortment of microbes but a structured network of feeding relationships that determines whether a soil is inert dust or a self-renewing engine of fertility.",
           "The web begins with primary producers, chiefly plants, which pump sugars manufactured in their leaves down into the root zone. Far from waste, this leakage of carbon into the soil is a deliberate investment: up to forty percent of the sugars a plant makes can be traded to microorganisms in exchange for mineral nutrients.",
+          "To see soil this way is to stop thinking of it as a passive substrate that merely holds plants upright. It is a living body with a metabolism, a circulatory system and an immune response — one that can be nurtured to health or starved into collapse by the way we treat the ground.",
         ],
       },
       {
@@ -25,6 +26,7 @@ export const ARTICLES: Article[] = [
         body: [
           "Bacteria and fungi form the base of the decomposer community, breaking down organic matter and locking nutrients into their own bodies. On their own they would hoard those nutrients, but they in turn are grazed by protozoa and nematodes. When a protozoan consumes a bacterium, it excretes surplus nitrogen in plant-available form directly in the root zone, a process soil ecologists call the microbial loop.",
           "This predation is the hidden mechanism behind fertility. Nutrients are not simply present in soil; they are cycled, released at the pace and place that growing roots demand. Chemical fertilisers bypass this biology, and in doing so tend to starve the very organisms that would otherwise sustain a crop for free.",
+          "Different plants cultivate different webs. Vegetables and grasses favour bacteria-dominated soils that cycle nutrients fast; trees and perennials build fungal-dominated soils that hold nutrients longer and release them slowly. Where a soil sits along this bacterial-to-fungal gradient is one of the most useful things a grower can learn to read, because it tells you which plants that ground is ready to support.",
         ],
       },
       {
@@ -33,18 +35,37 @@ export const ARTICLES: Article[] = [
           "The food web also builds the physical architecture of soil. Fungal hyphae thread through particles like living rebar, while bacteria secrete glues that bind mineral grains into crumbs. The resulting aggregates create pore spaces that hold both air and water, giving good soil its characteristic soft, chocolate-cake tilth.",
           "Where the biology collapses, structure collapses with it. Compacted, lifeless soils shed water rather than absorbing it, driving erosion and flooding downstream. Restoring the food web, through compost, cover crops and reduced disturbance, is therefore also a form of watershed and climate management.",
         ],
+        embed: "regeneration-slider",
+        embedCaption: "Drag: the same ground, degraded and biologically restored. Structure follows life.",
+      },
+      {
+        heading: "The liquid carbon pathway",
+        body: [
+          "The sugars a plant sends underground do more than pay for nutrients — they are the raw material from which stable soil carbon is built. Mycorrhizal fungi convert a portion of that carbon into glomalin, a sticky, long-lived protein that both glues aggregates together and locks carbon away from the atmosphere for decades.",
+          "This is the liquid carbon pathway: sunlight becomes sugar, sugar becomes fungal tissue and glomalin, and glomalin becomes soil. A biologically active soil is therefore not only more fertile but a genuine carbon sink, drawing down atmospheric CO₂ through the ordinary business of plants and fungi trading with one another.",
+          "It also explains why bare, tilled and sprayed soils leak carbon: with no living roots feeding the fungi and no fungi building glomalin, the pathway runs in reverse, oxidising stored carbon back into the air.",
+        ],
       },
       {
         heading: "Managing for life",
         body: [
           "Because the food web is a living system, it responds to how land is treated. Tillage shreds fungal networks and exposes organic matter to rapid oxidation; bare soil bakes and starves; and biocides applied above ground ripple down into the community below.",
-          "Regenerative practice inverts these harms: keep living roots in the ground year-round, keep the surface covered, minimise disturbance, and feed the web with diverse organic inputs. Do this and the soil begins, within a few seasons, to rebuild the fertility that industrial agriculture spends money to replace.",
+          "Regenerative practice inverts these harms with a few durable principles: minimise disturbance, keep the soil surface covered, keep living roots in the ground year-round, grow a diversity of plants, and — where it fits the land — integrate grazing animals whose dung and saliva feed the web. Do this and the soil begins, within a few seasons, to rebuild the fertility that industrial agriculture spends money to replace.",
+        ],
+      },
+      {
+        heading: "Reading a soil's health",
+        body: [
+          "You do not need a microscope to gauge whether the web is thriving. Squeeze a handful: living soil holds together in soft crumbs and smells sweet and earthy — that smell is geosmin, released by actinobacteria. Pour water on it and it drinks it in rather than sealing over. Dig, and you find earthworms, roots run deep, and the dark colour of accumulated organic matter.",
+          "Dead soil tells the opposite story: it powders or sets like concrete, smells sour or of nothing at all, sheds water, and hosts little visible life. Learning to read these signs turns every handful of ground into a diagnosis — and every regenerative choice into something you can watch take effect.",
         ],
       },
     ],
     citations: [
       { id: "ingham-2000", authors: "Ingham, E. R.", year: 2000, title: "The Soil Biology Primer", source: "USDA Natural Resources Conservation Service" },
       { id: "lowenfels-2010", authors: "Lowenfels, J. & Lewis, W.", year: 2010, title: "Teaming with Microbes: The Organic Gardener's Guide to the Soil Food Web", source: "Timber Press" },
+      { id: "jones-2008", authors: "Jones, C. E.", year: 2008, title: "Liquid carbon pathway unrecognised", source: "Australian Farm Journal" },
+      { id: "rillig-2004", authors: "Rillig, M. C.", year: 2004, title: "Arbuscular mycorrhizae, glomalin, and soil aggregation", source: "Canadian Journal of Soil Science 84" },
       { id: "odum-1971", authors: "Odum, E. P.", year: 1971, title: "Fundamentals of Ecology", source: "W. B. Saunders" },
     ],
   },
@@ -242,9 +263,9 @@ export const ARTICLES: Article[] = [
     summary:
       "By stacking canopy, understorey, shrubs, herbs, ground covers, roots and climbers, a food forest mimics a young woodland to yield food across every vertical niche.",
     difficulty: "intermediate",
-    readingMinutes: 9,
-    updated: "2026-02-18",
-    contributors: ["Elias Vance"],
+    readingMinutes: 12,
+    updated: "2026-08-04",
+    contributors: ["Elias Vance", "Dr. Elaine Rourke"],
     tags: ["food-forests", "permaculture", "polyculture", "perennials", "design"],
     related: ["ecological-succession", "nitrogen-fixation", "urban-food-forests", "pollinator-networks", "keyline-design"],
     sections: [
@@ -252,33 +273,46 @@ export const ARTICLES: Article[] = [
         body: [
           "A food forest is a deliberately designed edible ecosystem that imitates the structure of a natural woodland while replacing its species with useful ones. Rather than a field of a single crop, it is a three-dimensional community in which plants of different heights share light, soil and space.",
           "The classic formulation describes seven layers, though skilled designers speak of eight or nine. Each occupies a distinct vertical niche, so that a small patch of ground can produce far more, and far more diversely, than a flat monoculture.",
+          "The insight underneath the design is simple: a natural forest feeds and maintains itself with no ploughing, no fertiliser and no irrigation. If we can borrow its architecture and swap in plants we can eat, we inherit that self-sufficiency along with the harvest.",
         ],
       },
       {
         heading: "The vertical stack",
         body: [
           "At the top is the canopy of tall fruit and nut trees, beneath it a low tree or dwarf-fruit layer, then a shrub layer of berries. Below these come the herbaceous layer of perennial vegetables and herbs, a ground-cover layer that shields the soil, a rhizosphere of root crops, and a vertical layer of climbing vines that use the trees as trellis.",
-          "A frequently added seventh or eighth element is the fungal layer, the mycorrhizal and saprophytic fungi that knit the whole system together underground and can themselves be cropped for mushrooms.",
+          "A frequently added seventh or eighth element is the fungal layer, the mycorrhizal and saprophytic fungi that knit the whole system together underground and can themselves be cropped for mushrooms. Explore the cross-section below: each hotspot opens the layer it marks.",
         ],
+        embed: "food-forest-layers",
+        embedCaption: "The seven layers in section — tap a hotspot to explore each niche.",
       },
       {
         heading: "Guilds and function",
         body: [
           "Plants are grouped into guilds, mutually supportive clusters. A fruit tree might be underplanted with nitrogen-fixing shrubs that feed it, dynamic accumulators that mine deep minerals, aromatic herbs that deter pests, and flowers that draw pollinators and predatory insects.",
+          "The classic apple guild is the textbook example: comfrey to mine potassium and mulch the roots, daffodils to deter grass and voles, alliums to confuse pests, clover to fix nitrogen, and yarrow and fennel to summon the wasps and hoverflies that police aphids. Each plant is chosen for a job, not just a yield.",
           "The goal is a self-maintaining system in which functions normally performed by fertiliser, pesticide and cultivation are instead carried out by the relationships among the plants themselves.",
+        ],
+      },
+      {
+        heading: "Reading light and edge",
+        body: [
+          "Because light is the currency the whole system spends, orientation matters. Designers step the layers down toward the sun — tallest to the pole-ward side, shortest toward the equator-ward edge — so every storey gets its share rather than languishing in shade.",
+          "The most productive zone is often the edge, where forest meets clearing. Edges gather more light, host more species and yield more than either the deep interior or open ground, which is why food forests are frequently laid out as scalloped, sunny glades rather than dense blocks.",
         ],
       },
       {
         heading: "From establishment to abundance",
         body: [
           "A food forest is planted young and, like any young woodland, passes through ecological succession. Fast-growing pioneer and support species dominate early, sheltering the slower, longer-lived crop trees and being pruned or coppiced as the canopy closes.",
-          "The reward for this patience is a low-maintenance perennial system that, once mature, requires little digging, watering or feeding while yielding fruit, nuts, greens, roots and medicine across the seasons for decades.",
+          "This is the hardest part to sell and the most important to understand: for the first few years a food forest looks like a scruffy thicket of support plants, and much of its growth is invisible, happening in roots and soil. Patience is the input that replaces the fertiliser and spray.",
+          "The reward is a low-maintenance perennial system that, once mature, requires little digging, watering or feeding while yielding fruit, nuts, greens, roots and medicine across the seasons for decades. A well-made food forest is a gift that a planter often hands, in its fullest abundance, to the people who come after them.",
         ],
       },
     ],
     citations: [
       { id: "jacke-2005", authors: "Jacke, D. & Toensmeier, E.", year: 2005, title: "Edible Forest Gardens (Vols. 1 & 2)", source: "Chelsea Green Publishing" },
       { id: "hart-1996", authors: "Hart, R.", year: 1996, title: "Forest Gardening: Cultivating an Edible Landscape", source: "Chelsea Green Publishing" },
+      { id: "crawford-2010", authors: "Crawford, M.", year: 2010, title: "Creating a Forest Garden: Working with Nature to Grow Edible Crops", source: "Green Books" },
       { id: "holmgren-2002", authors: "Holmgren, D.", year: 2002, title: "Permaculture: Principles and Pathways Beyond Sustainability", source: "Holmgren Design Services" },
     ],
   },
@@ -381,9 +415,9 @@ export const ARTICLES: Article[] = [
     summary:
       "Ecosystems are not static scenes but unfolding stories, moving through predictable stages from bare ground to mature community and back again after disturbance.",
     difficulty: "intermediate",
-    readingMinutes: 9,
-    updated: "2026-01-06",
-    contributors: ["Dr. Elaine Rourke"],
+    readingMinutes: 12,
+    updated: "2026-08-04",
+    contributors: ["Dr. Elaine Rourke", "Elias Vance"],
     tags: ["ecology", "succession", "disturbance", "forests", "restoration"],
     related: ["seven-layer-food-forest", "rewilding", "trophic-cascades", "forest-microclimates", "keystone-species"],
     sections: [
@@ -392,6 +426,15 @@ export const ARTICLES: Article[] = [
           "Ecological succession is the process by which the mix of species in a place changes over time, following a broadly predictable sequence. Watch an abandoned field or a fresh lava flow for a few decades and you will see a procession of communities, each preparing the ground for the next.",
           "The idea reframes nature as dynamic rather than fixed. What looks like a permanent landscape is a snapshot of a system in motion, either recovering from disturbance or slowly maturing toward greater complexity.",
         ],
+      },
+      {
+        heading: "The arc from rock to forest",
+        body: [
+          "The clearest way to grasp succession is to follow a single site across time. From bare, lifeless rock, each community changes conditions just enough to hand the site to the next — pioneers make the first soil, grasses deepen it, shrubs and pioneer trees build shade and structure, until a mature forest closes the canopy.",
+          "Scroll the timeline below to walk that arc, from the first lichens to a climax woodland a century and a half later.",
+        ],
+        embed: "succession-timeline",
+        embedCaption: "One site through time — the successional arc from bare ground to climax forest.",
       },
       {
         heading: "Primary and secondary",
@@ -404,20 +447,29 @@ export const ARTICLES: Article[] = [
         heading: "Pioneers to climax",
         body: [
           "Early colonisers, often called r-strategists, grow fast, reproduce prolifically and tolerate harsh, open conditions. As they modify the site, adding shade, moisture and nutrients, they are displaced by slower, longer-lived species better suited to the more sheltered environment they created.",
+          "Ecologists describe three ways one stage gives way to the next. In facilitation, pioneers improve the site for their successors — the textbook story. In tolerance, later species simply endure conditions the pioneers can't outcompete them in. In inhibition, established plants actively hold the site until damage or death lets the next wave in. Real landscapes braid all three together.",
           "The endpoint, the relatively stable climax community, was once thought a fixed destination. Modern ecology sees it as more provisional: disturbance is so frequent that most landscapes are a shifting mosaic of successional patches rather than uniform mature forest.",
+        ],
+      },
+      {
+        heading: "Disturbance as renewal",
+        body: [
+          "It is tempting to read succession as a march toward a single perfect endpoint, but disturbance is not an interruption of the story — it is part of it. Fire, storm, flood and grazing reset patches back to earlier stages, and a great deal of biodiversity depends on that resetting.",
+          "The intermediate disturbance hypothesis captures the pattern: the richest communities are often those knocked back neither too rarely nor too often, but at a middling rhythm that keeps both pioneers and long-lived specialists in play. A landscape frozen at climax everywhere would, paradoxically, hold less life than one kept in gentle churn.",
         ],
       },
       {
         heading: "Working with succession",
         body: [
           "Understanding succession is central to restoration and design. Rewilding often means removing barriers and letting succession run; food forestry deliberately accelerates it, planting the mature-stage species alongside temporary pioneers that nurse them.",
-          "Rather than fighting a landscape's natural trajectory, skilled land stewards read where a place is heading and nudge it, saving enormous effort by letting ecological momentum do the work.",
+          "Rather than fighting a landscape's natural trajectory, skilled land stewards read where a place is heading and nudge it, saving enormous effort by letting ecological momentum do the work. The question stops being \"what do I want to grow here?\" and becomes \"where is this land already going, and how can I help it get there sooner?\"",
         ],
       },
     ],
     citations: [
       { id: "clements-1916", authors: "Clements, F. E.", year: 1916, title: "Plant Succession: An Analysis of the Development of Vegetation", source: "Carnegie Institution of Washington" },
       { id: "connell-1977", authors: "Connell, J. H. & Slatyer, R. O.", year: 1977, title: "Mechanisms of succession in natural communities", source: "The American Naturalist 111" },
+      { id: "connell-1978", authors: "Connell, J. H.", year: 1978, title: "Diversity in tropical rain forests and coral reefs", source: "Science 199" },
       { id: "odum-1969", authors: "Odum, E. P.", year: 1969, title: "The strategy of ecosystem development", source: "Science 164" },
     ],
   },
