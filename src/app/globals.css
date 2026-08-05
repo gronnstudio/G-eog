@@ -34,6 +34,13 @@
   --color-sky: #6ea8c7;
   --color-amber: #e0a458;
   --color-rust: #c2603f;
+  /* Signal Ember — GRØNN Studio's brand orange, shared across the two
+     sites as the interaction/marker accent (never the primary green).
+     ember-strong carries white text at contrast; ember-text is the
+     theme-flipped variant for ember-as-text on light grounds. */
+  --color-ember: #f95a08;
+  --color-ember-strong: #c74100;
+  --color-ember-text: var(--ember-text);
 
   /* Type system shared with GRØNN Studio: Syne headings, Montserrat
      body, Geist Mono for technical/annotation text. */
@@ -82,6 +89,8 @@
   --accent: #bfe3d0;
   --accent-soft: rgba(191, 227, 208, 0.12);
   --on-accent: #10152e;
+  /* Signal ember reads brightly on the dark ground. */
+  --ember-text: #f95a08;
   color-scheme: dark;
 }
 
@@ -97,6 +106,8 @@
   --accent: #175c3d;
   --accent-soft: rgba(23, 92, 61, 0.1);
   --on-accent: #f8efdc;
+  /* Deepened ember so ember-as-text keeps ~4.3:1+ on the cream ground. */
+  --ember-text: #bd3e00;
   color-scheme: light;
 }
 
