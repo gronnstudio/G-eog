@@ -274,41 +274,43 @@ export default async function ArticlePage({
       {(prev || next) && (
         <nav
           aria-label="Article navigation"
-          className="mx-auto grid max-w-6xl gap-4 px-4 pb-4 sm:px-6 md:grid-cols-2"
+          className="mx-auto grid max-w-6xl grid-cols-2 gap-3 px-4 pb-4 sm:gap-4 sm:px-6"
         >
           {prev ? (
             <Link
               href={`/knowledge/${prev.category}/${prev.slug}`}
-              className="group flex items-center gap-4 rounded-2xl border border-line bg-surface/40 p-5 transition-colors hover:border-accent/40 hover:bg-surface-2"
+              className="group flex min-w-0 items-center gap-3 rounded-2xl border border-line bg-surface/40 p-4 transition-colors hover:border-accent/40 hover:bg-surface-2 sm:p-5"
             >
-              <ArrowLeft className="h-5 w-5 shrink-0 text-muted transition-transform group-hover:-translate-x-1 group-hover:text-accent" />
+              <ArrowLeft className="h-4 w-4 shrink-0 text-muted transition-transform group-hover:-translate-x-1 group-hover:text-accent sm:h-5 sm:w-5" />
               <span className="min-w-0">
-                <span className="block font-mono text-xs uppercase tracking-widest text-faint">
+                <span className="block font-mono text-[10px] uppercase tracking-widest text-faint">
                   Previous
                 </span>
-                <span className="mt-1 block truncate font-heading text-lg text-foreground">
+                <span className="mt-0.5 block font-heading text-sm leading-snug text-foreground [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] overflow-hidden sm:text-lg">
                   {prev.title}
                 </span>
               </span>
             </Link>
           ) : (
-            <span className="hidden md:block" />
+            <span aria-hidden="true" />
           )}
-          {next && (
+          {next ? (
             <Link
               href={`/knowledge/${next.category}/${next.slug}`}
-              className="group flex items-center justify-end gap-4 rounded-2xl border border-line bg-surface/40 p-5 text-right transition-colors hover:border-accent/40 hover:bg-surface-2"
+              className="group flex min-w-0 items-center justify-end gap-3 rounded-2xl border border-line bg-surface/40 p-4 text-right transition-colors hover:border-accent/40 hover:bg-surface-2 sm:p-5"
             >
               <span className="min-w-0">
-                <span className="block font-mono text-xs uppercase tracking-widest text-faint">
+                <span className="block font-mono text-[10px] uppercase tracking-widest text-faint">
                   Next
                 </span>
-                <span className="mt-1 block truncate font-heading text-lg text-foreground">
+                <span className="mt-0.5 block font-heading text-sm leading-snug text-foreground [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] overflow-hidden sm:text-lg">
                   {next.title}
                 </span>
               </span>
-              <ArrowRight className="h-5 w-5 shrink-0 text-muted transition-transform group-hover:translate-x-1 group-hover:text-accent" />
+              <ArrowRight className="h-4 w-4 shrink-0 text-muted transition-transform group-hover:translate-x-1 group-hover:text-accent sm:h-5 sm:w-5" />
             </Link>
+          ) : (
+            <span aria-hidden="true" />
           )}
         </nav>
       )}

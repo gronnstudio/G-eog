@@ -35,7 +35,8 @@ export function Pill({ children, className }: { children: React.ReactNode; class
 export function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <p className="mb-4 flex items-center gap-3 font-mono text-xs uppercase tracking-[0.2em] text-faint">
-      <span className="h-px w-8 bg-line" />
+      {/* Ember tick — GRØNN's signal accent, marking every section eyebrow. */}
+      <span className="h-px w-8 bg-ember" />
       {children}
     </p>
   )
