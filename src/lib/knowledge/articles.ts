@@ -810,7 +810,7 @@ export const ARTICLES: Article[] = [
     updated: "2026-03-25",
     contributors: ["Dr. Elaine Rourke", "Tomas Herrera"],
     tags: ["biodiversity", "rewilding", "restoration", "predators", "ecosystems"],
-    related: ["keystone-species", "trophic-cascades", "ecological-succession", "forest-microclimates", "deep-ecology"],
+    related: ["keystone-species", "trophic-cascades", "ecological-succession", "forest-microclimates", "miyawaki-mini-forests"],
     sections: [
       {
         body: [
@@ -1183,7 +1183,7 @@ export const ARTICLES: Article[] = [
     updated: "2026-03-14",
     contributors: ["Marco Belliveau", "Elias Vance"],
     tags: ["urban-ecology", "food-forests", "cities", "biodiversity", "community"],
-    related: ["seven-layer-food-forest", "pollinator-networks", "biophilia", "the-water-cycle", "nutrient-cycling"],
+    related: ["seven-layer-food-forest", "pollinator-networks", "biophilia", "miyawaki-mini-forests", "nutrient-cycling"],
     sections: [
       {
         body: [
@@ -1276,7 +1276,7 @@ export const ARTICLES: Article[] = [
     updated: "2026-02-02",
     contributors: ["Dr. Elaine Rourke", "Sofia Marchetti"],
     tags: ["soil-health", "regenerative-agriculture", "carbon", "cover-crops", "erosion"],
-    related: ["soil-food-web", "compost-science", "nutrient-cycling", "carbon-sequestration", "regenerative-grazing"],
+    related: ["soil-food-web", "compost-science", "chop-and-drop-mulching", "carbon-sequestration", "regenerative-grazing"],
     sections: [
       {
         body: [
@@ -1310,6 +1310,108 @@ export const ARTICLES: Article[] = [
       { id: "montgomery-2017", authors: "Montgomery, D. R.", year: 2017, title: "Growing a Revolution: Bringing Our Soil Back to Life", source: "W. W. Norton" },
       { id: "lal-2004", authors: "Lal, R.", year: 2004, title: "Soil carbon sequestration impacts on global climate change and food security", source: "Science 304" },
       { id: "fao-2015", authors: "FAO", year: 2015, title: "Status of the World's Soil Resources", source: "Food and Agriculture Organization of the United Nations" },
+    ],
+  },
+  {
+    slug: "miyawaki-mini-forests",
+    title: "Miyawaki Mini-Forests",
+    category: "urban-ecology",
+    summary:
+      "A method for growing dense, native, self-sufficient woodland on plots as small as a parking space — reaching in decades what a wild forest takes centuries to build.",
+    difficulty: "intermediate",
+    readingMinutes: 11,
+    updated: "2026-08-05",
+    contributors: ["Elias Vance", "Dr. Elaine Rourke"],
+    tags: ["urban-ecology", "rewilding", "native-forest", "biodiversity", "restoration"],
+    related: ["ecological-succession", "rewilding", "urban-food-forests", "forest-microclimates", "seven-layer-food-forest"],
+    sections: [
+      {
+        body: [
+          "A Miyawaki mini-forest is a small patch of dense, entirely native woodland grown using a method developed by the Japanese botanist Akira Miyawaki. On a plot no larger than a few parking spaces, it assembles in two or three decades the kind of layered, self-sustaining forest that would otherwise take a century or more to arise on its own.",
+          "The approach has spread worldwide — planted in schoolyards, roadside verges and vacant lots by networks such as SUGi's forest makers — because it makes the ambition of a real forest fit inside a city. A viable mini-forest can be established on as little as a few square metres of reclaimed ground.",
+        ],
+      },
+      {
+        heading: "Reading the land's memory",
+        body: [
+          "The method begins not with a planting list but with a question: what would grow here if people stepped away entirely? Miyawaki called this the potential natural vegetation — the mature, climax community a site's climate, soil and topography would eventually support. Surveying nearby remnants of old forest reveals which native species belong together in that place.",
+          "This is a deliberate rejection of the ornamental, exotic and single-species plantings that dominate urban greening. A Miyawaki forest is regional and specific: it aims to restore the particular woodland that the land itself remembers.",
+        ],
+      },
+      {
+        heading: "Why they grow so fast",
+        body: [
+          "Two moves compress the timeline. First, the soil is deeply prepared and enriched with organic matter, giving roots an easy start. Second — and counter-intuitively — saplings are planted very densely, three or more to the square metre, and in a random mix of many species representing the canopy, sub-canopy, shrub and herb layers.",
+          "That crowding turns the plot into a race for light. Instead of spreading sideways, the young trees are driven upward, and a canopy that might take fifteen years to close instead closes in three or four. Because the mix is drawn from climax rather than pioneer species, the forest effectively skips the slow early stages of natural succession and begins near its mature state.",
+          "The results are striking where measured: growth rates several times faster than conventional plantings, survival rates above ninety percent once established, and far denser biomass and biodiversity per square metre than a manicured park.",
+        ],
+      },
+      {
+        heading: "A forest the city can hold",
+        body: [
+          "Size is the method's gift to the urban world. A dense pocket of hundreds of trees can cool and shade a street corner, muffle noise, soak up stormwater, filter air and offer nesting habitat — all on ground too small for conventional forestry. Studies of established mini-forests report rapid colonisation by insects, birds and soil life, turning a bare lot into a functioning micro-ecosystem within a few years.",
+          "None of this makes a mini-forest a replacement for large, intact wild forests, whose scale and continuity do things no small patch can. But as a way of weaving genuine native woodland back into the places people actually live, it is unusually potent per square metre.",
+        ],
+      },
+      {
+        heading: "Planting and letting go",
+        body: [
+          "The labour front-loads. After soil preparation and dense planting, the young forest is mulched heavily and weeded and watered for the first two to three years while the canopy closes. After that, the forest is meant to be left alone — no thinning, no feeding, no irrigation — to manage itself as any woodland does.",
+          "That hands-off ending is the point. A Miyawaki planting is not a garden to be maintained but a self-sufficient ecosystem to be set in motion. The gardener's job is to start it well and then, deliberately, to step back.",
+        ],
+      },
+    ],
+    citations: [
+      { id: "miyawaki-1999", authors: "Miyawaki, A.", year: 1999, title: "Creative ecology: restoration of native forests by native trees", source: "Plant Biotechnology 16" },
+      { id: "schirone-2011", authors: "Schirone, B., Salis, A. & Vessella, F.", year: 2011, title: "Effectiveness of the Miyawaki method in Mediterranean forest restoration programs", source: "Landscape and Ecological Engineering 7" },
+      { id: "miyawaki-box-2006", authors: "Miyawaki, A. & Box, E. O.", year: 2006, title: "The Healing Power of Forests: The Philosophy behind Restoring Earth's Balance with Native Trees", source: "Kosei Publishing" },
+    ],
+  },
+  {
+    slug: "chop-and-drop-mulching",
+    title: "Chop-and-Drop Mulching",
+    category: "permaculture",
+    summary:
+      "The simplest regenerative act there is: cut a plant and let it fall where it grew, turning standing greenery into the mulch and fertility the soil beneath it lives on.",
+    difficulty: "foundational",
+    readingMinutes: 8,
+    updated: "2026-08-05",
+    contributors: ["Elias Vance"],
+    tags: ["permaculture", "mulch", "soil-health", "fertility", "regenerative-gardening"],
+    related: ["no-till-agriculture", "compost-science", "soil-food-web", "nutrient-cycling", "seven-layer-food-forest"],
+    sections: [
+      {
+        body: [
+          "Chop-and-drop is exactly what it sounds like: you cut back a plant and leave the cuttings lying on the soil where they fell, rather than carting them off to a compost heap or bin. In a single motion it turns living greenery into a blanket of mulch and, as that mulch breaks down, into fertility for whatever is growing nearby.",
+          "It is perhaps the lowest-effort regenerative practice there is — no turning, no hauling, no machinery — and it mimics the one thing every natural woodland does constantly: drop its leaves and stems onto its own floor.",
+        ],
+      },
+      {
+        heading: "Feeding the floor",
+        body: [
+          "A forest is never fertilised, yet its soil deepens year on year. The reason is the litter layer: leaves, twigs and fallen matter that decomposers work over, releasing nutrients slowly and building the spongy, dark humus that holds water and life. Chop-and-drop simply recreates that litter layer on demand.",
+          "The dropped material shades the soil, keeping it cool and moist and suppressing weeds. As it rots, it feeds the soil food web — the bacteria, fungi and their grazers that convert dead plant matter into plant-available nutrients right where roots can reach them. Nothing leaves the system, so fertility accumulates instead of being exported.",
+        ],
+      },
+      {
+        heading: "Plants that pull their weight",
+        body: [
+          "The practice pairs naturally with support species chosen for the job. Nitrogen-fixing plants pull fertiliser out of the air; deep-rooted dynamic accumulators such as comfrey mine minerals from far below and concentrate them in fast-growing leaves that can be cut several times a season.",
+          "In a food forest or garden these support plants are grown among the crops precisely so they can be chopped and dropped over them — living fertiliser factories that turn sunlight, air and subsoil into surface mulch. Cut little and often, and the same plant feeds its neighbours again and again.",
+        ],
+      },
+      {
+        heading: "Doing it well",
+        body: [
+          "The technique rewards a light touch. Cut before a support plant sets seed to avoid spreading it, drop the material in a layer rather than a smothering pile, and keep woody stems thin enough to break down in a season. Over bare or compacted ground, a first chop-and-drop mulch is often the fastest way to start rebuilding structure and life.",
+          "Done through the season, chop-and-drop closes a small nutrient loop entirely on site: the garden feeds itself with what it grows, and the soil beneath it gets a little deeper every year.",
+        ],
+      },
+    ],
+    citations: [
+      { id: "mollison-1988", authors: "Mollison, B.", year: 1988, title: "Permaculture: A Designer's Manual", source: "Tagari Publications" },
+      { id: "holmgren-2002b", authors: "Holmgren, D.", year: 2002, title: "Permaculture: Principles and Pathways Beyond Sustainability", source: "Holmgren Design Services" },
+      { id: "magdoff-2009", authors: "Magdoff, F. & van Es, H.", year: 2009, title: "Building Soils for Better Crops", source: "Sustainable Agriculture Research and Education (SARE)" },
     ],
   },
 ]
