@@ -61,17 +61,24 @@
   --font-heading: var(--font-syne), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
 
-  /* Fluid type scale — clamp(min, preferred, max). */
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-base: 1rem;
-  --text-lg: 1.125rem;
-  --text-xl: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
-  --text-2xl: clamp(1.5rem, 1.3rem + 1vw, 2rem);
-  --text-3xl: clamp(2rem, 1.6rem + 1.8vw, 3rem);
-  --text-4xl: clamp(2.5rem, 1.9rem + 3vw, 4.5rem);
-  --text-5xl: clamp(3.25rem, 2.2rem + 5vw, 6.5rem);
-  --text-6xl: clamp(4rem, 2.4rem + 7.5vw, 9rem);
+  /* Fluid type scale — every step is clamp(min, preferred, max) so text
+     never snaps between breakpoints and never balloons on wide/short
+     (landscape phone) viewports. Body sizes flex a hair; display sizes
+     flex a lot. The preferred term is intentionally gentle on the vw
+     coefficient so a wide-but-short viewport can't hit the max. */
+  --text-xs: clamp(0.7rem, 0.68rem + 0.1vw, 0.75rem);
+  --text-sm: clamp(0.82rem, 0.8rem + 0.12vw, 0.875rem);
+  --text-base: clamp(0.94rem, 0.9rem + 0.18vw, 1rem);
+  --text-lg: clamp(1.05rem, 1rem + 0.25vw, 1.2rem);
+  --text-xl: clamp(1.2rem, 1.1rem + 0.5vw, 1.5rem);
+  --text-2xl: clamp(1.45rem, 1.3rem + 0.85vw, 2rem);
+  --text-3xl: clamp(1.8rem, 1.55rem + 1.4vw, 2.85rem);
+  --text-4xl: clamp(2.15rem, 1.8rem + 2vw, 4rem);
+  --text-5xl: clamp(2.6rem, 2.1rem + 2.9vw, 5.75rem);
+  --text-6xl: clamp(3rem, 2.3rem + 4vw, 8rem);
+  --text-7xl: clamp(3.4rem, 2.5rem + 5vw, 9rem);
+  --text-8xl: clamp(3.8rem, 2.7rem + 6vw, 10.5rem);
+  --text-9xl: clamp(4.2rem, 2.9rem + 7vw, 12rem);
 
   --radius-sm: 0.375rem;
   --radius: 0.75rem;

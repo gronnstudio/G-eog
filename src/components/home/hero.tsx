@@ -4,7 +4,7 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { ArrowUpRight, Compass, Sparkles } from "lucide-react"
 
-import { EcosystemField } from "./ecosystem-field"
+import { HeroMosaic } from "@/components/concept/hero-mosaic"
 import { useLanguage, useUI } from "@/components/language-provider"
 import { EASE_ORGANIC } from "@/lib/motion"
 
@@ -15,23 +15,24 @@ export function Hero({ stats }: { stats: { articles: number; categories: number;
   // works for any language and word count.
   const words = ui("heroHeadline").split(" ")
   return (
-    <section className="relative flex min-h-[100svh] items-center overflow-hidden">
-      <div className="eog-aurora absolute inset-0" />
-      <EcosystemField />
-      <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-background to-transparent" />
+    <section className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden">
+      {/* The drifting image wall — a perpetual "locomotive" carousel of
+          ecological imagery on a tilted plane, with EOG's time-of-day wash
+          and an ember light-leak. The header floats over it. */}
+      <HeroMosaic />
 
-      <div className="relative mx-auto w-full max-w-6xl px-4 pt-28 sm:px-6">
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pb-16 pt-28 sm:px-6 sm:pb-20 [@media(max-height:600px)]:pb-8 [@media(max-height:600px)]:pt-20">
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: EASE_ORGANIC }}
-          className="mb-6 inline-flex items-center gap-2 rounded-full border border-line px-4 py-1.5 font-mono text-xs uppercase tracking-widest text-muted"
+          className="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-surface/30 px-4 py-1.5 font-mono text-xs uppercase tracking-widest text-muted backdrop-blur-sm"
         >
           <Sparkles className="h-3.5 w-3.5 text-accent" />
           {ui("heroKicker")}
         </motion.p>
 
-        <h1 className="max-w-4xl font-heading text-[clamp(2.75rem,7vw,6.5rem)] leading-[0.98] text-foreground">
+        <h1 className="max-w-4xl font-heading text-[clamp(2.25rem,6vw,6rem)] leading-[1.02] text-foreground sm:leading-[0.98] [@media(max-height:600px)]:text-[clamp(1.75rem,6.5vh,3rem)]">
           {words.map((word, i) => (
             <motion.span
               key={`${locale}-${i}`}
@@ -49,7 +50,7 @@ export function Hero({ stats }: { stats: { articles: number; categories: number;
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: EASE_ORGANIC, delay: 0.7 }}
-          className="mt-8 max-w-xl text-pretty text-lg leading-relaxed text-muted sm:text-xl"
+          className="mt-8 max-w-xl text-pretty text-lg leading-relaxed text-muted [@media(max-height:600px)]:mt-4"
         >
           {ui("heroBody")}
         </motion.p>
@@ -58,7 +59,7 @@ export function Hero({ stats }: { stats: { articles: number; categories: number;
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: EASE_ORGANIC, delay: 0.85 }}
-          className="mt-10 flex flex-wrap items-center gap-3"
+          className="mt-10 flex flex-wrap items-center gap-3 [@media(max-height:600px)]:mt-6"
         >
           <Link
             href="/explore"
@@ -69,7 +70,7 @@ export function Hero({ stats }: { stats: { articles: number; categories: number;
           </Link>
           <Link
             href="/learn"
-            className="inline-flex items-center gap-2 rounded-full border border-line px-6 py-3 font-medium text-foreground transition-colors hover:bg-surface-2"
+            className="inline-flex items-center gap-2 rounded-full border border-line bg-surface/40 px-6 py-3 font-medium text-foreground backdrop-blur-sm transition-colors hover:bg-surface-2"
           >
             {ui("startLearning")}
           </Link>
@@ -86,7 +87,7 @@ export function Hero({ stats }: { stats: { articles: number; categories: number;
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1.1 }}
-          className="mt-16 flex flex-wrap gap-x-12 gap-y-4"
+          className="mt-14 flex flex-wrap gap-x-12 gap-y-4 [@media(max-height:600px)]:hidden"
         >
           {[
             { k: ui("statArticles"), v: stats.articles },

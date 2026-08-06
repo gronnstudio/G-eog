@@ -40,7 +40,7 @@ export default function PlayPage() {
         <KineticHeading
           as="h1"
           text="Knowledge you can play with."
-          className="max-w-3xl text-[clamp(2.5rem,7vw,5.5rem)] leading-[0.98]"
+          className="max-w-3xl text-[clamp(2.25rem,6vw,5.5rem)] leading-[1.02] sm:leading-[0.98] [@media(max-height:600px)]:text-[clamp(1.75rem,6.5vh,3rem)]"
         />
         <p className="mt-6 max-w-xl text-pretty text-lg text-muted">
           A concept sandbox of intuitive, tactile components — hotspots, timelines, sliders and

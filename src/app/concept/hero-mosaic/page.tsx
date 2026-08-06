@@ -25,7 +25,7 @@ export default function HeroMosaicConceptPage() {
       <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-7xl flex-col justify-end px-4 pb-24 pt-28 sm:px-6">
         <SectionLabel>The living knowledge ecosystem</SectionLabel>
         <div className="flex flex-col items-start gap-8 md:flex-row md:items-end md:justify-between">
-          <h1 className="max-w-3xl font-heading text-[clamp(2.5rem,7vw,5.5rem)] leading-[0.98] text-foreground">
+          <h1 className="max-w-3xl font-heading text-[clamp(2.25rem,6vw,5.5rem)] leading-[1.02] text-foreground sm:leading-[0.98] [@media(max-height:600px)]:text-[clamp(1.75rem,6.5vh,3rem)]">
             Knowledge grows when everything connects.
           </h1>
           <div className="flex shrink-0 flex-wrap gap-3">
