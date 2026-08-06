@@ -1,34 +1,41 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
 
 import { cn } from "@/lib/utils"
 
+// Footage credit (Pexels licence — free to use, attribution appreciated).
+// Shown subtly in the corner of the opener as a small avatar + name.
+const CREDIT = {
+  author: "Alper Adıgüzel",
+  source: "@alponfly",
+  href: "https://www.instagram.com/alponfly",
+}
+
 /**
- * Opening sequence, GRØNN-style: the brand icon draws itself in stroke
- * (white + ember), the fill blooms in, then the veil lifts to reveal the
- * site. The artwork is a self-animating SVG (SMIL) served from /brand, so
- * it plays with zero JS the moment the image loads — React's only job is
- * lifting and removing the spent veil.
+ * Opening sequence, GRØNN-style: a full-bleed river clip runs under a soft
+ * scrim while the brand icon draws itself in, then the veil lifts to reveal
+ * the site. The video is muted, looping and plays inline; if it fails to
+ * load, the deep ground and drawing icon stand on their own.
  *
- * Plays once per session and is skipped under reduced motion; both
- * decisions are made pre-paint by an inline script in the root layout that
- * stamps `data-intro="1"` on <html>, so the veil is in the first paint (no
- * flash of content) and repeat pages never show it. The mark is white
- * artwork, so the veil is a fixed deep ground the way GRØNN's opener is.
+ * Plays once per session and is skipped under reduced motion (there the
+ * video never autoplays) — both decided pre-paint by the layout boot script
+ * stamping `data-intro="1"` on <html>, so the veil is in the first paint
+ * (no flash of content) and repeat pages never see it.
  */
 export function Preloader() {
   const [state, setState] = useState<"pending" | "lifting" | "gone">("pending")
+  const videoRef = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
-    // No intro this load (seen this session or reduced motion): drop the
-    // veil. Scheduled via rAF so we never setState synchronously in-effect.
     if (document.documentElement.getAttribute("data-intro") !== "1") {
       const id = requestAnimationFrame(() => setState("gone"))
       return () => cancelAnimationFrame(id)
     }
-    // The SVG's own timeline is 3s (2s draw + 1s fill); lift just after.
+    videoRef.current?.play().catch(() => {
+      // Autoplay blocked — the scrim + icon carry the opener regardless.
+    })
     const t = window.setTimeout(() => setState("lifting"), 3200)
     return () => window.clearTimeout(t)
   }, [])
@@ -48,11 +55,26 @@ export function Preloader() {
     <div
       aria-hidden="true"
       className={cn(
-        "preloader-veil fixed inset-0 z-[120] items-center justify-center bg-[#0a1510]",
+        "preloader-veil fixed inset-0 z-[120] items-center justify-center overflow-hidden bg-[#0a1510]",
         "transition-opacity duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)]",
         state === "lifting" && "opacity-0"
       )}
     >
+      {/* Full-bleed river footage */}
+      <video
+        ref={videoRef}
+        className="absolute inset-0 h-full w-full object-cover"
+        src="/brand/loader-river.mp4"
+        muted
+        loop
+        autoPlay
+        playsInline
+        preload="auto"
+      />
+      {/* Scrim so the white mark reads over the water */}
+      <div className="absolute inset-0 bg-[#0a1510]/55" />
+
+      {/* Brand mark drawing in over the footage */}
       <Image
         src="/brand/icon-intro.svg"
         alt=""
@@ -61,8 +83,30 @@ export function Preloader() {
         priority
         unoptimized
         draggable={false}
-        className="h-auto w-44 select-none sm:w-56"
+        className="relative h-auto w-44 select-none sm:w-56"
       />
+
+      {/* Subtle footage credit — small avatar + creator name */}
+      <a
+        href={CREDIT.href}
+        className="absolute bottom-4 right-4 flex items-center gap-2 rounded-full bg-white/5 py-1 pl-1 pr-3 backdrop-blur-sm"
+      >
+        <Image
+          src="/brand/alper.png"
+          alt=""
+          width={48}
+          height={48}
+          unoptimized
+          draggable={false}
+          className="h-6 w-6 rounded-full object-cover ring-1 ring-white/20"
+        />
+        <span className="leading-tight">
+          <span className="block text-[10px] font-medium text-white/80">{CREDIT.author}</span>
+          <span className="block font-mono text-[8px] tracking-wide text-white/45">
+            {CREDIT.source}
+          </span>
+        </span>
+      </a>
     </div>
   )
 }
