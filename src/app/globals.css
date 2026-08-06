@@ -359,6 +359,14 @@ h1, h2, h3, h4 {
 .preloader-veil { display: none; }
 [data-intro="1"] .preloader-veil { display: flex; }
 
+/* Hero mosaic drift — two duplicated copies per row, translated 50% for a
+   seamless loop (like the domains marquee). Duration set per-row via
+   --mosaic-dur; hover does not pause (it is background, not a control). */
+@keyframes eog-mosaic-l { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes eog-mosaic-r { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+.eog-mosaic-left { animation: eog-mosaic-l var(--mosaic-dur, 80s) linear infinite; }
+.eog-mosaic-right { animation: eog-mosaic-r var(--mosaic-dur, 80s) linear infinite; }
+
 /* Utility: hide scrollbars on horizontal rails. */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; }
