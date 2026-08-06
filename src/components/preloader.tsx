@@ -10,8 +10,8 @@ import { cn } from "@/lib/utils"
 const CREDIT = {
   author: "Alper Adıgüzel",
   initials: "AA",
-  source: "Pexels",
-  href: "https://www.pexels.com/video/river-18090229/",
+  source: "@alponfly",
+  href: "https://www.instagram.com/alponfly",
 }
 
 /**
