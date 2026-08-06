@@ -88,7 +88,7 @@ export function Thread() {
                           "block h-1.5 w-1.5 shrink-0 rounded-full transition-all duration-300 " +
                           (current
                             ? "bg-ember ring-4 ring-ember/15"
-                            : "bg-foreground/35 group-hover/node:bg-accent")
+                            : "bg-foreground/35 group-hover/node:bg-gronn-green")
                         }
                       />
                       {/* The current node is always named; the rest name

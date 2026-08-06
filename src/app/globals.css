@@ -24,7 +24,20 @@
      flip with it or every filled CTA fails contrast in one theme. */
   --color-on-accent: var(--on-accent);
 
-  /* Brand constants — identical across themes. */
+  /* GRØNN Studio brand constants — shared 1:1 with gronn.studio so the two
+     sites read as one brand. gronn-green is the constant emerald used for
+     every FILLED element (CTAs, dock centre) carrying white ink; --accent
+     stays the soft, theme-flipping green for text/borders. */
+  --color-gronn-green: #197b4f;
+  --color-gronn-light: #d0ede0;
+  --color-gronn-white: #f6f6f6;
+  --color-gronn-soil: #6b4a2b;
+  --color-gronn-mineral: #8a928c;
+  --color-gronn-clay: #b0876a;
+  --color-gronn-water: #3e7c8f;
+  --color-gronn-moss: #4a6b3d;
+
+  /* Legacy brand aliases (kept for existing references). */
   --color-forest: #0d1b14;
   --color-moss: #1f5136;
   --color-fern: #4d8b63;

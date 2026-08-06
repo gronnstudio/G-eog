@@ -156,7 +156,7 @@ export default async function StoryPage({
             <Reveal key={g.name} delay={(i % 3) * 0.05}>
               <div className="flex items-center gap-4 rounded-2xl border border-line bg-surface/40 p-5">
                 <span
-                  className="grid h-11 w-11 shrink-0 place-items-center rounded-full font-heading text-sm text-on-accent"
+                  className="grid h-11 w-11 shrink-0 place-items-center rounded-full font-heading text-sm text-gronn-white"
                   style={{ background: `hsl(${story.hue} 45% 60%)` }}
                 >
                   {g.name.split(" ").map((p) => p[0]).slice(0, 2).join("")}

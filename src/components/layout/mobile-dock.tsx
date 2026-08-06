@@ -365,7 +365,7 @@ export function MobileDock() {
                 "flex h-11 w-14 shrink-0 items-center justify-center rounded-full transition duration-300 active:scale-90",
                 active("/explore")
                   ? "bg-ember-strong text-white"
-                  : "bg-accent text-on-accent hover:bg-ember-strong hover:text-white active:bg-ember-strong active:text-white",
+                  : "bg-gronn-green text-gronn-white hover:bg-ember-strong hover:text-white active:bg-ember-strong active:text-white",
               )}
             >
               {icons.graph}

@@ -88,7 +88,7 @@ export default function CommunityPage() {
         that builds the world&rsquo;s best software — applied to the world&rsquo;s ecological knowledge.
       </p>
       <div className="mt-8 flex flex-wrap gap-3">
-        <Link href={GH} className="rounded-full bg-accent px-6 py-3 font-medium text-on-accent transition-transform hover:scale-[1.02]">
+        <Link href={GH} className="rounded-full bg-gronn-green px-6 py-3 font-medium text-gronn-white transition-transform hover:scale-[1.02]">
           Start on GitHub
         </Link>
         <Link href="/about#license" className="rounded-full border border-line px-6 py-3 font-medium text-foreground transition-colors hover:bg-surface-2">

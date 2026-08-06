@@ -62,7 +62,7 @@ export function Hero({ stats }: { stats: { articles: number; categories: number;
         >
           <Link
             href="/explore"
-            className="group inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 font-medium text-on-accent transition-transform hover:scale-[1.02]"
+            className="group inline-flex items-center gap-2 rounded-full bg-gronn-green px-6 py-3 font-medium text-gronn-white transition-transform hover:scale-[1.02]"
           >
             <Compass className="h-4 w-4" />
             {ui("exploreGraph")}

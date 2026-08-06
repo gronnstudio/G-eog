@@ -215,14 +215,14 @@ function Hotspots() {
                 <span className="absolute inline-flex h-full w-full rounded-full border border-accent/70" />
               ) : (
                 <motion.span
-                  className="absolute inline-flex h-full w-full rounded-full bg-accent/40"
+                  className="absolute inline-flex h-full w-full rounded-full bg-gronn-green/40"
                   animate={{ scale: [1, 1.9, 1], opacity: [0.6, 0, 0.6] }}
                   transition={{ duration: 2.4, repeat: Infinity, ease: "easeOut" }}
                 />
               )}
               <span
                 className={cn(
-                  "relative inline-flex h-2.5 w-2.5 rounded-full bg-accent ring-2 ring-background transition-transform",
+                  "relative inline-flex h-2.5 w-2.5 rounded-full bg-gronn-green ring-2 ring-background transition-transform",
                   isActive && "scale-125"
                 )}
               />

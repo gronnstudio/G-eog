@@ -204,7 +204,7 @@ export default async function ArticlePage({
             <div className="mt-4 flex flex-wrap gap-2">
               <a
                 href={`${GH}/edit/main/${sourcePath}`}
-                className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-medium text-on-accent"
+                className="inline-flex items-center gap-2 rounded-full bg-gronn-green px-4 py-2 text-sm font-medium text-gronn-white"
               >
                 <GitPullRequest className="h-4 w-4" /> Edit on GitHub
               </a>
@@ -240,7 +240,7 @@ export default async function ArticlePage({
                 {article.contributors.map((name) => (
                   <li key={name} className="flex items-center gap-2 text-sm text-muted">
                     <span
-                      className="grid h-6 w-6 place-items-center rounded-full text-[10px] font-medium text-on-accent"
+                      className="grid h-6 w-6 place-items-center rounded-full text-[10px] font-medium text-gronn-white"
                       style={{ background: `hsl(${cat?.hue ?? 150} 45% 62%)` }}
                     >
                       {name.split(" ").map((p) => p[0]).slice(0, 2).join("")}
