@@ -267,7 +267,7 @@ export const ARTICLES: Article[] = [
     updated: "2026-08-04",
     contributors: ["Elias Vance", "Dr. Elaine Rourke"],
     tags: ["food-forests", "permaculture", "polyculture", "perennials", "design"],
-    related: ["ecological-succession", "nitrogen-fixation", "urban-food-forests", "pollinator-networks", "keyline-design"],
+    related: ["ecological-succession", "nitrogen-fixation", "urban-food-forests", "pollinator-networks", "forgotten-vegetables-and-crop-diversity"],
     sections: [
       {
         body: [
@@ -531,7 +531,7 @@ export const ARTICLES: Article[] = [
     updated: "2025-12-15",
     contributors: ["Marco Belliveau"],
     tags: ["animals", "bees", "pollination", "biodiversity", "food"],
-    related: ["seven-layer-food-forest", "rewilding", "trophic-cascades", "urban-food-forests", "keystone-species"],
+    related: ["seven-layer-food-forest", "rewilding", "the-case-for-native-plants", "urban-food-forests", "keystone-species"],
     sections: [
       {
         body: [
@@ -1412,6 +1412,107 @@ export const ARTICLES: Article[] = [
       { id: "mollison-1988", authors: "Mollison, B.", year: 1988, title: "Permaculture: A Designer's Manual", source: "Tagari Publications" },
       { id: "holmgren-2002b", authors: "Holmgren, D.", year: 2002, title: "Permaculture: Principles and Pathways Beyond Sustainability", source: "Holmgren Design Services" },
       { id: "magdoff-2009", authors: "Magdoff, F. & van Es, H.", year: 2009, title: "Building Soils for Better Crops", source: "Sustainable Agriculture Research and Education (SARE)" },
+    ],
+  },
+  {
+    slug: "the-case-for-native-plants",
+    title: "The Case for Native Plants",
+    category: "botany",
+    summary:
+      "A garden of native plants is not just prettier or lower-maintenance — it is the base of a local food web, feeding the specialist insects, and the birds beyond them, that exotic ornamentals quietly starve.",
+    difficulty: "foundational",
+    readingMinutes: 10,
+    updated: "2026-08-06",
+    contributors: ["Dr. Elaine Rourke", "Elias Vance"],
+    tags: ["native-plants", "biodiversity", "pollinators", "gardening", "restoration"],
+    related: ["pollinator-networks", "keystone-species", "rewilding", "miyawaki-mini-forests", "biophilia"],
+    sections: [
+      {
+        body: [
+          "A plant is native to a place when it evolved there, alongside the insects, birds, fungi and soil life of that same landscape, over thousands of years. That shared history is not sentiment — it is the reason a native plant supports a web of local life that an ornamental import, however beautiful, often cannot.",
+          "The distinction matters most for insects, and insects matter more than their size suggests: they are the protein that turns leaves into birds, amphibians and mammals. A landscape can look green and lush and still be, ecologically, close to empty.",
+        ],
+      },
+      {
+        heading: "The specialist's dilemma",
+        body: [
+          "Most plant-eating insects are specialists: they can feed and breed only on the particular plants they co-evolved with, whose chemical defences they alone have learned to disarm. The monarch butterfly and milkweed is the famous case, but it is the rule, not the exception — the majority of native herbivorous insects depend on a narrow range of native host plants.",
+          "Fill a garden with exotics and those specialists find nothing to eat or lay eggs on. The plants may flower, but the caterpillars that should feed the nesting birds never hatch. This is how a leafy suburb can drive declines even in common birds: not by cutting down greenery, but by replacing the *right* greenery with the wrong kind.",
+        ],
+      },
+      {
+        heading: "Keystone plants",
+        body: [
+          "Not all natives pull equal weight. A small number of keystone plant genera support a disproportionate share of the food web. Native oaks are the standout — a single oak can host hundreds of species of caterpillars, which is why oaks underwrite so many bird populations. Willows, cherries, goldenrods and native asters play similar outsized roles.",
+          "This is a hopeful finding for anyone with limited space: planting a few keystone species delivers far more life per square metre than scattering many minor ones. Ecology, like the rest of a garden, rewards knowing which moves matter most.",
+        ],
+      },
+      {
+        heading: "What the evidence says",
+        body: [
+          "Reviews comparing native and non-native plantings find natives support more life across most groups — birds, butterflies and moths, and many bees — though the picture is not absolute. Some pollinators will happily visit exotic flowers for nectar, and a well-chosen non-native can extend the flowering season.",
+          "The nuance is that native plants matter most precisely where they are scarce. In a neighbourhood dominated by lawns and imported ornamentals, a patch of natives becomes a lifeline — an island of the specific resources the local food web has nowhere else to find.",
+        ],
+      },
+      {
+        heading: "Gardening as habitat",
+        body: [
+          "Choosing native reframes a garden from decoration to habitat. It means favouring wild and locally-native species, keeping some structure and seed heads through winter, tolerating a little insect damage as evidence the system is working, and treating rare or forgotten local species as worth propagating.",
+          "Done across enough gardens, verges and balconies, these small choices stitch back together a fragmented landscape — a distributed nature reserve assembled one native plant at a time.",
+        ],
+      },
+    ],
+    citations: [
+      { id: "tallamy-2007", authors: "Tallamy, D. W.", year: 2007, title: "Bringing Nature Home: How You Can Sustain Wildlife with Native Plants", source: "Timber Press" },
+      { id: "narango-2018", authors: "Narango, D. L., Tallamy, D. W. & Marra, P. P.", year: 2018, title: "Nonnative plants reduce population growth of an insectivorous bird", source: "Proceedings of the National Academy of Sciences 115" },
+      { id: "burghardt-2009", authors: "Burghardt, K. T., Tallamy, D. W. & Shriver, W. G.", year: 2009, title: "Impact of native plants on bird and butterfly biodiversity in suburban landscapes", source: "Conservation Biology 23" },
+    ],
+  },
+  {
+    slug: "forgotten-vegetables-and-crop-diversity",
+    title: "Forgotten Vegetables & Crop Diversity",
+    category: "food-forests",
+    summary:
+      "Sixteen species now supply most of the calories humanity eats. The thousands of edible plants we have set aside are not quaint relics — they are the genetic insurance a changing climate will make us wish we had kept.",
+    difficulty: "intermediate",
+    readingMinutes: 10,
+    updated: "2026-08-06",
+    contributors: ["Elias Vance", "Dr. Priya Chandran"],
+    tags: ["crop-diversity", "food-security", "heirloom", "wild-edibles", "resilience"],
+    related: ["seven-layer-food-forest", "urban-food-forests", "nutrient-cycling", "no-till-agriculture", "pollinator-networks"],
+    sections: [
+      {
+        body: [
+          "Humans have eaten more than seven thousand plant species over our history, and cultivated over four hundred as crops. Today, just sixteen species supply up to eighty percent of the calories the world eats, and a mere three — wheat, maize and rice — dominate the plate almost everywhere.",
+          "This narrowing is one of the quietest risks in the food system. A handful of genetically uniform staples, grown across vast areas, is efficient in a stable climate and dangerously brittle in an unstable one: a single new pest, disease or drought pattern can threaten a crop across continents at once.",
+        ],
+      },
+      {
+        heading: "Genetic erosion",
+        body: [
+          "As commercial varieties displaced local ones through the twentieth century, an enormous library of crop genetics was lost — landraces and heirlooms adapted over generations to particular soils, seasons and pests. This genetic erosion is invisible until it is needed: the traits to survive a new heat wave or blight may have lived only in a variety no one grows anymore.",
+          "The forgotten vegetables and wild relatives that survive in small nurseries, seed banks and foragers' gardens are therefore not nostalgia. They are a reservoir of adaptations — a backup copy of options that plant breeders draw on precisely when the dominant crops falter.",
+        ],
+      },
+      {
+        heading: "The wild and the neglected",
+        body: [
+          "Beyond heritage cultivars lies an even deeper well: wild edible plants and neglected regional crops. Species long overlooked by global markets — African spider plant and fonio, Asian bitter gourd, Pacific slippery cabbage, and countless wild greens gathered as food for millennia — are often hardier, more nutritious and better suited to marginal conditions than the staples that replaced them.",
+          "Reviving them is both an ecological and a cultural act. Each forgotten crop carries with it a web of farming practices, recipes and knowledge that eroded alongside the plant; bringing the vegetable back can bring that biocultural heritage with it.",
+        ],
+      },
+      {
+        heading: "Diversity as resilience",
+        body: [
+          "A diverse plate is grown by a diverse landscape. Polycultures, food forests and gardens that mix many species — heritage, wild and modern — spread risk the way a varied ecosystem does: when one crop struggles, others carry the season. Diversity above ground also feeds diversity below, and supports the pollinators the whole system depends on.",
+          "Rebuilding crop diversity is unglamorous work — saving seed, trialling odd varieties, learning to cook unfamiliar greens — but it is among the most practical forms of climate insurance a grower can practise, one forgotten vegetable at a time.",
+        ],
+      },
+    ],
+    citations: [
+      { id: "khoury-2014", authors: "Khoury, C. K. et al.", year: 2014, title: "Increasing homogeneity in global food supplies and the implications for food security", source: "Proceedings of the National Academy of Sciences 111" },
+      { id: "fao-2019-biodiversity", authors: "FAO", year: 2019, title: "The State of the World's Biodiversity for Food and Agriculture", source: "Food and Agriculture Organization of the United Nations" },
+      { id: "massawe-2016", authors: "Massawe, F., Mayes, S. & Cheng, A.", year: 2016, title: "Crop diversity: an unexploited treasure trove for food security", source: "Trends in Plant Science 21" },
     ],
   },
 ]
