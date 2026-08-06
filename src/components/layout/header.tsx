@@ -347,7 +347,7 @@ export function EquilibriumMark({ className = "h-8 w-8" }: { className?: string 
   return (
     <svg viewBox="0 0 32 32" className={className} aria-hidden="true">
       <circle cx="16" cy="16" r="14" fill="none" stroke="var(--color-accent)" strokeWidth="1.2" opacity="0.5" />
-      <circle cx="16" cy="9" r="2.4" fill="var(--color-accent)" />
+      <circle cx="16" cy="9" r="2.4" fill="var(--color-ember)" />
       <circle cx="9" cy="21" r="2.4" fill="var(--color-fern)" />
       <circle cx="23" cy="21" r="2.4" fill="var(--color-sage)" />
       <path d="M16 9 L9 21 M16 9 L23 21 M9 21 L23 21" stroke="var(--color-accent)" strokeWidth="1" opacity="0.6" />

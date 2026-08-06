@@ -175,7 +175,8 @@ export function MobileDock() {
 
   const slot =
     "flex h-11 w-14 items-center justify-center rounded-full transition-all duration-300 active:scale-90"
-  const slotActive = "bg-foreground/10 text-accent"
+  // Active wing icon carries GRØNN's ember, matching gronn.studio's dock.
+  const slotActive = "bg-foreground/10 text-ember"
   const swapSlot =
     "absolute inset-0 flex items-center justify-center rounded-full transition-colors duration-300 active:scale-90"
 
@@ -363,8 +364,8 @@ export function MobileDock() {
               className={cn(
                 "flex h-11 w-14 shrink-0 items-center justify-center rounded-full transition duration-300 active:scale-90",
                 active("/explore")
-                  ? "bg-fern text-warm"
-                  : "bg-accent text-on-accent hover:bg-fern hover:text-warm active:bg-fern active:text-warm",
+                  ? "bg-ember-strong text-white"
+                  : "bg-accent text-on-accent hover:bg-ember-strong hover:text-white active:bg-ember-strong active:text-white",
               )}
             >
               {icons.graph}
@@ -404,7 +405,7 @@ export function MobileDock() {
                       className={cn(swapSlot, "text-foreground/80")}
                     >
                       <span className="relative flex h-6 w-6 items-center justify-center">
-                        <span aria-hidden className="ring-pulse absolute inset-0 rounded-full border-2 border-accent" />
+                        <span aria-hidden className="ring-pulse absolute inset-0 rounded-full border-2 border-ember" />
                         <svg aria-hidden width="15" height="15" viewBox="0 0 14 14" fill="none">
                           <path d="M7 12V2M7 2 2.5 6.5M7 2l4.5 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
