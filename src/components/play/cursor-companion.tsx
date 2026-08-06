@@ -73,7 +73,7 @@ export function CursorCompanion() {
     >
       <motion.div
         className={cn(
-          "flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-accent/70 text-on-accent backdrop-blur-sm",
+          "flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-gronn-green/70 text-gronn-white backdrop-blur-sm",
           active ? "px-3 py-1.5 text-xs font-medium" : "blur-[1px]"
         )}
         animate={

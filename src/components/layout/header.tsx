@@ -155,7 +155,7 @@ export function Header() {
 
             <Link
               href="/explore"
-              className="tap-target hidden rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-on-accent transition-transform hover:scale-[1.03] sm:inline-block"
+              className="tap-target hidden rounded-full bg-gronn-green px-5 py-2.5 text-sm font-medium text-gronn-white transition-transform hover:scale-[1.03] sm:inline-block"
             >
               {ui("exploreGraph")}
             </Link>
@@ -330,7 +330,7 @@ export function Header() {
 
                 <Link
                   href="/explore"
-                  className="inline-block w-fit rounded-full bg-accent px-7 py-3.5 text-sm font-medium text-on-accent transition-transform hover:scale-[1.02]"
+                  className="inline-block w-fit rounded-full bg-gronn-green px-7 py-3.5 text-sm font-medium text-gronn-white transition-transform hover:scale-[1.02]"
                 >
                   {ui("exploreGraph")}
                 </Link>

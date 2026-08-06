@@ -67,7 +67,7 @@ export default function PlayPage() {
             <a
               href="/explore"
               data-cursor="Explore"
-              className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 font-medium text-on-accent"
+              className="inline-flex items-center gap-2 rounded-full bg-gronn-green px-6 py-3 font-medium text-gronn-white"
             >
               A magnetic button
             </a>

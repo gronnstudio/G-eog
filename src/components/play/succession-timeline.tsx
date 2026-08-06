@@ -81,7 +81,7 @@ export function SuccessionTimeline() {
         aria-hidden="true"
       >
         <motion.div
-          className="absolute inset-x-0 top-0 w-full origin-top bg-accent"
+          className="absolute inset-x-0 top-0 w-full origin-top bg-gronn-green"
           style={{ scaleY: reduced ? 1 : scaleY, height: "100%" }}
         />
       </div>

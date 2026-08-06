@@ -15,7 +15,7 @@ export function DifficultyBadge({ level, className }: { level: Difficulty; class
         {[0, 1, 2].map((i) => (
           <span
             key={i}
-            className={cn("h-1.5 w-1.5 rounded-full", i < dots ? "bg-accent" : "bg-line")}
+            className={cn("h-1.5 w-1.5 rounded-full", i < dots ? "bg-gronn-green" : "bg-line")}
           />
         ))}
       </span>
