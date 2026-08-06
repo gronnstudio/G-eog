@@ -22,6 +22,7 @@ import { RegisterSW } from "@/components/register-sw"
 import { PullToRefresh } from "@/components/pull-to-refresh"
 import { Thread } from "@/components/thread"
 import { InstallPrompt } from "@/components/install-prompt"
+import { Preloader } from "@/components/preloader"
 
 // Type system shared with GRØNN Studio: Syne SemiBold for headings,
 // Montserrat for body/interface, Geist Mono for technical annotations.
@@ -104,6 +105,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `try{var l=localStorage.getItem("eog-locale");if(l){document.documentElement.lang=l;document.documentElement.dir=l==="ar"?"rtl":"ltr"}}catch(e){}`,
           }}
         />
+        {/* Pre-paint intro gate: show the opening veil only on the first
+            visit of a session and only when motion is allowed, so the veil
+            is in the first paint (no content flash) and never repeats. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(!sessionStorage.getItem("eog-intro-seen")&&!matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.setAttribute("data-intro","1");sessionStorage.setItem("eog-intro-seen","1")}}catch(e){}`,
+          }}
+        />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }} />
         <a
           href="#main"
@@ -111,6 +120,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to content
         </a>
+        <Preloader />
         <Providers>
           <RegisterSW />
           <SmoothScroll />
