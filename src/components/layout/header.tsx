@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { AnimatePresence, motion } from "framer-motion"
@@ -115,8 +116,30 @@ export function Header() {
               "pointer-events-none -translate-x-12 opacity-0 blur-[2px] md:pointer-events-auto md:translate-x-0 md:opacity-100 md:blur-none",
           )}
         >
-          <EquilibriumMark className="h-9 w-9 transition-transform duration-300 group-hover:scale-[1.05]" />
-          <span className="font-heading text-lg tracking-tight text-foreground">Equilibrium</span>
+          {/* Animated brand lockup (self-animating SMIL SVG: stroke draws,
+              fill blooms). White artwork on the dark Hours; the ink variant
+              carries Golden Hour. Plain <img>s — SMIL plays inside img. */}
+          <Image
+            src="/brand/logo-intro.svg"
+            alt=""
+            width={814}
+            height={165}
+            priority
+            unoptimized
+            draggable={false}
+            className="hidden h-9 w-auto select-none transition-transform duration-300 group-hover:scale-[1.03] dark:block"
+          />
+          <Image
+            src="/brand/logo-intro-ink.svg"
+            alt=""
+            width={814}
+            height={165}
+            priority
+            unoptimized
+            draggable={false}
+            className="h-9 w-auto select-none transition-transform duration-300 group-hover:scale-[1.03] dark:hidden"
+          />
+          <span className="sr-only">Equilibrium — Home</span>
         </Link>
 
         <div className="pointer-events-auto flex items-center gap-2 lg:gap-4">

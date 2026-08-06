@@ -353,6 +353,12 @@ h1, h2, h3, h4 {
   unicode-bidi: plaintext;
 }
 
+/* Opening veil — hidden by default; shown only when the pre-paint boot
+   script marks <html data-intro="1"> (first visit this session, motion
+   allowed). Keeps the veil in the first paint with no flash of content. */
+.preloader-veil { display: none; }
+[data-intro="1"] .preloader-veil { display: flex; }
+
 /* Utility: hide scrollbars on horizontal rails. */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; }
