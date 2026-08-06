@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils"
 // Shown subtly in the corner of the opener as a small avatar + name.
 const CREDIT = {
   author: "Alper Adıgüzel",
-  initials: "AA",
   source: "@alponfly",
   href: "https://www.instagram.com/alponfly",
 }
@@ -92,9 +91,15 @@ export function Preloader() {
         href={CREDIT.href}
         className="absolute bottom-4 right-4 flex items-center gap-2 rounded-full bg-white/5 py-1 pl-1 pr-3 backdrop-blur-sm"
       >
-        <span className="grid h-6 w-6 place-items-center rounded-full bg-gradient-to-br from-ember to-ember-strong text-[9px] font-semibold text-white">
-          {CREDIT.initials}
-        </span>
+        <Image
+          src="/brand/alper.png"
+          alt=""
+          width={48}
+          height={48}
+          unoptimized
+          draggable={false}
+          className="h-6 w-6 rounded-full object-cover ring-1 ring-white/20"
+        />
         <span className="leading-tight">
           <span className="block text-[10px] font-medium text-white/80">{CREDIT.author}</span>
           <span className="block font-mono text-[8px] tracking-wide text-white/45">
