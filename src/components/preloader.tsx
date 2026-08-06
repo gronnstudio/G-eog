@@ -6,9 +6,11 @@ import Image from "next/image"
 import { cn } from "@/lib/utils"
 
 // Footage credit (Pexels licence — free to use, attribution appreciated).
-// Shown subtly in the corner of the opener.
+// Shown subtly in the corner of the opener as a small avatar + name.
 const CREDIT = {
-  author: "River footage · Pexels",
+  author: "Alper Adıgüzel",
+  initials: "AA",
+  source: "Pexels",
   href: "https://www.pexels.com/video/river-18090229/",
 }
 
@@ -85,12 +87,20 @@ export function Preloader() {
         className="relative h-auto w-44 select-none sm:w-56"
       />
 
-      {/* Subtle footage credit */}
+      {/* Subtle footage credit — small avatar + creator name */}
       <a
         href={CREDIT.href}
-        className="absolute bottom-3 right-3 font-mono text-[10px] tracking-wide text-white/40"
+        className="absolute bottom-4 right-4 flex items-center gap-2 rounded-full bg-white/5 py-1 pl-1 pr-3 backdrop-blur-sm"
       >
-        {CREDIT.author}
+        <span className="grid h-6 w-6 place-items-center rounded-full bg-gradient-to-br from-ember to-ember-strong text-[9px] font-semibold text-white">
+          {CREDIT.initials}
+        </span>
+        <span className="leading-tight">
+          <span className="block text-[10px] font-medium text-white/80">{CREDIT.author}</span>
+          <span className="block font-mono text-[8px] tracking-wide text-white/45">
+            {CREDIT.source}
+          </span>
+        </span>
       </a>
     </div>
   )
