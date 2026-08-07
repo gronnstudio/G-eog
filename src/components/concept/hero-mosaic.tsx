@@ -33,11 +33,19 @@ const TILES: Tile[] = [
   { id: "10", label: "Regenerative garden", src: "https://picsum.photos/id/12/600/800" },
 ]
 
-const ROWS = [
+// Alternating drift directions/speeds, cycled over however many rows the
+// wall renders. Row height is capped (clamp below) so several rows are in
+// view at once — on a phone one tile must never fill the screen.
+const ROW_STYLES = [
   { dir: "right" as const, dur: 74 },
   { dir: "left" as const, dur: 88 },
   { dir: "right" as const, dur: 80 },
+  { dir: "left" as const, dur: 92 },
 ]
+
+// Enough rows to cover the oversized rotated plane at the capped height.
+const ROW_COUNT = 10
+const ROW_HEIGHT = "clamp(150px, 24vmin, 300px)"
 
 /** Deterministic tile list for a row: rotate the archive by the row index. */
 function rowTiles(row: number): Tile[] {
@@ -46,9 +54,9 @@ function rowTiles(row: number): Tile[] {
 
 function Row({ row, reduced }: { row: number; reduced: boolean }) {
   const tiles = rowTiles(row)
-  const { dir, dur } = ROWS[row]
+  const { dir, dur } = ROW_STYLES[row % ROW_STYLES.length]
   return (
-    <div className="relative min-h-0 flex-1 overflow-hidden">
+    <div className="relative shrink-0 overflow-hidden" style={{ height: ROW_HEIGHT }}>
       <div
         className={cn(
           "flex h-full w-max items-stretch gap-[1.6vw]",
@@ -93,7 +101,7 @@ export function HeroMosaic({ reducedOverride }: { reducedOverride?: boolean }) {
         className="absolute -inset-[60%] flex flex-col justify-center gap-[1.6vw]"
         style={{ transform: "rotate(-24deg)" }}
       >
-        {ROWS.map((_, row) => (
+        {Array.from({ length: ROW_COUNT }, (_, row) => (
           <Row key={row} row={row} reduced={reduced} />
         ))}
       </div>
