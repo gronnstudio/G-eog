@@ -21,7 +21,7 @@ export function Hero({ stats }: { stats: { articles: number; categories: number;
           and an ember light-leak. The header floats over it. */}
       <HeroMosaic />
 
-      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pb-16 pt-28 sm:px-6 sm:pb-20 [@media(max-height:600px)]:pb-8 [@media(max-height:600px)]:pt-20">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-16 pt-28 sm:px-6 sm:pb-20 [@media(max-height:600px)]:pb-8 [@media(max-height:600px)]:pt-20">
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
