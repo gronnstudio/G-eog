@@ -22,10 +22,9 @@ import * as THREE from "three"
  * ≥1024px landscape, no reduced-motion, WebGL only (see seed-core).
  */
 
-const COUNT = 2400
-const LINK_COUNT = 260 // line segments; 2 vertices each
-// scene-wide scale — the object owns the viewport, not a corner of it
-const WORLD = 1.45
+const COUNT = 1800
+const LINK_COUNT = 220 // line segments; 2 vertices each
+const WORLD = 1.05
 
 /**
  * Soft-glow sprite shader — the awwwards-grade upgrade over square GL
@@ -42,7 +41,7 @@ const VERT = /* glsl */ `
   void main() {
     vColor = color;
     vec4 mv = modelViewMatrix * vec4(position, 1.0);
-    vTwinkle = 0.75 + 0.25 * sin(uTime * 1.8 + aPhase);
+    vTwinkle = 0.88 + 0.12 * sin(uTime * 1.2 + aPhase);
     gl_PointSize = aSize * uPixelRatio * (95.0 / -mv.z) * vTwinkle;
     gl_Position = projectionMatrix * mv;
   }
@@ -297,7 +296,7 @@ function SeedObject({
     for (let i = 0; i < COUNT; i++) {
       // a few oversized "fireflies", mostly fine dust
       const roll = rand()
-      s[i] = roll < 0.04 ? 2.6 + rand() * 1.5 : 0.8 + rand() * 1.1
+      s[i] = roll < 0.03 ? 2.2 + rand() * 1.0 : 0.75 + rand() * 0.9
       ph[i] = rand() * Math.PI * 2
     }
     return { sizes: s, phases: ph }
@@ -354,25 +353,12 @@ function SeedObject({
       const j = i * 3
       const wobX = Math.sin(time * 0.7 + i * 0.37) * 0.02
       const wobY = Math.cos(time * 0.6 + i * 0.53) * 0.02
-      let x = A.pts[j] + (B.pts[j] - A.pts[j]) * t
-      let y = A.pts[j + 1] + (B.pts[j + 1] - A.pts[j + 1]) * t
-      let z = A.pts[j + 2] + (B.pts[j + 2] - A.pts[j + 2]) * t
-      // murmuration burst mid-morph: each particle scatters outward and
-      // swirls around Y with its own phase, then settles into the form
-      if (morphDipEarly > 0.001) {
-        const burst = 1 + morphDipEarly * (0.35 + 0.3 * Math.sin(i * 1.7))
-        const ang = morphDipEarly * (0.9 + 0.5 * Math.sin(i * 0.61)) * (i % 2 ? 1 : -1)
-        const ca = Math.cos(ang)
-        const sa = Math.sin(ang)
-        const rx = x * ca - z * sa
-        const rz = x * sa + z * ca
-        x = rx * burst
-        z = rz * burst
-        y = y * burst + morphDipEarly * Math.sin(i * 2.3 + time * 2) * 0.22
-      }
-      pAttr.array[j] = x + wobX
-      pAttr.array[j + 1] = y + wobY
-      pAttr.array[j + 2] = z
+      // calm morph: straight ease between forms, only a faint drift so
+      // transitions read as one object re-arranging, not a swarm storm
+      const drift = 1 + morphDipEarly * 0.08 * Math.sin(i * 1.7)
+      pAttr.array[j] = (A.pts[j] + (B.pts[j] - A.pts[j]) * t) * drift + wobX
+      pAttr.array[j + 1] = (A.pts[j + 1] + (B.pts[j + 1] - A.pts[j + 1]) * t) * drift + wobY
+      pAttr.array[j + 2] = A.pts[j + 2] + (B.pts[j + 2] - A.pts[j + 2]) * t
       cAttr.array[j] = A.col[j] + (B.col[j] - A.col[j]) * t
       cAttr.array[j + 1] = A.col[j + 1] + (B.col[j + 1] - A.col[j + 1]) * t
       cAttr.array[j + 2] = A.col[j + 2] + (B.col[j + 2] - A.col[j + 2]) * t
@@ -402,19 +388,14 @@ function SeedObject({
 
     e.x += (A.offset[0] + (B.offset[0] - A.offset[0]) * t - e.x) * lerp
     e.y += (A.offset[1] + (B.offset[1] - A.offset[1]) * t - e.y) * lerp
-    // cursor parallax — the swarm leans toward the pointer
+    // whisper of cursor parallax — presence, not a chase
     const px = state.pointer.x
     const py = state.pointer.y
-    g.position.set(e.x + px * 0.35, e.y + py * 0.25, 0)
+    g.position.set(e.x + px * 0.12, e.y + py * 0.08, 0)
     g.scale.setScalar(WORLD)
 
-    const churn = 1 + morphDip * 1.6
-    g.rotation.y += delta * 0.14 * churn
-    g.rotation.x = Math.sin(time * 0.11) * 0.2 + py * -0.12
-
-    // slow dolly across the page — closer through the middle of the story
-    const dolly = 6.4 - Math.sin(progressRef.current * Math.PI) * 1.1
-    state.camera.position.z += (dolly - state.camera.position.z) * lerp
+    g.rotation.y += delta * 0.1 * (1 + morphDip * 0.6)
+    g.rotation.x = Math.sin(time * 0.11) * 0.16
   })
 
   return (
@@ -472,7 +453,7 @@ export default function SeedScene({
           bloom would blow the cream ground out, so it stays off there. */}
       {!ink && (
         <EffectComposer>
-          <Bloom intensity={0.55} luminanceThreshold={0.18} luminanceSmoothing={0.5} mipmapBlur />
+          <Bloom intensity={0.4} luminanceThreshold={0.22} luminanceSmoothing={0.5} mipmapBlur />
         </EffectComposer>
       )}
     </Canvas>
