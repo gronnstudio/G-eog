@@ -48,7 +48,7 @@ const ROW_COUNT = 10
 // ~30% of the viewport's height per row → roughly three drifting rows in
 // view on every screen, phone and desktop alike (vh, not vmin: on a wide
 // desktop vmin keys off the short side and the frames shrink).
-const ROW_HEIGHT = "clamp(160px, 30vh, 430px)"
+const ROW_HEIGHT = "clamp(150px, 26vh, 380px)"
 // Tiles per loop copy — enough that one copy spans the rotated plane's
 // width on wide desktops (tile width = 0.75 × row height).
 const TILES_PER_ROW = 21
