@@ -44,8 +44,8 @@ const ROW_STYLES = [
 ]
 
 // Enough rows to cover the oversized rotated plane at the capped height.
-const ROW_COUNT = 14
-const ROW_HEIGHT = "clamp(88px, 14vmin, 180px)"
+const ROW_COUNT = 12
+const ROW_HEIGHT = "clamp(120px, 19vmin, 240px)"
 // Tiles per loop copy — enough that one copy spans the rotated plane's
 // width on wide desktops (tile width = 0.75 × row height).
 const TILES_PER_ROW = 21
