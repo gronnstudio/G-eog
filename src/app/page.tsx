@@ -2,6 +2,7 @@ import Link from "next/link"
 import { ArrowRight, GitFork, Network, Sparkles } from "lucide-react"
 
 import { Hero } from "@/components/home/hero"
+import { SeedCore } from "@/components/home/seed-core"
 import { KnowledgeGraph } from "@/components/graph/knowledge-graph"
 import { CategoryCard } from "@/components/knowledge/category-card"
 import { ArticleCard } from "@/components/knowledge/article-card"
@@ -18,6 +19,7 @@ export default function HomePage() {
 
   return (
     <>
+      <SeedCore />
       <Hero stats={stats} />
 
       {/* Living graph */}
