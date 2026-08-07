@@ -70,7 +70,12 @@ export function LanguageToggle() {
       setOpen(false)
     }
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false)
-    const reflow = () => place()
+    // Reposition when the page scrolls — but not when the scroll happens
+    // inside the panel itself (that would fight the user's scrolling).
+    const reflow = (e?: Event) => {
+      if (e && panelRef.current?.contains(e.target as Node)) return
+      place()
+    }
     document.addEventListener("mousedown", onDown)
     document.addEventListener("keydown", onKey)
     window.addEventListener("resize", reflow)
@@ -116,6 +121,10 @@ export function LanguageToggle() {
             role="listbox"
             aria-label={t({ en: "Language", nl: "Taal" })}
             dir="ltr"
+            // Lenis hijacks wheel events for smooth scrolling and would
+            // swallow scrolls aimed at this panel (making lower locales
+            // unreachable on desktop); this attribute opts the panel out.
+            data-lenis-prevent=""
             style={{
               position: "fixed",
               left: pos.left,

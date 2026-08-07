@@ -33,30 +33,28 @@ const TILES: Tile[] = [
   { id: "10", label: "Regenerative garden", src: "https://picsum.photos/id/12/600/800" },
 ]
 
-// Alternating drift directions/speeds, cycled over however many rows the
-// wall renders. Row height is capped (clamp below) so several rows are in
-// view at once — on a phone one tile must never fill the screen.
+// 1:1 with the equilibrium reference: three full-height rows on the
+// tilted plane — top travels right, middle left, bottom right — all at
+// the same steady 74s cruise.
 const ROW_STYLES = [
   { dir: "right" as const, dur: 74 },
-  { dir: "left" as const, dur: 88 },
-  { dir: "right" as const, dur: 80 },
-  { dir: "left" as const, dur: 92 },
+  { dir: "left" as const, dur: 74 },
+  { dir: "right" as const, dur: 74 },
 ]
 
-// Enough rows to cover the oversized rotated plane at the capped height.
-const ROW_COUNT = 10
-const ROW_HEIGHT = "clamp(150px, 24vmin, 300px)"
+const ROW_COUNT = 3
+const TILES_PER_ROW = 8
 
 /** Deterministic tile list for a row: rotate the archive by the row index. */
 function rowTiles(row: number): Tile[] {
-  return Array.from({ length: 8 }, (_, i) => TILES[(row * 3 + i) % TILES.length])
+  return Array.from({ length: TILES_PER_ROW }, (_, i) => TILES[(row * 3 + i) % TILES.length])
 }
 
 function Row({ row, reduced }: { row: number; reduced: boolean }) {
   const tiles = rowTiles(row)
   const { dir, dur } = ROW_STYLES[row % ROW_STYLES.length]
   return (
-    <div className="relative shrink-0 overflow-hidden" style={{ height: ROW_HEIGHT }}>
+    <div className="relative min-h-0 flex-1 overflow-hidden">
       <div
         className={cn(
           "flex h-full w-max items-stretch gap-[1.6vw]",
@@ -98,7 +96,7 @@ export function HeroMosaic({ reducedOverride }: { reducedOverride?: boolean }) {
     <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
       {/* Steeply tilted, oversized so rotated corners never show. */}
       <div
-        className="absolute -inset-[60%] flex flex-col justify-center gap-[1.6vw]"
+        className="absolute -inset-x-[70%] -inset-y-[42%] flex flex-col justify-center gap-[1.6vw]"
         style={{ transform: "rotate(-24deg)" }}
       >
         {Array.from({ length: ROW_COUNT }, (_, row) => (
@@ -110,6 +108,10 @@ export function HeroMosaic({ reducedOverride }: { reducedOverride?: boolean }) {
           top-left, deep ground gathers at the bottom, ember glow bottom-right. */}
       <div className="pointer-events-none absolute inset-0 bg-forest/40 mix-blend-color" />
       <div className="pointer-events-none absolute inset-0 bg-background/40 mix-blend-multiply" />
+      {/* Theme-aware veil + text-side scrim: the wall stays visible at the
+          edges while the content column reads clearly in both Hours. */}
+      <div className="pointer-events-none absolute inset-0 bg-background/35" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background/75 via-background/35 to-transparent" />
       <div
         className="pointer-events-none absolute inset-0 mix-blend-screen"
         style={{
