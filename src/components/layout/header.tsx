@@ -118,9 +118,11 @@ export function Header() {
         >
           {/* Animated brand lockup (self-animating SMIL SVG: stroke draws,
               fill blooms). White artwork on the dark Hours; the ink variant
-              carries Golden Hour. Plain <img>s — SMIL plays inside img. */}
+              carries Golden Hour. The header uses the STILL variants —
+              the SMIL draw loop lives in the intro only; here it kept
+              replaying and its stroke pass overlapped the wordmark. */}
           <Image
-            src="/brand/logo-intro.svg"
+            src="/brand/logo-still.svg"
             alt=""
             width={814}
             height={165}
@@ -130,7 +132,7 @@ export function Header() {
             className="hidden h-9 w-auto select-none transition-transform duration-300 group-hover:scale-[1.03] dark:block"
           />
           <Image
-            src="/brand/logo-intro-ink.svg"
+            src="/brand/logo-still-ink.svg"
             alt=""
             width={814}
             height={165}
