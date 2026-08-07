@@ -17,7 +17,7 @@ import * as THREE from "three"
  */
 
 const TUBE_SEGMENTS = 220
-const TUBE_RADIUS = 0.035
+const TUBE_RADIUS = 0.022
 
 const TUBE_VERT = /* glsl */ `
   varying vec2 vUv;
@@ -88,19 +88,19 @@ function seededRandom(seed: number) {
   }
 }
 
-/** a sweeping S-curve across the right of the scene, individually varied */
+/** a near-horizontal cable sweeping the FULL width, gently arced —
+    Cerebrium's grammar: sparse precise lines, lots of negative space */
 function makeCurve(rand: () => number, i: number, n: number): THREE.CatmullRomCurve3 {
   const lane = (i / (n - 1) - 0.5) * 2 // -1 .. 1
   const pts: THREE.Vector3[] = []
   const K = 6
   for (let k = 0; k < K; k++) {
     const t = k / (K - 1)
-    const x = THREE.MathUtils.lerp(-4.4, 4.4, t)
+    const x = THREE.MathUtils.lerp(-6.8, 6.8, t)
     const y =
-      lane * 1.35 +
-      Math.sin(t * Math.PI * (1.1 + rand() * 0.5) + i * 1.7) * (0.55 + rand() * 0.4) +
-      (rand() - 0.5) * 0.2
-    const z = Math.sin(t * Math.PI * 2 + i) * 0.45 + (rand() - 0.5) * 0.3
+      lane * 2.0 +
+      Math.sin(t * Math.PI * (0.8 + rand() * 0.3) + i * 2.1) * (0.28 + rand() * 0.18)
+    const z = Math.sin(t * Math.PI * 1.5 + i) * 0.35 + (rand() - 0.5) * 0.2
     pts.push(new THREE.Vector3(x, y, z))
   }
   return new THREE.CatmullRomCurve3(pts)
@@ -134,12 +134,12 @@ function Conduits({
 
   const tubes = useMemo(() => {
     const rand = seededRandom(17)
-    const n = 5
+    const n = 4
     return Array.from({ length: n }, (_, i) => {
       const curve = makeCurve(rand, i, n)
       const geometry = new THREE.TubeGeometry(curve, TUBE_SEGMENTS, TUBE_RADIUS, 10, false)
-      // junction nodes sprinkled along the curve
-      const nodeTs = [0.22 + rand() * 0.1, 0.52 + rand() * 0.1, 0.8 + rand() * 0.08]
+      // two quiet junction nodes per cable
+      const nodeTs = [0.3 + rand() * 0.12, 0.68 + rand() * 0.12]
       const nodes = nodeTs.map((t) => curve.getPoint(t))
       return { geometry, nodes, seed: rand(), color: PULSE_COLORS[i % PULSE_COLORS.length] }
     })
@@ -168,21 +168,21 @@ function Conduits({
     mats.current.forEach((m) => {
       if (!m) return
       m.uniforms.uTime.value = time
-      // flow quickens and thickens as the page's story completes
-      m.uniforms.uFlow.value = 0.7 + p * 1.6
-      m.uniforms.uDensity.value = 0.34 + p * 0.66
+      // sparse, unhurried flow that only slightly quickens down the page
+      m.uniforms.uFlow.value = 0.5 + p * 0.9
+      m.uniforms.uDensity.value = 0.25 + p * 0.4
       m.uniforms.uCam.value.copy(state.camera.position)
     })
 
-    // gentle drift + whisper parallax; conduits stay off the copy's left column
-    g.position.x = 1.7 + Math.sin(p * Math.PI) * 0.4 + state.pointer.x * 0.06
-    g.position.y = Math.sin(time * 0.05) * 0.08 + state.pointer.y * 0.05
-    g.rotation.z = -0.32 + Math.sin(time * 0.04) * 0.02
-    g.rotation.y = Math.sin(time * 0.05) * 0.05
+    // centered full-width; only breath and a whisper of parallax
+    g.position.x = state.pointer.x * 0.05
+    g.position.y = Math.sin(time * 0.05) * 0.06 + state.pointer.y * 0.04
+    g.rotation.z = -0.14 + Math.sin(time * 0.04) * 0.015
+    g.rotation.y = Math.sin(time * 0.05) * 0.04
   })
 
   return (
-    <group ref={group} rotation={[0.12, 0, -0.32]}>
+    <group ref={group} rotation={[0.1, 0, -0.14]}>
       {tubes.map((t, i) => (
         <group key={i}>
           <mesh geometry={t.geometry}>
@@ -206,11 +206,11 @@ function Conduits({
           </mesh>
           {t.nodes.map((n, k) => (
             <mesh key={k} position={n}>
-              <sphereGeometry args={[0.075, 24, 24]} />
+              <sphereGeometry args={[0.045, 20, 20]} />
               <meshBasicMaterial
                 color={ink ? "#41604f" : "#dbe9df"}
                 transparent
-                opacity={ink ? 0.8 : 0.55}
+                opacity={ink ? 0.65 : 0.4}
               />
             </mesh>
           ))}
