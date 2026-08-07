@@ -63,7 +63,7 @@ export function StoryHero({
           initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
           animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           transition={{ duration: 1, ease: EASE_ORGANIC, delay: 0.1 }}
-          className="mt-6 max-w-4xl font-heading text-[clamp(2.75rem,8vw,6rem)] leading-[0.98] text-foreground"
+          className="mt-6 max-w-4xl font-heading text-[clamp(2.25rem,6vw,5.5rem)] leading-[1.02] text-foreground sm:leading-[0.98] [@media(max-height:600px)]:text-[clamp(1.75rem,6.5vh,3rem)]"
         >
           {title}
         </motion.h1>
