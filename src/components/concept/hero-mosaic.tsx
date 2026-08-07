@@ -44,8 +44,8 @@ const ROW_STYLES = [
 ]
 
 // Enough rows to cover the oversized rotated plane at the capped height.
-const ROW_COUNT = 12
-const ROW_HEIGHT = "clamp(120px, 19vmin, 240px)"
+const ROW_COUNT = 10
+const ROW_HEIGHT = "clamp(170px, 26vmin, 320px)"
 // Tiles per loop copy — enough that one copy spans the rotated plane's
 // width on wide desktops (tile width = 0.75 × row height).
 const TILES_PER_ROW = 21
@@ -113,6 +113,10 @@ export function HeroMosaic({ reducedOverride }: { reducedOverride?: boolean }) {
           top-left, deep ground gathers at the bottom, ember glow bottom-right. */}
       <div className="pointer-events-none absolute inset-0 bg-forest/40 mix-blend-color" />
       <div className="pointer-events-none absolute inset-0 bg-background/40 mix-blend-multiply" />
+      {/* Theme-aware veil + text-side scrim: the wall stays visible at the
+          edges while the content column reads clearly in both Hours. */}
+      <div className="pointer-events-none absolute inset-0 bg-background/35" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background/75 via-background/35 to-transparent" />
       <div
         className="pointer-events-none absolute inset-0 mix-blend-screen"
         style={{
