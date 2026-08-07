@@ -1,5 +1,7 @@
 "use client"
 
+import { useEffect, useState } from "react"
+
 import { useReducedMotion } from "@/lib/use-reduced-motion"
 import { cn } from "@/lib/utils"
 
@@ -43,15 +45,38 @@ const ROW_STYLES = [
 ]
 
 const ROW_COUNT = 3
-const TILES_PER_ROW = 8
 
-/** Deterministic tile list for a row: rotate the archive by the row index. */
-function rowTiles(row: number): Tile[] {
-  return Array.from({ length: TILES_PER_ROW }, (_, i) => TILES[(row * 3 + i) % TILES.length])
+/**
+ * Phones can't afford the desktop wall: three perpetually-animated GPU
+ * layers, each 2 copies × 8 full-res tiles wide on a plane 2.4× the
+ * viewport, at 3× DPR — that's what made scrolling crawl. On small
+ * screens the loop carries 5 lighter tiles (a narrower plane needs
+ * fewer to wrap seamlessly) at 384px source width.
+ */
+function useIsSmall(): boolean {
+  const [small, setSmall] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)")
+    const read = () => setSmall(mq.matches)
+    read()
+    mq.addEventListener("change", read)
+    return () => mq.removeEventListener("change", read)
+  }, [])
+  return small
 }
 
-function Row({ row, reduced }: { row: number; reduced: boolean }) {
-  const tiles = rowTiles(row)
+/** picsum URLs carry their size in the path — swap dims for mobile */
+function sized(src: string, small: boolean): string {
+  return small ? src.replace("/600/800", "/384/512") : src
+}
+
+/** Deterministic tile list for a row: rotate the archive by the row index. */
+function rowTiles(row: number, perRow: number): Tile[] {
+  return Array.from({ length: perRow }, (_, i) => TILES[(row * 3 + i) % TILES.length])
+}
+
+function Row({ row, reduced, small }: { row: number; reduced: boolean; small: boolean }) {
+  const tiles = rowTiles(row, small ? 5 : 8)
   const { dir, dur } = ROW_STYLES[row % ROW_STYLES.length]
   return (
     <div className="relative min-h-0 flex-1 overflow-hidden">
@@ -75,9 +100,10 @@ function Row({ row, reduced }: { row: number; reduced: boolean }) {
                   wrapper), so a slow/failed load never leaks a broken label. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={t.src}
+                src={sized(t.src, small)}
                 alt=""
                 loading="eager"
+                decoding="async"
                 draggable={false}
                 className="h-full w-full object-cover"
               />
@@ -91,16 +117,19 @@ function Row({ row, reduced }: { row: number; reduced: boolean }) {
 
 export function HeroMosaic({ reducedOverride }: { reducedOverride?: boolean }) {
   const reduced = useReducedMotion() || Boolean(reducedOverride)
+  const small = useIsSmall()
 
   return (
     <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
-      {/* Steeply tilted, oversized so rotated corners never show. */}
+      {/* Steeply tilted, oversized so rotated corners never show. Phones
+          get a tighter bleed (-45% covers the -24° rotation on tall
+          screens) so the animated layers stay much smaller. */}
       <div
-        className="absolute -inset-x-[70%] -inset-y-[42%] flex flex-col justify-center gap-[1.6vw]"
+        className="absolute -inset-x-[45%] -inset-y-[42%] flex flex-col justify-center gap-[1.6vw] md:-inset-x-[70%]"
         style={{ transform: "rotate(-24deg)" }}
       >
         {Array.from({ length: ROW_COUNT }, (_, row) => (
-          <Row key={row} row={row} reduced={reduced} />
+          <Row key={row} row={row} reduced={reduced} small={small} />
         ))}
       </div>
 
