@@ -44,12 +44,15 @@ const ROW_STYLES = [
 ]
 
 // Enough rows to cover the oversized rotated plane at the capped height.
-const ROW_COUNT = 10
-const ROW_HEIGHT = "clamp(150px, 24vmin, 300px)"
+const ROW_COUNT = 14
+const ROW_HEIGHT = "clamp(88px, 14vmin, 180px)"
+// Tiles per loop copy — enough that one copy spans the rotated plane's
+// width on wide desktops (tile width = 0.75 × row height).
+const TILES_PER_ROW = 21
 
 /** Deterministic tile list for a row: rotate the archive by the row index. */
 function rowTiles(row: number): Tile[] {
-  return Array.from({ length: 8 }, (_, i) => TILES[(row * 3 + i) % TILES.length])
+  return Array.from({ length: TILES_PER_ROW }, (_, i) => TILES[(row * 3 + i) % TILES.length])
 }
 
 function Row({ row, reduced }: { row: number; reduced: boolean }) {
@@ -59,7 +62,7 @@ function Row({ row, reduced }: { row: number; reduced: boolean }) {
     <div className="relative shrink-0 overflow-hidden" style={{ height: ROW_HEIGHT }}>
       <div
         className={cn(
-          "flex h-full w-max items-stretch gap-[1.6vw]",
+          "flex h-full w-max items-stretch gap-[1vw]",
           !reduced && (dir === "right" ? "eog-mosaic-right" : "eog-mosaic-left")
         )}
         style={reduced ? undefined : ({ "--mosaic-dur": `${dur}s` } as React.CSSProperties)}
@@ -98,7 +101,7 @@ export function HeroMosaic({ reducedOverride }: { reducedOverride?: boolean }) {
     <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
       {/* Steeply tilted, oversized so rotated corners never show. */}
       <div
-        className="absolute -inset-[60%] flex flex-col justify-center gap-[1.6vw]"
+        className="absolute -inset-x-[18%] -inset-y-[45%] flex flex-col justify-center gap-[1vw]"
         style={{ transform: "rotate(-24deg)" }}
       >
         {Array.from({ length: ROW_COUNT }, (_, row) => (
