@@ -6,255 +6,139 @@ import { Bloom, EffectComposer } from "@react-three/postprocessing"
 import * as THREE from "three"
 
 /**
- * The Living Seed — EOG's scroll companion, v2: each form now mirrors
- * the content on screen at that point of the page.
+ * The Living Form — one organic hero object instead of a particle cloud.
+ * A noise-displaced sphere with fresnel-lit, slowly flowing color: the
+ * silky "living orb" aesthetic of award-winning 3D sites. Scroll doesn't
+ * swap shapes — it changes the object's CHARACTER per section:
  *
- *   hero        → knowledge constellation (nodes + relationship threads —
- *                 "knowledge grows when everything connects")
- *   graph strip → mycelium web (the underground network the graph maps)
- *   categories  → eight orbiting clusters, one per domain chip on screen,
- *                 each tinted like the category colour family
- *   timeline    → ecological succession: ground → trunk → rising canopy
- *   CTA         → seed bloom (the commons growing outward)
+ *   hero       → calm breathing orb, barely rippling
+ *   graph      → tighter, faster ripples (a mind at work)
+ *   domains    → broad slow waves, colour drifting through the palette
+ *   timeline   → stretched tall, growing — reaching upward
+ *   CTA        → open bloom: soft, swollen, radiant
  *
- * Points AND line threads morph between equal-length precomputed sets
- * from a single scroll fraction; colors crossfade per form. Only mounted
- * ≥1024px landscape, no reduced-motion, WebGL only (see seed-core).
+ * Desktop-landscape only, reduced-motion and WebGL gated in seed-core.
  */
 
-const COUNT = 1800
-const LINK_COUNT = 220 // line segments; 2 vertices each
-const WORLD = 1.05
+/** per-section character: displacement amp/freq, speed, scale xyz, pos, hue mix */
+const CHAPTERS = [
+  { amp: 0.16, freq: 1.6, speed: 0.35, scale: [1, 1, 1], pos: [1.9, 0.05], mix: 0.0 },
+  { amp: 0.34, freq: 3.2, speed: 0.7, scale: [0.92, 0.92, 0.92], pos: [-2.0, 0.1], mix: 0.25 },
+  { amp: 0.22, freq: 1.1, speed: 0.4, scale: [1.15, 1.0, 1.15], pos: [2.0, -0.1], mix: 0.5 },
+  { amp: 0.2, freq: 1.9, speed: 0.5, scale: [0.8, 1.5, 0.8], pos: [-1.9, 0.15], mix: 0.75 },
+  { amp: 0.42, freq: 0.9, speed: 0.55, scale: [1.1, 1.1, 1.1], pos: [0, 0.05], mix: 1.0 },
+] as const
 
-/**
- * Soft-glow sprite shader — the awwwards-grade upgrade over square GL
- * points: each particle is a radial-falloff light with its own size and
- * twinkle phase, attenuated by depth. Bloom lifts the bright cores.
- */
 const VERT = /* glsl */ `
-  attribute float aSize;
-  attribute float aPhase;
-  varying vec3 vColor;
-  varying float vTwinkle;
   uniform float uTime;
-  uniform float uPixelRatio;
+  uniform float uAmp;
+  uniform float uFreq;
+  uniform float uSpeed;
+  varying float vDisp;
+  varying vec3 vNormalW;
+  varying vec3 vPosW;
+
+  // Ashima simplex noise (3D)
+  vec3 mod289(vec3 x){return x - floor(x * (1.0/289.0)) * 289.0;}
+  vec4 mod289(vec4 x){return x - floor(x * (1.0/289.0)) * 289.0;}
+  vec4 permute(vec4 x){return mod289(((x*34.0)+1.0)*x);}
+  vec4 taylorInvSqrt(vec4 r){return 1.79284291400159 - 0.85373472095314 * r;}
+  float snoise(vec3 v){
+    const vec2 C = vec2(1.0/6.0, 1.0/3.0);
+    const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
+    vec3 i  = floor(v + dot(v, C.yyy));
+    vec3 x0 = v - i + dot(i, C.xxx);
+    vec3 g = step(x0.yzx, x0.xyz);
+    vec3 l = 1.0 - g;
+    vec3 i1 = min(g.xyz, l.zxy);
+    vec3 i2 = max(g.xyz, l.zxy);
+    vec3 x1 = x0 - i1 + C.xxx;
+    vec3 x2 = x0 - i2 + C.yyy;
+    vec3 x3 = x0 - D.yyy;
+    i = mod289(i);
+    vec4 p = permute(permute(permute(
+              i.z + vec4(0.0, i1.z, i2.z, 1.0))
+            + i.y + vec4(0.0, i1.y, i2.y, 1.0))
+            + i.x + vec4(0.0, i1.x, i2.x, 1.0));
+    float n_ = 0.142857142857;
+    vec3 ns = n_ * D.wyz - D.xzx;
+    vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
+    vec4 x_ = floor(j * ns.z);
+    vec4 y_ = floor(j - 7.0 * x_);
+    vec4 x = x_ * ns.x + ns.yyyy;
+    vec4 y = y_ * ns.x + ns.yyyy;
+    vec4 h = 1.0 - abs(x) - abs(y);
+    vec4 b0 = vec4(x.xy, y.xy);
+    vec4 b1 = vec4(x.zw, y.zw);
+    vec4 s0 = floor(b0) * 2.0 + 1.0;
+    vec4 s1 = floor(b1) * 2.0 + 1.0;
+    vec4 sh = -step(h, vec4(0.0));
+    vec4 a0 = b0.xzyw + s0.xzyw * sh.xxyy;
+    vec4 a1 = b1.xzyw + s1.xzyw * sh.zzww;
+    vec3 p0 = vec3(a0.xy, h.x);
+    vec3 p1 = vec3(a0.zw, h.y);
+    vec3 p2 = vec3(a1.xy, h.z);
+    vec3 p3 = vec3(a1.zw, h.w);
+    vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));
+    p0 *= norm.x; p1 *= norm.y; p2 *= norm.z; p3 *= norm.w;
+    vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+    m = m * m;
+    return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
+  }
+
   void main() {
-    vColor = color;
-    vec4 mv = modelViewMatrix * vec4(position, 1.0);
-    vTwinkle = 0.88 + 0.12 * sin(uTime * 1.2 + aPhase);
-    gl_PointSize = aSize * uPixelRatio * (95.0 / -mv.z) * vTwinkle;
-    gl_Position = projectionMatrix * mv;
+    float t = uTime * uSpeed;
+    // two octaves of flowing noise along the normal — silk, not spikes
+    float n = snoise(normal * uFreq + vec3(t * 0.6, t * 0.4, t * 0.5));
+    n += 0.5 * snoise(normal * uFreq * 2.3 + vec3(-t * 0.5, t * 0.7, -t * 0.3));
+    vDisp = n;
+    vec3 displaced = position + normal * n * uAmp;
+    vec4 world = modelMatrix * vec4(displaced, 1.0);
+    vPosW = world.xyz;
+    // cheap displaced normal: blend the sphere normal with the noise slope
+    vNormalW = normalize(mat3(modelMatrix) * normalize(normal + vec3(n) * 0.35));
+    gl_Position = projectionMatrix * viewMatrix * world;
   }
 `
+
 const FRAG = /* glsl */ `
-  varying vec3 vColor;
-  varying float vTwinkle;
+  uniform float uMix;    // palette drift across the page
+  uniform float uInk;    // 1 on the paper Hour
   uniform float uOpacity;
-  uniform float uInk; // 1 on the light Hour: solid ink dots, no glow halo
+  uniform vec3 uCam;
+  varying float vDisp;
+  varying vec3 vNormalW;
+  varying vec3 vPosW;
+
   void main() {
-    float d = length(gl_PointCoord - 0.5);
-    if (d > 0.5) discard;
-    float halo = smoothstep(0.5, 0.0, d);
-    float core = pow(max(0.0, 1.0 - d * 2.6), 3.0) * 1.6;
-    float aGlow = (halo * 0.45 + core) * vTwinkle;
-    float aInk = smoothstep(0.42, 0.3, d) * 0.85;
-    float a = mix(aGlow, aInk, uInk) * uOpacity;
-    vec3 col = mix(vColor * (0.7 + core), vColor * 0.55, uInk);
-    gl_FragColor = vec4(col, a);
+    vec3 V = normalize(uCam - vPosW);
+    float fres = pow(1.0 - max(0.0, dot(vNormalW, V)), 2.2);
+
+    // EOG palette flow: deep forest -> leaf -> water -> ember accents
+    vec3 forest = vec3(0.043, 0.145, 0.102);
+    vec3 leaf   = vec3(0.184, 0.522, 0.322);
+    vec3 water  = vec3(0.310, 0.561, 0.722);
+    vec3 ember  = vec3(0.976, 0.353, 0.031);
+    vec3 cream  = vec3(0.957, 0.929, 0.902);
+
+    float band = vDisp * 0.5 + 0.5;
+    vec3 base = mix(forest, leaf, smoothstep(0.15, 0.75, band));
+    base = mix(base, water, uMix * 0.45 * smoothstep(0.4, 1.0, band));
+    // ember licks only on the highest crests
+    base = mix(base, ember, smoothstep(0.82, 1.0, band) * (0.35 + uMix * 0.4));
+    // fresnel rim: cream glow on dark, deep ink edge on paper
+    vec3 rimDark = mix(cream, ember, uMix * 0.5);
+    vec3 rimInk  = forest * 0.55;
+    base += fres * mix(rimDark, rimInk, uInk) * mix(1.1, 0.9, uInk);
+    // on paper, deepen everything toward ink so it sits on cream
+    base = mix(base, base * 0.55 + forest * 0.25, uInk * 0.55);
+
+    float alpha = uOpacity * mix(0.92, 0.85, uInk);
+    gl_FragColor = vec4(base, alpha);
   }
 `
 
-function seededRandom(seed: number) {
-  let s = seed
-  return () => {
-    s = (s * 16807) % 2147483647
-    return (s - 1) / 2147483646
-  }
-}
-
-function fib(count: number, i: number): [number, number, number] {
-  const phi = Math.PI * (Math.sqrt(5) - 1)
-  const y = 1 - (i / (count - 1)) * 2
-  const r = Math.sqrt(1 - y * y)
-  const t = phi * i
-  return [Math.cos(t) * r, y, Math.sin(t) * r]
-}
-
-const EMBER = new THREE.Color("#f95a08")
-const CREAM = new THREE.Color("#f4ede6")
-const LEAF = new THREE.Color("#2f8552")
-const WATER = new THREE.Color("#4f8fb8")
-const AMBER = new THREE.Color("#e0a458")
-const SOIL = new THREE.Color("#8a6f4d")
-
-/** category colour families — mirrors the domain chips on screen */
-const CLUSTER_TINTS = [LEAF, WATER, AMBER, EMBER, SOIL, CREAM, LEAF, WATER]
-
-type Form = {
-  pts: Float32Array
-  col: Float32Array
-  links: Float32Array
-  linkAlpha: number
-  offset: [number, number]
-}
-
-function makeForm(): { pts: Float32Array; col: Float32Array; links: Float32Array } {
-  return {
-    pts: new Float32Array(COUNT * 3),
-    col: new Float32Array(COUNT * 3),
-    links: new Float32Array(LINK_COUNT * 2 * 3),
-  }
-}
-
-function setColor(col: Float32Array, i: number, c: THREE.Color, dim = 1) {
-  col[i * 3] = c.r * dim
-  col[i * 3 + 1] = c.g * dim
-  col[i * 3 + 2] = c.b * dim
-}
-
-/** 1 — knowledge constellation: hub-and-spoke node sphere + threads */
-function formConstellation(): Form {
-  const f = makeForm()
-  const rand = seededRandom(3)
-  const hubs: number[] = []
-  for (let i = 0; i < COUNT; i++) {
-    const [x, y, z] = fib(COUNT, i)
-    const isHub = i % 75 === 0
-    if (isHub) hubs.push(i)
-    const r = isHub ? 1.35 : 1.0 + rand() * 0.55
-    f.pts[i * 3] = x * r
-    f.pts[i * 3 + 1] = y * r
-    f.pts[i * 3 + 2] = z * r
-    setColor(f.col, i, isHub ? EMBER : rand() < 0.55 ? CREAM : LEAF, isHub ? 1 : 0.85)
-  }
-  // threads: hub → nearby nodes (the "97 connections" on screen)
-  for (let l = 0; l < LINK_COUNT; l++) {
-    const h = hubs[l % hubs.length] * 3
-    const n = Math.floor(rand() * COUNT) * 3
-    f.links.set([f.pts[h], f.pts[h + 1], f.pts[h + 2], f.pts[n], f.pts[n + 1], f.pts[n + 2]], l * 6)
-  }
-  return { ...f, linkAlpha: 0.28, offset: [1.9, 0.1] }
-}
-
-/** 2 — mycelium: filament runs between buried hubs */
-function formMycelium(): Form {
-  const f = makeForm()
-  const rand = seededRandom(11)
-  const hubs: THREE.Vector3[] = []
-  for (let h = 0; h < 10; h++)
-    hubs.push(new THREE.Vector3((rand() - 0.5) * 3.6, (rand() - 0.5) * 2.4, (rand() - 0.5) * 1.4))
-  for (let i = 0; i < COUNT; i++) {
-    const a = hubs[Math.floor(rand() * hubs.length)]
-    const b = hubs[Math.floor(rand() * hubs.length)]
-    const t = rand()
-    const j = 0.08 + rand() * 0.1
-    f.pts[i * 3] = a.x + (b.x - a.x) * t + (rand() - 0.5) * j
-    f.pts[i * 3 + 1] = a.y + (b.y - a.y) * t + (rand() - 0.5) * j
-    f.pts[i * 3 + 2] = a.z + (b.z - a.z) * t + (rand() - 0.5) * j
-    setColor(f.col, i, rand() < 0.12 ? AMBER : CREAM, 0.8)
-  }
-  for (let l = 0; l < LINK_COUNT; l++) {
-    const a = hubs[l % hubs.length]
-    const b = hubs[(l * 3 + 1) % hubs.length]
-    f.links.set([a.x, a.y, a.z, b.x, b.y, b.z], l * 6)
-  }
-  return { ...f, linkAlpha: 0.16, offset: [-2.1, 0] }
-}
-
-/** 3 — domains: eight tinted orbit clusters (one per category card) */
-function formClusters(): Form {
-  const f = makeForm()
-  const rand = seededRandom(23)
-  const centers: THREE.Vector3[] = []
-  for (let c = 0; c < 8; c++) {
-    const a = (c / 8) * Math.PI * 2
-    centers.push(new THREE.Vector3(Math.cos(a) * 1.7, Math.sin(a) * 1.15, Math.sin(a * 2) * 0.4))
-  }
-  for (let i = 0; i < COUNT; i++) {
-    const c = i % 8
-    const ctr = centers[c]
-    const [x, y, z] = fib(Math.ceil(COUNT / 8), Math.floor(i / 8))
-    const r = 0.28 + rand() * 0.22
-    f.pts[i * 3] = ctr.x + x * r
-    f.pts[i * 3 + 1] = ctr.y + y * r
-    f.pts[i * 3 + 2] = ctr.z + z * r
-    setColor(f.col, i, CLUSTER_TINTS[c], 0.9)
-  }
-  // ring of relationships between neighbouring domains
-  for (let l = 0; l < LINK_COUNT; l++) {
-    const a = centers[l % 8]
-    const b = centers[(l + 1) % 8]
-    const t1 = (l / LINK_COUNT) * 0.4
-    f.links.set([
-      a.x + (b.x - a.x) * t1, a.y + (b.y - a.y) * t1, a.z,
-      a.x + (b.x - a.x) * (t1 + 0.5), a.y + (b.y - a.y) * (t1 + 0.5), b.z,
-    ], l * 6)
-  }
-  return { ...f, linkAlpha: 0.2, offset: [2.0, -0.1] }
-}
-
-/** 4 — succession: bare ground rising into trunk and canopy */
-function formSuccession(): Form {
-  const f = makeForm()
-  const rand = seededRandom(37)
-  for (let i = 0; i < COUNT; i++) {
-    const roll = i / COUNT
-    if (roll < 0.3) {
-      // ground layer — pioneers
-      f.pts[i * 3] = (rand() - 0.5) * 3.6
-      f.pts[i * 3 + 1] = -1.5 + rand() * 0.25
-      f.pts[i * 3 + 2] = (rand() - 0.5) * 1.2
-      setColor(f.col, i, rand() < 0.5 ? SOIL : AMBER, 0.8)
-    } else if (roll < 0.45) {
-      // trunk
-      const t = rand()
-      f.pts[i * 3] = (rand() - 0.5) * 0.22
-      f.pts[i * 3 + 1] = -1.4 + t * 1.9
-      f.pts[i * 3 + 2] = (rand() - 0.5) * 0.22
-      setColor(f.col, i, SOIL, 0.9)
-    } else {
-      // canopy dome
-      const [x, y, z] = fib(COUNT, i)
-      const r = 0.9 + rand() * 0.45
-      f.pts[i * 3] = x * r * 1.25
-      f.pts[i * 3 + 1] = 0.75 + Math.abs(y) * r * 0.85
-      f.pts[i * 3 + 2] = z * r * 0.9
-      setColor(f.col, i, rand() < 0.85 ? LEAF : EMBER, 0.95)
-    }
-  }
-  // branches: trunk top fanning into the canopy
-  for (let l = 0; l < LINK_COUNT; l++) {
-    const a = rand() * Math.PI * 2
-    const r = 0.5 + rand() * 1.1
-    f.links.set([
-      0, -0.2 + rand() * 0.8, 0,
-      Math.cos(a) * r, 0.9 + rand() * 0.9, Math.sin(a) * r * 0.8,
-    ], l * 6)
-  }
-  return { ...f, linkAlpha: 0.14, offset: [-1.9, 0.05] }
-}
-
-/** 5 — bloom: shells bursting outward */
-function formBloom(): Form {
-  const f = makeForm()
-  const rand = seededRandom(53)
-  for (let i = 0; i < COUNT; i++) {
-    const [x, y, z] = fib(COUNT, i)
-    const shell = 1.1 + (i % 3) * 0.55 + rand() * 0.3
-    f.pts[i * 3] = x * shell
-    f.pts[i * 3 + 1] = y * shell
-    f.pts[i * 3 + 2] = z * shell
-    setColor(f.col, i, rand() < 0.2 ? EMBER : rand() < 0.6 ? CREAM : LEAF)
-  }
-  // radial rays
-  for (let l = 0; l < LINK_COUNT; l++) {
-    const [x, y, z] = fib(LINK_COUNT, l)
-    f.links.set([x * 0.4, y * 0.4, z * 0.4, x * 2.1, y * 2.1, z * 2.1], l * 6)
-  }
-  return { ...f, linkAlpha: 0.1, offset: [0, 0.1] }
-}
-
-/** true on Golden Hour — additive glow washes out on the paper ground */
+/** true on Golden Hour — glow palette flips to ink on the paper ground */
 function useInkTheme(): boolean {
   const [ink, setInk] = useState(false)
   useEffect(() => {
@@ -268,170 +152,97 @@ function useInkTheme(): boolean {
   return ink
 }
 
-function SeedObject({
+function LivingForm({
   progressRef,
   ink,
 }: {
   progressRef: React.MutableRefObject<number>
   ink: boolean
 }) {
-  const points = useRef<THREE.Points>(null)
-  const lines = useRef<THREE.LineSegments>(null)
-  const group = useRef<THREE.Group>(null)
-  const pMat = useRef<THREE.ShaderMaterial>(null)
-  const lMat = useRef<THREE.LineBasicMaterial>(null)
+  const mesh = useRef<THREE.Mesh>(null)
+  const mat = useRef<THREE.ShaderMaterial>(null)
+  const eased = useRef({
+    amp: CHAPTERS[0].amp,
+    freq: CHAPTERS[0].freq,
+    speed: CHAPTERS[0].speed,
+    sx: 1, sy: 1, sz: 1,
+    x: CHAPTERS[0].pos[0],
+    y: CHAPTERS[0].pos[1],
+    mix: 0,
+  })
 
-  const forms = useMemo<Form[]>(
-    () => [formConstellation(), formMycelium(), formClusters(), formSuccession(), formBloom()],
-    []
-  )
-
-  const positions = useMemo(() => forms[0].pts.slice(), [forms])
-  const colors = useMemo(() => forms[0].col.slice(), [forms])
-  const linkPositions = useMemo(() => forms[0].links.slice(), [forms])
-  const { sizes, phases } = useMemo(() => {
-    const rand = seededRandom(71)
-    const s = new Float32Array(COUNT)
-    const ph = new Float32Array(COUNT)
-    for (let i = 0; i < COUNT; i++) {
-      // a few oversized "fireflies", mostly fine dust
-      const roll = rand()
-      s[i] = roll < 0.03 ? 2.2 + rand() * 1.0 : 0.75 + rand() * 0.9
-      ph[i] = rand() * Math.PI * 2
-    }
-    return { sizes: s, phases: ph }
-  }, [])
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uOpacity: { value: 0.85 },
-      uPixelRatio: { value: 1 },
+      uAmp: { value: CHAPTERS[0].amp },
+      uFreq: { value: CHAPTERS[0].freq },
+      uSpeed: { value: CHAPTERS[0].speed },
+      uMix: { value: 0 },
       uInk: { value: 0 },
+      uOpacity: { value: 0.9 },
+      uCam: { value: new THREE.Vector3(0, 0, 6) },
     }),
     []
   )
 
-  // theme switch: ink dots + normal blending on paper, glow + additive on dark
   useEffect(() => {
-    if (pMat.current) {
-      pMat.current.uniforms.uInk.value = ink ? 1 : 0
-      pMat.current.blending = ink ? THREE.NormalBlending : THREE.AdditiveBlending
-      pMat.current.needsUpdate = true
-    }
-    if (lMat.current) {
-      lMat.current.color.set(ink ? "#1d3a2c" : "#f4ede6")
-      lMat.current.blending = ink ? THREE.NormalBlending : THREE.AdditiveBlending
-      lMat.current.needsUpdate = true
-    }
+    if (mat.current) mat.current.uniforms.uInk.value = ink ? 1 : 0
   }, [ink])
-  const eased = useRef({ form: 0, x: forms[0].offset[0], y: forms[0].offset[1] })
 
   useFrame((state, delta) => {
-    const p = points.current
-    const ln = lines.current
-    const g = group.current
-    if (!p || !ln || !g) return
+    const m = mesh.current
+    const material = mat.current
+    if (!m || !material) return
 
-    const target = progressRef.current * (forms.length - 1)
+    const scrollT = progressRef.current * (CHAPTERS.length - 1)
+    const ia = Math.min(CHAPTERS.length - 1, Math.floor(scrollT))
+    const ib = Math.min(CHAPTERS.length - 1, ia + 1)
+    const raw = scrollT - ia
+    const t = raw * raw * (3 - 2 * raw)
+    const A = CHAPTERS[ia]
+    const B = CHAPTERS[ib]
+
     const e = eased.current
-    const lerp = 1 - Math.exp(-3.2 * delta)
-    e.form += (target - e.form) * lerp
+    const k = 1 - Math.exp(-3 * delta)
+    e.amp += (A.amp + (B.amp - A.amp) * t - e.amp) * k
+    e.freq += (A.freq + (B.freq - A.freq) * t - e.freq) * k
+    e.speed += (A.speed + (B.speed - A.speed) * t - e.speed) * k
+    e.sx += (A.scale[0] + (B.scale[0] - A.scale[0]) * t - e.sx) * k
+    e.sy += (A.scale[1] + (B.scale[1] - A.scale[1]) * t - e.sy) * k
+    e.sz += (A.scale[2] + (B.scale[2] - A.scale[2]) * t - e.sz) * k
+    e.x += (A.pos[0] + (B.pos[0] - A.pos[0]) * t - e.x) * k
+    e.y += (A.pos[1] + (B.pos[1] - A.pos[1]) * t - e.y) * k
+    e.mix += (A.mix + (B.mix - A.mix) * t - e.mix) * k
 
-    const ia = Math.min(forms.length - 1, Math.floor(e.form))
-    const ib = Math.min(forms.length - 1, ia + 1)
-    const raw = e.form - ia
-    const t = raw * raw * (3 - 2 * raw) // smoothstep hold
+    material.uniforms.uTime.value = state.clock.elapsedTime
+    material.uniforms.uAmp.value = e.amp
+    material.uniforms.uFreq.value = e.freq
+    material.uniforms.uSpeed.value = e.speed
+    material.uniforms.uMix.value = e.mix
+    material.uniforms.uCam.value.copy(state.camera.position)
+    // recede behind the CTA/footer copy at the very end of the page
+    const p = progressRef.current
+    const lateFade = p > 0.82 ? (p - 0.82) / 0.18 : 0
+    material.uniforms.uOpacity.value = 0.9 - lateFade * 0.55
 
-    const A = forms[ia]
-    const B = forms[ib]
-    const time = state.clock.elapsedTime
-
-    const morphDipEarly = Math.sin(t * Math.PI)
-    const pAttr = p.geometry.getAttribute("position") as THREE.BufferAttribute
-    const cAttr = p.geometry.getAttribute("color") as THREE.BufferAttribute
-    for (let i = 0; i < COUNT; i++) {
-      const j = i * 3
-      const wobX = Math.sin(time * 0.7 + i * 0.37) * 0.02
-      const wobY = Math.cos(time * 0.6 + i * 0.53) * 0.02
-      // calm morph: straight ease between forms, only a faint drift so
-      // transitions read as one object re-arranging, not a swarm storm
-      const drift = 1 + morphDipEarly * 0.08 * Math.sin(i * 1.7)
-      pAttr.array[j] = (A.pts[j] + (B.pts[j] - A.pts[j]) * t) * drift + wobX
-      pAttr.array[j + 1] = (A.pts[j + 1] + (B.pts[j + 1] - A.pts[j + 1]) * t) * drift + wobY
-      pAttr.array[j + 2] = A.pts[j + 2] + (B.pts[j + 2] - A.pts[j + 2]) * t
-      cAttr.array[j] = A.col[j] + (B.col[j] - A.col[j]) * t
-      cAttr.array[j + 1] = A.col[j + 1] + (B.col[j + 1] - A.col[j + 1]) * t
-      cAttr.array[j + 2] = A.col[j + 2] + (B.col[j + 2] - A.col[j + 2]) * t
-    }
-    pAttr.needsUpdate = true
-    cAttr.needsUpdate = true
-
-    const lAttr = ln.geometry.getAttribute("position") as THREE.BufferAttribute
-    for (let i = 0; i < LINK_COUNT * 2 * 3; i++) {
-      lAttr.array[i] = A.links[i] + (B.links[i] - A.links[i]) * t
-    }
-    lAttr.needsUpdate = true
-
-    const morphDip = Math.sin(t * Math.PI)
-    if (pMat.current) {
-      pMat.current.uniforms.uTime.value = time
-      pMat.current.uniforms.uOpacity.value = 0.85 - morphDip * 0.3
-      pMat.current.uniforms.uPixelRatio.value = state.gl.getPixelRatio()
-    }
-    if (lMat.current) {
-      // threads fade out mid-morph and settle at the target form's alpha
-      const alpha = A.linkAlpha + (B.linkAlpha - A.linkAlpha) * t
-      lMat.current.opacity = alpha * (1 - morphDip * 0.85)
-      // gentle pulse so relationships feel alive
-      lMat.current.opacity *= 0.8 + Math.sin(time * 1.3) * 0.2
-    }
-
-    e.x += (A.offset[0] + (B.offset[0] - A.offset[0]) * t - e.x) * lerp
-    e.y += (A.offset[1] + (B.offset[1] - A.offset[1]) * t - e.y) * lerp
-    // whisper of cursor parallax — presence, not a chase
-    const px = state.pointer.x
-    const py = state.pointer.y
-    g.position.set(e.x + px * 0.12, e.y + py * 0.08, 0)
-    g.scale.setScalar(WORLD)
-
-    g.rotation.y += delta * 0.1 * (1 + morphDip * 0.6)
-    g.rotation.x = Math.sin(time * 0.11) * 0.16
+    // whisper of cursor parallax
+    m.position.set(e.x + state.pointer.x * 0.1, e.y + state.pointer.y * 0.07, 0)
+    m.scale.set(e.sx, e.sy, e.sz)
+    m.rotation.y += delta * 0.08
+    m.rotation.z = Math.sin(state.clock.elapsedTime * 0.07) * 0.08
   })
 
   return (
-    <group ref={group}>
-      <points ref={points}>
-        <bufferGeometry>
-          <bufferAttribute attach="attributes-position" args={[positions, 3]} />
-          <bufferAttribute attach="attributes-color" args={[colors, 3]} />
-          <bufferAttribute attach="attributes-aSize" args={[sizes, 1]} />
-          <bufferAttribute attach="attributes-aPhase" args={[phases, 1]} />
-        </bufferGeometry>
-        <shaderMaterial
-          ref={pMat}
-          vertexShader={VERT}
-          fragmentShader={FRAG}
-          uniforms={uniforms}
-          vertexColors
-          transparent
-          depthWrite={false}
-          blending={THREE.AdditiveBlending}
-        />
-      </points>
-      <lineSegments ref={lines}>
-        <bufferGeometry>
-          <bufferAttribute attach="attributes-position" args={[linkPositions, 3]} />
-        </bufferGeometry>
-        <lineBasicMaterial
-          ref={lMat}
-          color="#f4ede6"
-          transparent
-          opacity={0.25}
-          depthWrite={false}
-          blending={THREE.AdditiveBlending}
-        />
-      </lineSegments>
-    </group>
+    <mesh ref={mesh}>
+      <icosahedronGeometry args={[1.35, 96]} />
+      <shaderMaterial
+        ref={mat}
+        vertexShader={VERT}
+        fragmentShader={FRAG}
+        uniforms={uniforms}
+        transparent
+      />
+    </mesh>
   )
 }
 
@@ -445,15 +256,14 @@ export default function SeedScene({
     <Canvas
       dpr={[1, 1.75]}
       camera={{ position: [0, 0, 6], fov: 42 }}
-      gl={{ antialias: false, alpha: true, powerPreference: "low-power" }}
+      gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
     >
-      <SeedObject progressRef={progressRef} ink={ink} />
-      {/* soft bloom lifts the particle cores into glow — the polish that
-          separates gl points from an award-site render. On the paper Hour
-          bloom would blow the cream ground out, so it stays off there. */}
+      <LivingForm progressRef={progressRef} ink={ink} />
+      {/* gentle bloom lifts the fresnel rim on the dark Hour; on paper it
+          would haze the cream ground, so it stays off there */}
       {!ink && (
         <EffectComposer>
-          <Bloom intensity={0.4} luminanceThreshold={0.22} luminanceSmoothing={0.5} mipmapBlur />
+          <Bloom intensity={0.5} luminanceThreshold={0.35} luminanceSmoothing={0.6} mipmapBlur />
         </EffectComposer>
       )}
     </Canvas>
