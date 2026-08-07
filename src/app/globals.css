@@ -375,6 +375,10 @@ h1, h2, h3, h4 {
 .eog-mosaic-right { animation: eog-mosaic-r var(--mosaic-dur, 80s) linear infinite; }
 
 /* Utility: hide scrollbars on horizontal rails. */
+/* Perf: sections stamp this while offscreen so their infinite CSS
+   animations (mosaic drift, marquee) stop burning the compositor. */
+.eog-anim-paused, .eog-anim-paused * { animation-play-state: paused !important; }
+
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; }
 

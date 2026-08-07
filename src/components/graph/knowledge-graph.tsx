@@ -120,6 +120,7 @@ export function KnowledgeGraph({
 
     let alpha = reduce ? 0 : 1
     let raf = 0
+    let parked = false
 
     const step = () => {
       // Simulation
@@ -436,6 +437,25 @@ export function KnowledgeGraph({
     const ro = new ResizeObserver(resize)
     ro.observe(wrap)
 
+    // Perf: the simulation ran its rAF loop forever, even scrolled far
+    // offscreen — a steady main-thread drain on phones. Park the loop
+    // while the canvas is out of view and resume where it left off.
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          if (parked) {
+            parked = false
+            raf = requestAnimationFrame(step)
+          }
+        } else if (!parked) {
+          parked = true
+          cancelAnimationFrame(raf)
+        }
+      },
+      { rootMargin: "120px" }
+    )
+    io.observe(wrap)
+
     if (reduce) {
       // Run a fixed number of settle iterations synchronously, then draw.
       alpha = 1
@@ -450,6 +470,7 @@ export function KnowledgeGraph({
     return () => {
       cancelAnimationFrame(raf)
       ro.disconnect()
+      io.disconnect()
       if (interactive) {
         canvas.removeEventListener("pointermove", onMove)
         canvas.removeEventListener("pointerdown", onDown)
