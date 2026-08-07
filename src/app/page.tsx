@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { ArrowRight, GitFork, Network, Sparkles } from "lucide-react"
 
+import { FlowCore } from "@/components/home/flow-core"
 import { Hero } from "@/components/home/hero"
 import { KnowledgeGraph } from "@/components/graph/knowledge-graph"
 import { CategoryCard } from "@/components/knowledge/category-card"
@@ -18,6 +19,7 @@ export default function HomePage() {
 
   return (
     <>
+      <FlowCore />
       <Hero stats={stats} />
 
       {/* Living graph */}
