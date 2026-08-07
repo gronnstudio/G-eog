@@ -104,7 +104,7 @@ export function HeroMosaic({ reducedOverride }: { reducedOverride?: boolean }) {
     <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
       {/* Steeply tilted, oversized so rotated corners never show. */}
       <div
-        className="absolute -inset-x-[18%] -inset-y-[45%] flex flex-col justify-center gap-[1vw]"
+        className="absolute -inset-x-[70%] -inset-y-[42%] flex flex-col justify-center gap-[1vw]"
         style={{ transform: "rotate(-24deg)" }}
       >
         {Array.from({ length: ROW_COUNT }, (_, row) => (
