@@ -2,143 +2,71 @@
 
 import { useEffect, useMemo, useRef, useState } from "react"
 import { Canvas, useFrame } from "@react-three/fiber"
-import { Bloom, EffectComposer } from "@react-three/postprocessing"
 import * as THREE from "three"
 
 /**
- * The Living Form — one organic hero object instead of a particle cloud.
- * A noise-displaced sphere with fresnel-lit, slowly flowing color: the
- * silky "living orb" aesthetic of award-winning 3D sites. Scroll doesn't
- * swap shapes — it changes the object's CHARACTER per section:
+ * The Growing Graph — the site's own sentence made spatial:
+ * "knowledge grows when everything connects."
  *
- *   hero       → calm breathing orb, barely rippling
- *   graph      → tighter, faster ripples (a mind at work)
- *   domains    → broad slow waves, colour drifting through the palette
- *   timeline   → stretched tall, growing — reaching upward
- *   CTA        → open bloom: soft, swollen, radiant
+ * A small constellation of node-lights drifts slowly in space. As the
+ * page scrolls, the connection radius widens — at the hero only a few
+ * close pairs are threaded; by the footer the whole constellation is
+ * woven into one web. Hovering breathes; nothing swarms, nothing
+ * explodes. No postprocessing (the composer glitched on some GPUs) —
+ * just additive sprites and hairline threads.
  *
- * Desktop-landscape only, reduced-motion and WebGL gated in seed-core.
+ * Desktop-landscape only; reduced-motion and WebGL gated in seed-core.
  */
 
-/** per-section character: displacement amp/freq, speed, scale xyz, pos, hue mix */
-const CHAPTERS = [
-  { amp: 0.16, freq: 1.6, speed: 0.35, scale: [1, 1, 1], pos: [1.9, 0.05], mix: 0.0 },
-  { amp: 0.34, freq: 3.2, speed: 0.7, scale: [0.92, 0.92, 0.92], pos: [-2.0, 0.1], mix: 0.25 },
-  { amp: 0.22, freq: 1.1, speed: 0.4, scale: [1.15, 1.0, 1.15], pos: [2.0, -0.1], mix: 0.5 },
-  { amp: 0.2, freq: 1.9, speed: 0.5, scale: [0.8, 1.5, 0.8], pos: [-1.9, 0.15], mix: 0.75 },
-  { amp: 0.42, freq: 0.9, speed: 0.55, scale: [1.1, 1.1, 1.1], pos: [0, 0.05], mix: 1.0 },
-] as const
+const NODES = 64
+const MAX_LINKS = 420 // preallocated segment budget
+
+const EMBER = new THREE.Color("#f95a08")
+const CREAM = new THREE.Color("#f4ede6")
+const LEAF = new THREE.Color("#2f8552")
 
 const VERT = /* glsl */ `
+  attribute float aSize;
+  attribute float aPhase;
+  varying vec3 vColor;
+  varying float vTwinkle;
   uniform float uTime;
-  uniform float uAmp;
-  uniform float uFreq;
-  uniform float uSpeed;
-  varying float vDisp;
-  varying vec3 vNormalW;
-  varying vec3 vPosW;
-
-  // Ashima simplex noise (3D)
-  vec3 mod289(vec3 x){return x - floor(x * (1.0/289.0)) * 289.0;}
-  vec4 mod289(vec4 x){return x - floor(x * (1.0/289.0)) * 289.0;}
-  vec4 permute(vec4 x){return mod289(((x*34.0)+1.0)*x);}
-  vec4 taylorInvSqrt(vec4 r){return 1.79284291400159 - 0.85373472095314 * r;}
-  float snoise(vec3 v){
-    const vec2 C = vec2(1.0/6.0, 1.0/3.0);
-    const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
-    vec3 i  = floor(v + dot(v, C.yyy));
-    vec3 x0 = v - i + dot(i, C.xxx);
-    vec3 g = step(x0.yzx, x0.xyz);
-    vec3 l = 1.0 - g;
-    vec3 i1 = min(g.xyz, l.zxy);
-    vec3 i2 = max(g.xyz, l.zxy);
-    vec3 x1 = x0 - i1 + C.xxx;
-    vec3 x2 = x0 - i2 + C.yyy;
-    vec3 x3 = x0 - D.yyy;
-    i = mod289(i);
-    vec4 p = permute(permute(permute(
-              i.z + vec4(0.0, i1.z, i2.z, 1.0))
-            + i.y + vec4(0.0, i1.y, i2.y, 1.0))
-            + i.x + vec4(0.0, i1.x, i2.x, 1.0));
-    float n_ = 0.142857142857;
-    vec3 ns = n_ * D.wyz - D.xzx;
-    vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
-    vec4 x_ = floor(j * ns.z);
-    vec4 y_ = floor(j - 7.0 * x_);
-    vec4 x = x_ * ns.x + ns.yyyy;
-    vec4 y = y_ * ns.x + ns.yyyy;
-    vec4 h = 1.0 - abs(x) - abs(y);
-    vec4 b0 = vec4(x.xy, y.xy);
-    vec4 b1 = vec4(x.zw, y.zw);
-    vec4 s0 = floor(b0) * 2.0 + 1.0;
-    vec4 s1 = floor(b1) * 2.0 + 1.0;
-    vec4 sh = -step(h, vec4(0.0));
-    vec4 a0 = b0.xzyw + s0.xzyw * sh.xxyy;
-    vec4 a1 = b1.xzyw + s1.xzyw * sh.zzww;
-    vec3 p0 = vec3(a0.xy, h.x);
-    vec3 p1 = vec3(a0.zw, h.y);
-    vec3 p2 = vec3(a1.xy, h.z);
-    vec3 p3 = vec3(a1.zw, h.w);
-    vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));
-    p0 *= norm.x; p1 *= norm.y; p2 *= norm.z; p3 *= norm.w;
-    vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
-    m = m * m;
-    return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
-  }
-
+  uniform float uPixelRatio;
   void main() {
-    float t = uTime * uSpeed;
-    // two octaves of flowing noise along the normal — silk, not spikes
-    float n = snoise(normal * uFreq + vec3(t * 0.6, t * 0.4, t * 0.5));
-    n += 0.5 * snoise(normal * uFreq * 2.3 + vec3(-t * 0.5, t * 0.7, -t * 0.3));
-    vDisp = n;
-    vec3 displaced = position + normal * n * uAmp;
-    vec4 world = modelMatrix * vec4(displaced, 1.0);
-    vPosW = world.xyz;
-    // cheap displaced normal: blend the sphere normal with the noise slope
-    vNormalW = normalize(mat3(modelMatrix) * normalize(normal + vec3(n) * 0.35));
-    gl_Position = projectionMatrix * viewMatrix * world;
+    vColor = color;
+    vec4 mv = modelViewMatrix * vec4(position, 1.0);
+    vTwinkle = 0.9 + 0.1 * sin(uTime * 1.1 + aPhase);
+    gl_PointSize = aSize * uPixelRatio * (110.0 / -mv.z) * vTwinkle;
+    gl_Position = projectionMatrix * mv;
   }
 `
-
 const FRAG = /* glsl */ `
-  uniform float uMix;    // palette drift across the page
-  uniform float uInk;    // 1 on the paper Hour
+  varying vec3 vColor;
+  varying float vTwinkle;
   uniform float uOpacity;
-  uniform vec3 uCam;
-  varying float vDisp;
-  varying vec3 vNormalW;
-  varying vec3 vPosW;
-
+  uniform float uInk;
   void main() {
-    vec3 V = normalize(uCam - vPosW);
-    float fres = pow(1.0 - max(0.0, dot(vNormalW, V)), 2.2);
-
-    // EOG palette flow: deep forest -> leaf -> water -> ember accents
-    vec3 forest = vec3(0.043, 0.145, 0.102);
-    vec3 leaf   = vec3(0.184, 0.522, 0.322);
-    vec3 water  = vec3(0.310, 0.561, 0.722);
-    vec3 ember  = vec3(0.976, 0.353, 0.031);
-    vec3 cream  = vec3(0.957, 0.929, 0.902);
-
-    float band = vDisp * 0.5 + 0.5;
-    vec3 base = mix(forest, leaf, smoothstep(0.15, 0.75, band));
-    base = mix(base, water, uMix * 0.45 * smoothstep(0.4, 1.0, band));
-    // ember licks only on the highest crests
-    base = mix(base, ember, smoothstep(0.82, 1.0, band) * (0.35 + uMix * 0.4));
-    // fresnel rim: cream glow on dark, deep ink edge on paper
-    vec3 rimDark = mix(cream, ember, uMix * 0.5);
-    vec3 rimInk  = forest * 0.55;
-    base += fres * mix(rimDark, rimInk, uInk) * mix(1.1, 0.9, uInk);
-    // on paper, deepen everything toward ink so it sits on cream
-    base = mix(base, base * 0.55 + forest * 0.25, uInk * 0.55);
-
-    float alpha = uOpacity * mix(0.92, 0.85, uInk);
-    gl_FragColor = vec4(base, alpha);
+    float d = length(gl_PointCoord - 0.5);
+    if (d > 0.5) discard;
+    float halo = smoothstep(0.5, 0.0, d);
+    float core = pow(max(0.0, 1.0 - d * 2.4), 3.0);
+    float aGlow = (halo * 0.4 + core) * vTwinkle;
+    float aInk = smoothstep(0.4, 0.28, d) * 0.9;
+    float a = mix(aGlow, aInk, uInk) * uOpacity;
+    vec3 col = mix(vColor * (0.75 + core * 0.8), vColor * 0.6, uInk);
+    gl_FragColor = vec4(col, a);
   }
 `
 
-/** true on Golden Hour — glow palette flips to ink on the paper ground */
+function seededRandom(seed: number) {
+  let s = seed
+  return () => {
+    s = (s * 16807) % 2147483647
+    return (s - 1) / 2147483646
+  }
+}
+
+/** true on Golden Hour — glow flips to ink on the paper ground */
 function useInkTheme(): boolean {
   const [ink, setInk] = useState(false)
   useEffect(() => {
@@ -152,97 +80,207 @@ function useInkTheme(): boolean {
   return ink
 }
 
-function LivingForm({
+type Node = {
+  base: THREE.Vector3
+  freq: THREE.Vector3
+  phase: THREE.Vector3
+  amp: number
+}
+
+function GrowingGraph({
   progressRef,
   ink,
 }: {
   progressRef: React.MutableRefObject<number>
   ink: boolean
 }) {
-  const mesh = useRef<THREE.Mesh>(null)
-  const mat = useRef<THREE.ShaderMaterial>(null)
-  const eased = useRef({
-    amp: CHAPTERS[0].amp,
-    freq: CHAPTERS[0].freq,
-    speed: CHAPTERS[0].speed,
-    sx: 1, sy: 1, sz: 1,
-    x: CHAPTERS[0].pos[0],
-    y: CHAPTERS[0].pos[1],
-    mix: 0,
-  })
+  const group = useRef<THREE.Group>(null)
+  const points = useRef<THREE.Points>(null)
+  const lines = useRef<THREE.LineSegments>(null)
+  const pMat = useRef<THREE.ShaderMaterial>(null)
+  const lMat = useRef<THREE.LineBasicMaterial>(null)
+
+  // node cloud: flattened ellipsoid, slightly right-weighted like a canopy
+  const nodes = useMemo<Node[]>(() => {
+    const rand = seededRandom(9)
+    const arr: Node[] = []
+    for (let i = 0; i < NODES; i++) {
+      const u = rand() * Math.PI * 2
+      const v = Math.acos(2 * rand() - 1)
+      const r = 0.55 + Math.cbrt(rand()) * 1.15
+      arr.push({
+        base: new THREE.Vector3(
+          Math.sin(v) * Math.cos(u) * r * 1.35,
+          Math.cos(v) * r * 0.95,
+          Math.sin(v) * Math.sin(u) * r * 0.8
+        ),
+        freq: new THREE.Vector3(0.12 + rand() * 0.22, 0.1 + rand() * 0.2, 0.12 + rand() * 0.2),
+        phase: new THREE.Vector3(rand() * 6.283, rand() * 6.283, rand() * 6.283),
+        amp: 0.1 + rand() * 0.16,
+      })
+    }
+    return arr
+  }, [])
+
+  const { positions, colors, sizes, phases } = useMemo(() => {
+    const rand = seededRandom(31)
+    const pos = new Float32Array(NODES * 3)
+    const col = new Float32Array(NODES * 3)
+    const siz = new Float32Array(NODES)
+    const ph = new Float32Array(NODES)
+    const tmp = new THREE.Color()
+    for (let i = 0; i < NODES; i++) {
+      const roll = rand()
+      // a few ember anchors — most nodes cream/leaf
+      tmp.copy(roll < 0.12 ? EMBER : roll < 0.5 ? LEAF : CREAM)
+      col[i * 3] = tmp.r
+      col[i * 3 + 1] = tmp.g
+      col[i * 3 + 2] = tmp.b
+      siz[i] = roll < 0.12 ? 2.6 + rand() * 0.8 : 1.1 + rand() * 1.0
+      ph[i] = rand() * Math.PI * 2
+    }
+    return { positions: pos, colors: col, sizes: siz, phases: ph }
+  }, [])
+
+  const linkPositions = useMemo(() => new Float32Array(MAX_LINKS * 2 * 3), [])
 
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uAmp: { value: CHAPTERS[0].amp },
-      uFreq: { value: CHAPTERS[0].freq },
-      uSpeed: { value: CHAPTERS[0].speed },
-      uMix: { value: 0 },
-      uInk: { value: 0 },
       uOpacity: { value: 0.9 },
-      uCam: { value: new THREE.Vector3(0, 0, 6) },
+      uPixelRatio: { value: 1 },
+      uInk: { value: 0 },
     }),
     []
   )
 
   useEffect(() => {
-    if (mat.current) mat.current.uniforms.uInk.value = ink ? 1 : 0
+    if (pMat.current) {
+      pMat.current.uniforms.uInk.value = ink ? 1 : 0
+      pMat.current.blending = ink ? THREE.NormalBlending : THREE.AdditiveBlending
+      pMat.current.needsUpdate = true
+    }
+    if (lMat.current) {
+      lMat.current.color.set(ink ? "#2c4638" : "#f4ede6")
+      lMat.current.blending = ink ? THREE.NormalBlending : THREE.AdditiveBlending
+      lMat.current.needsUpdate = true
+    }
   }, [ink])
 
+  const current = useMemo(() => nodes.map((n) => n.base.clone()), [nodes])
+
   useFrame((state, delta) => {
-    const m = mesh.current
-    const material = mat.current
-    if (!m || !material) return
+    const g = group.current
+    const p = points.current
+    const ln = lines.current
+    if (!g || !p || !ln) return
 
-    const scrollT = progressRef.current * (CHAPTERS.length - 1)
-    const ia = Math.min(CHAPTERS.length - 1, Math.floor(scrollT))
-    const ib = Math.min(CHAPTERS.length - 1, ia + 1)
-    const raw = scrollT - ia
-    const t = raw * raw * (3 - 2 * raw)
-    const A = CHAPTERS[ia]
-    const B = CHAPTERS[ib]
+    const time = state.clock.elapsedTime
+    const progress = progressRef.current
 
-    const e = eased.current
-    const k = 1 - Math.exp(-3 * delta)
-    e.amp += (A.amp + (B.amp - A.amp) * t - e.amp) * k
-    e.freq += (A.freq + (B.freq - A.freq) * t - e.freq) * k
-    e.speed += (A.speed + (B.speed - A.speed) * t - e.speed) * k
-    e.sx += (A.scale[0] + (B.scale[0] - A.scale[0]) * t - e.sx) * k
-    e.sy += (A.scale[1] + (B.scale[1] - A.scale[1]) * t - e.sy) * k
-    e.sz += (A.scale[2] + (B.scale[2] - A.scale[2]) * t - e.sz) * k
-    e.x += (A.pos[0] + (B.pos[0] - A.pos[0]) * t - e.x) * k
-    e.y += (A.pos[1] + (B.pos[1] - A.pos[1]) * t - e.y) * k
-    e.mix += (A.mix + (B.mix - A.mix) * t - e.mix) * k
+    // nodes drift on slow lissajous paths around their anchors
+    const pAttr = p.geometry.getAttribute("position") as THREE.BufferAttribute
+    for (let i = 0; i < NODES; i++) {
+      const n = nodes[i]
+      const c = current[i]
+      c.set(
+        n.base.x + Math.sin(time * n.freq.x + n.phase.x) * n.amp,
+        n.base.y + Math.sin(time * n.freq.y + n.phase.y) * n.amp,
+        n.base.z + Math.sin(time * n.freq.z + n.phase.z) * n.amp
+      )
+      pAttr.array[i * 3] = c.x
+      pAttr.array[i * 3 + 1] = c.y
+      pAttr.array[i * 3 + 2] = c.z
+    }
+    pAttr.needsUpdate = true
 
-    material.uniforms.uTime.value = state.clock.elapsedTime
-    material.uniforms.uAmp.value = e.amp
-    material.uniforms.uFreq.value = e.freq
-    material.uniforms.uSpeed.value = e.speed
-    material.uniforms.uMix.value = e.mix
-    material.uniforms.uCam.value.copy(state.camera.position)
-    // recede behind the CTA/footer copy at the very end of the page
-    const p = progressRef.current
-    const lateFade = p > 0.82 ? (p - 0.82) / 0.18 : 0
-    material.uniforms.uOpacity.value = 0.9 - lateFade * 0.55
+    // the sentence, spatial: connection reach grows with scroll
+    const reach = 0.55 + progress * 1.35
+    const lAttr = ln.geometry.getAttribute("position") as THREE.BufferAttribute
+    let seg = 0
+    for (let i = 0; i < NODES && seg < MAX_LINKS; i++) {
+      for (let j = i + 1; j < NODES && seg < MAX_LINKS; j++) {
+        const a = current[i]
+        const b = current[j]
+        const dx = a.x - b.x
+        const dy = a.y - b.y
+        const dz = a.z - b.z
+        const d2 = dx * dx + dy * dy + dz * dz
+        if (d2 < reach * reach) {
+          const o = seg * 6
+          lAttr.array[o] = a.x
+          lAttr.array[o + 1] = a.y
+          lAttr.array[o + 2] = a.z
+          lAttr.array[o + 3] = b.x
+          lAttr.array[o + 4] = b.y
+          lAttr.array[o + 5] = b.z
+          seg++
+        }
+      }
+    }
+    // collapse unused segments to zero-length (invisible)
+    for (let s = seg; s < MAX_LINKS; s++) {
+      const o = s * 6
+      lAttr.array[o] = 0
+      lAttr.array[o + 1] = 0
+      lAttr.array[o + 2] = 0
+      lAttr.array[o + 3] = 0
+      lAttr.array[o + 4] = 0
+      lAttr.array[o + 5] = 0
+    }
+    lAttr.needsUpdate = true
 
-    // whisper of cursor parallax
-    m.position.set(e.x + state.pointer.x * 0.1, e.y + state.pointer.y * 0.07, 0)
-    m.scale.set(e.sx, e.sy, e.sz)
-    m.rotation.y += delta * 0.08
-    m.rotation.z = Math.sin(state.clock.elapsedTime * 0.07) * 0.08
+    if (pMat.current) {
+      pMat.current.uniforms.uTime.value = time
+      pMat.current.uniforms.uPixelRatio.value = state.gl.getPixelRatio()
+    }
+    if (lMat.current) {
+      // threads stay hairline-faint; slightly clearer as the web completes
+      lMat.current.opacity = (ink ? 0.3 : 0.22) + progress * 0.12
+    }
+
+    // parked right of the copy, drifting gently left across the page
+    const side = 1.9 - progress * 3.6
+    const sway = Math.sin(progress * Math.PI) // out and back
+    g.position.set(side * (1 - sway * 0.25) + state.pointer.x * 0.08, state.pointer.y * 0.06, 0)
+    g.rotation.y += delta * 0.05
+    g.rotation.x = Math.sin(time * 0.06) * 0.1
   })
 
   return (
-    <mesh ref={mesh}>
-      <icosahedronGeometry args={[1.35, 96]} />
-      <shaderMaterial
-        ref={mat}
-        vertexShader={VERT}
-        fragmentShader={FRAG}
-        uniforms={uniforms}
-        transparent
-      />
-    </mesh>
+    <group ref={group}>
+      <points ref={points}>
+        <bufferGeometry>
+          <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+          <bufferAttribute attach="attributes-color" args={[colors, 3]} />
+          <bufferAttribute attach="attributes-aSize" args={[sizes, 1]} />
+          <bufferAttribute attach="attributes-aPhase" args={[phases, 1]} />
+        </bufferGeometry>
+        <shaderMaterial
+          ref={pMat}
+          vertexShader={VERT}
+          fragmentShader={FRAG}
+          uniforms={uniforms}
+          vertexColors
+          transparent
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </points>
+      <lineSegments ref={lines}>
+        <bufferGeometry>
+          <bufferAttribute attach="attributes-position" args={[linkPositions, 3]} />
+        </bufferGeometry>
+        <lineBasicMaterial
+          ref={lMat}
+          color="#f4ede6"
+          transparent
+          opacity={0.25}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </lineSegments>
+    </group>
   )
 }
 
@@ -258,14 +296,7 @@ export default function SeedScene({
       camera={{ position: [0, 0, 6], fov: 42 }}
       gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
     >
-      <LivingForm progressRef={progressRef} ink={ink} />
-      {/* gentle bloom lifts the fresnel rim on the dark Hour; on paper it
-          would haze the cream ground, so it stays off there */}
-      {!ink && (
-        <EffectComposer>
-          <Bloom intensity={0.5} luminanceThreshold={0.35} luminanceSmoothing={0.6} mipmapBlur />
-        </EffectComposer>
-      )}
+      <GrowingGraph progressRef={progressRef} ink={ink} />
     </Canvas>
   )
 }
