@@ -1,7 +1,8 @@
 "use client"
 
-import { useMemo, useRef } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { Canvas, useFrame } from "@react-three/fiber"
+import { Bloom, EffectComposer } from "@react-three/postprocessing"
 import * as THREE from "three"
 
 /**
@@ -25,6 +26,44 @@ const COUNT = 2400
 const LINK_COUNT = 260 // line segments; 2 vertices each
 // scene-wide scale — the object owns the viewport, not a corner of it
 const WORLD = 1.45
+
+/**
+ * Soft-glow sprite shader — the awwwards-grade upgrade over square GL
+ * points: each particle is a radial-falloff light with its own size and
+ * twinkle phase, attenuated by depth. Bloom lifts the bright cores.
+ */
+const VERT = /* glsl */ `
+  attribute float aSize;
+  attribute float aPhase;
+  varying vec3 vColor;
+  varying float vTwinkle;
+  uniform float uTime;
+  uniform float uPixelRatio;
+  void main() {
+    vColor = color;
+    vec4 mv = modelViewMatrix * vec4(position, 1.0);
+    vTwinkle = 0.75 + 0.25 * sin(uTime * 1.8 + aPhase);
+    gl_PointSize = aSize * uPixelRatio * (95.0 / -mv.z) * vTwinkle;
+    gl_Position = projectionMatrix * mv;
+  }
+`
+const FRAG = /* glsl */ `
+  varying vec3 vColor;
+  varying float vTwinkle;
+  uniform float uOpacity;
+  uniform float uInk; // 1 on the light Hour: solid ink dots, no glow halo
+  void main() {
+    float d = length(gl_PointCoord - 0.5);
+    if (d > 0.5) discard;
+    float halo = smoothstep(0.5, 0.0, d);
+    float core = pow(max(0.0, 1.0 - d * 2.6), 3.0) * 1.6;
+    float aGlow = (halo * 0.45 + core) * vTwinkle;
+    float aInk = smoothstep(0.42, 0.3, d) * 0.85;
+    float a = mix(aGlow, aInk, uInk) * uOpacity;
+    vec3 col = mix(vColor * (0.7 + core), vColor * 0.55, uInk);
+    gl_FragColor = vec4(col, a);
+  }
+`
 
 function seededRandom(seed: number) {
   let s = seed
@@ -216,11 +255,31 @@ function formBloom(): Form {
   return { ...f, linkAlpha: 0.1, offset: [0, 0.1] }
 }
 
-function SeedObject({ progressRef }: { progressRef: React.MutableRefObject<number> }) {
+/** true on Golden Hour — additive glow washes out on the paper ground */
+function useInkTheme(): boolean {
+  const [ink, setInk] = useState(false)
+  useEffect(() => {
+    const el = document.documentElement
+    const read = () => setInk(el.classList.contains("goldenhour"))
+    read()
+    const mo = new MutationObserver(read)
+    mo.observe(el, { attributes: true, attributeFilter: ["class"] })
+    return () => mo.disconnect()
+  }, [])
+  return ink
+}
+
+function SeedObject({
+  progressRef,
+  ink,
+}: {
+  progressRef: React.MutableRefObject<number>
+  ink: boolean
+}) {
   const points = useRef<THREE.Points>(null)
   const lines = useRef<THREE.LineSegments>(null)
   const group = useRef<THREE.Group>(null)
-  const pMat = useRef<THREE.PointsMaterial>(null)
+  const pMat = useRef<THREE.ShaderMaterial>(null)
   const lMat = useRef<THREE.LineBasicMaterial>(null)
 
   const forms = useMemo<Form[]>(
@@ -231,6 +290,41 @@ function SeedObject({ progressRef }: { progressRef: React.MutableRefObject<numbe
   const positions = useMemo(() => forms[0].pts.slice(), [forms])
   const colors = useMemo(() => forms[0].col.slice(), [forms])
   const linkPositions = useMemo(() => forms[0].links.slice(), [forms])
+  const { sizes, phases } = useMemo(() => {
+    const rand = seededRandom(71)
+    const s = new Float32Array(COUNT)
+    const ph = new Float32Array(COUNT)
+    for (let i = 0; i < COUNT; i++) {
+      // a few oversized "fireflies", mostly fine dust
+      const roll = rand()
+      s[i] = roll < 0.04 ? 2.6 + rand() * 1.5 : 0.8 + rand() * 1.1
+      ph[i] = rand() * Math.PI * 2
+    }
+    return { sizes: s, phases: ph }
+  }, [])
+  const uniforms = useMemo(
+    () => ({
+      uTime: { value: 0 },
+      uOpacity: { value: 0.85 },
+      uPixelRatio: { value: 1 },
+      uInk: { value: 0 },
+    }),
+    []
+  )
+
+  // theme switch: ink dots + normal blending on paper, glow + additive on dark
+  useEffect(() => {
+    if (pMat.current) {
+      pMat.current.uniforms.uInk.value = ink ? 1 : 0
+      pMat.current.blending = ink ? THREE.NormalBlending : THREE.AdditiveBlending
+      pMat.current.needsUpdate = true
+    }
+    if (lMat.current) {
+      lMat.current.color.set(ink ? "#1d3a2c" : "#f4ede6")
+      lMat.current.blending = ink ? THREE.NormalBlending : THREE.AdditiveBlending
+      lMat.current.needsUpdate = true
+    }
+  }, [ink])
   const eased = useRef({ form: 0, x: forms[0].offset[0], y: forms[0].offset[1] })
 
   useFrame((state, delta) => {
@@ -293,7 +387,11 @@ function SeedObject({ progressRef }: { progressRef: React.MutableRefObject<numbe
     lAttr.needsUpdate = true
 
     const morphDip = Math.sin(t * Math.PI)
-    if (pMat.current) pMat.current.opacity = 0.85 - morphDip * 0.3
+    if (pMat.current) {
+      pMat.current.uniforms.uTime.value = time
+      pMat.current.uniforms.uOpacity.value = 0.85 - morphDip * 0.3
+      pMat.current.uniforms.uPixelRatio.value = state.gl.getPixelRatio()
+    }
     if (lMat.current) {
       // threads fade out mid-morph and settle at the target form's alpha
       const alpha = A.linkAlpha + (B.linkAlpha - A.linkAlpha) * t
@@ -325,16 +423,18 @@ function SeedObject({ progressRef }: { progressRef: React.MutableRefObject<numbe
         <bufferGeometry>
           <bufferAttribute attach="attributes-position" args={[positions, 3]} />
           <bufferAttribute attach="attributes-color" args={[colors, 3]} />
+          <bufferAttribute attach="attributes-aSize" args={[sizes, 1]} />
+          <bufferAttribute attach="attributes-aPhase" args={[phases, 1]} />
         </bufferGeometry>
-        <pointsMaterial
+        <shaderMaterial
           ref={pMat}
-          size={0.026}
+          vertexShader={VERT}
+          fragmentShader={FRAG}
+          uniforms={uniforms}
           vertexColors
           transparent
-          opacity={0.85}
           depthWrite={false}
           blending={THREE.AdditiveBlending}
-          sizeAttenuation
         />
       </points>
       <lineSegments ref={lines}>
@@ -359,13 +459,22 @@ export default function SeedScene({
 }: {
   progressRef: React.MutableRefObject<number>
 }) {
+  const ink = useInkTheme()
   return (
     <Canvas
       dpr={[1, 1.75]}
       camera={{ position: [0, 0, 6], fov: 42 }}
       gl={{ antialias: false, alpha: true, powerPreference: "low-power" }}
     >
-      <SeedObject progressRef={progressRef} />
+      <SeedObject progressRef={progressRef} ink={ink} />
+      {/* soft bloom lifts the particle cores into glow — the polish that
+          separates gl points from an award-site render. On the paper Hour
+          bloom would blow the cream ground out, so it stays off there. */}
+      {!ink && (
+        <EffectComposer>
+          <Bloom intensity={0.55} luminanceThreshold={0.18} luminanceSmoothing={0.5} mipmapBlur />
+        </EffectComposer>
+      )}
     </Canvas>
   )
 }
