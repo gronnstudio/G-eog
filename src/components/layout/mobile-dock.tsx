@@ -178,7 +178,11 @@ export function MobileDock() {
   // back-to-top arrow, and folding it away is exactly what made the
   // grid→arrow switchout invisible while scrolling. Deep = wings stay,
   // arrow shows; near the top = tuck as before.
-  const wingsHidden = compact && !menuOpen && !scrolled
+  // Fold on downward scroll at ANY depth — the old `&& !scrolled` guard
+  // pinned the pill fully open once past ~1.1 viewports, which on
+  // today's longer pages read as "the menu stopped shrinking".
+  // Scrolling up unfolds it (and deep pages then show back-to-top).
+  const wingsHidden = compact && !menuOpen
   // 2 slots × 56px + the 6px gap between them.
   const WING = 144
 
