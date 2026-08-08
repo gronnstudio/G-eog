@@ -34,6 +34,12 @@ export const UI_CHROME = {
   // ── Header ─────────────────────────────────────────────────────
   menuHomeAria: { en: "Equilibrium — Home", nl: "Equilibrium — Home", zh: "Equilibrium — 首页", hi: "Equilibrium — होम", es: "Equilibrium — Inicio", fr: "Equilibrium — Accueil", ar: "Equilibrium — الرئيسية", pt: "Equilibrium — Início", ru: "Equilibrium — Главная", de: "Equilibrium — Startseite", ja: "Equilibrium — ホーム" },
   menuSiteMenu: { en: "Site menu", nl: "Sitemenu", zh: "网站菜单", hi: "साइट मेन्यू", es: "Menú del sitio", fr: "Menu du site", ar: "قائمة الموقع", pt: "Menu do site", ru: "Меню сайта", de: "Seitenmenü", ja: "サイトメニュー" },
+  // ── Mega menu ──────────────────────────────────────────────────
+  megaDiscover: { en: "Discover", nl: "Ontdek", zh: "发现", hi: "खोजें", es: "Descubre", fr: "Découvrir", ar: "اكتشف", pt: "Descubra", ru: "Открывайте", de: "Entdecken", ja: "発見" },
+  megaSeasonal: { en: "Seasonal guide", nl: "Seizoensgids", zh: "时令指南", hi: "मौसमी मार्गदर्शिका", es: "Guía estacional", fr: "Guide saisonnier", ar: "دليل الفصول", pt: "Guia sazonal", ru: "Сезонный гид", de: "Saisonführer", ja: "季節ガイド" },
+  megaWizard: { en: "Contribution wizard", nl: "Bijdrage-wizard", zh: "贡献向导", hi: "योगदान विज़ार्ड", es: "Asistente de contribución", fr: "Assistant de contribution", ar: "معالج المساهمة", pt: "Assistente de contribuição", ru: "Мастер вклада", de: "Beitrags-Assistent", ja: "貢献ウィザード" },
+  megaSources: { en: "Source registry", nl: "Bronnenregister", zh: "来源登记", hi: "स्रोत सूची", es: "Registro de fuentes", fr: "Registre des sources", ar: "سجل المصادر", pt: "Registro de fontes", ru: "Реестр источников", de: "Quellenregister", ja: "ソース登録" },
+  megaRss: { en: "RSS feed", nl: "RSS-feed", zh: "RSS 订阅", hi: "RSS फ़ीड", es: "Canal RSS", fr: "Flux RSS", ar: "خلاصة RSS", pt: "Feed RSS", ru: "RSS-лента", de: "RSS-Feed", ja: "RSS フィード" },
   // ── Theme picker ───────────────────────────────────────────────
   themeGoldenHour: { en: "Golden Hour", nl: "Gouden uur", zh: "金色时刻", hi: "गोल्डन आवर", es: "Hora dorada", fr: "Heure dorée", ar: "الساعة الذهبية", pt: "Hora dourada", ru: "Золотой час", de: "Goldene Stunde", ja: "ゴールデンアワー" },
   themeBlueHour: { en: "Blue Hour", nl: "Blauwe uur", zh: "蓝色时刻", hi: "ब्लू आवर", es: "Hora azul", fr: "Heure bleue", ar: "الساعة الزرقاء", pt: "Hora azul", ru: "Синий час", de: "Blaue Stunde", ja: "ブルーアワー" },
