@@ -315,6 +315,45 @@ export function Header() {
                   </Link>
                 )}
 
+                {/* Mega-menu group: the destinations that don't earn a
+                    numbered headline — seasonal guide, contribution
+                    wizard, sources, feed. */}
+                <nav aria-label={ui("megaDiscover")} className="grid grid-cols-2 gap-x-6 gap-y-3">
+                  <p className="col-span-2 font-mono text-[11px] uppercase tracking-[0.22em] text-muted">
+                    {ui("megaDiscover")}
+                  </p>
+                  {[
+                    { href: "/seasonal", label: ui("megaSeasonal") },
+                    { href: "/contribute", label: ui("megaWizard") },
+                    {
+                      href: "https://github.com/gronnstudio/g-eog/blob/main/docs/SOURCES.md",
+                      label: ui("megaSources"),
+                      external: true,
+                    },
+                    { href: "/feed.xml", label: ui("megaRss"), external: true },
+                  ].map((item) =>
+                    item.external ? (
+                      <a
+                        key={item.href}
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline-draw text-sm text-foreground/80 hover:text-accent"
+                      >
+                        {item.label}
+                      </a>
+                    ) : (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="underline-draw text-sm text-foreground/80 hover:text-accent"
+                      >
+                        {item.label}
+                      </Link>
+                    ),
+                  )}
+                </nav>
+
                 <button
                   type="button"
                   onClick={() => {

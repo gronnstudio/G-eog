@@ -16,10 +16,12 @@ import { useReducedMotion } from "@/lib/use-reduced-motion"
 import { cn } from "@/lib/utils"
 
 // The mobile dock, ported from the GRØNN base: a floating glass pill
-// within thumb reach, phones only (the desktop keeps the header). Five
-// slots — home, knowledge, a prominent explore-the-graph centre, learn,
-// and a grid button that opens a slide-up sheet with the remaining pages
-// plus search and the theme control. A viewport deep, the grid slot
+// within thumb reach, phones only (the desktop keeps the header). Seven
+// slots — home, knowledge, community, a prominent explore-the-graph
+// centre, learn, search, and a grid button that opens a slide-up sheet
+// with everything the pill lacks: seasonal guide, contribution wizard,
+// about, category quick links, external links and the site controls.
+// A viewport deep, the grid slot
 // hands its place to a back-to-top arrow with a pulsing accent ring.
 
 const stroke = {
@@ -84,15 +86,14 @@ const icons = {
   ),
 }
 
+// Only destinations the pill itself lacks — the sheet is "everything else".
 const PRIMARY = [
-  { href: "/knowledge", key: "nav_knowledge" },
-  { href: "/learn", key: "nav_learn" },
-  { href: "/community", key: "nav_community" },
+  { href: "/seasonal", key: "megaSeasonal" },
+  { href: "/contribute", key: "megaWizard" },
   { href: "/about", key: "nav_about" },
 ] as const
 
 const SECONDARY = [
-  { href: "/explore", key: "ftKnowledgeGraph" },
   { href: "/knowledge/soil", key: "dockSoil" },
   { href: "/knowledge/water", key: "dockWater" },
   { href: "/knowledge/fungi", key: "dockFungi" },
@@ -222,7 +223,7 @@ export function MobileDock() {
               <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.25em] text-muted">
                 {ui("navigate")}
               </p>
-              <nav className="grid grid-cols-2 gap-x-4 gap-y-1">
+              <nav className="flex flex-col gap-y-1">
                 {PRIMARY.map((item) => (
                   <Link
                     key={item.href}
@@ -246,7 +247,7 @@ export function MobileDock() {
                     onClick={() => setMenuOpen(false)}
                     className={cn(
                       "tap-target rounded-full border px-3.5 py-1.5 text-xs tracking-wide transition-colors duration-300",
-                      active(item.href) && item.href !== "/explore"
+                      active(item.href)
                         ? "border-accent/50 bg-accent-soft text-accent"
                         : "border-line text-muted hover:border-accent/40 hover:text-foreground active:border-accent/40 active:text-foreground",
                     )}
@@ -254,36 +255,40 @@ export function MobileDock() {
                     {ui(item.key)}
                   </Link>
                 ))}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMenuOpen(false)
-                    openSearch()
-                  }}
-                  className="tap-target flex items-center gap-1.5 rounded-full border border-line px-3.5 py-1.5 text-xs tracking-wide text-muted transition-colors duration-300 hover:border-accent/40 hover:text-foreground active:border-accent/40 active:text-foreground"
-                >
-                  {icons.search} {ui("search")}
-                </button>
               </nav>
-              <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-4 border-t border-line px-3 pt-5">
-                <ThemeModePicker />
-                <LanguageToggle />
-                <a
-                  href="https://github.com/gronnstudio/g-eog"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="tap-target text-xs tracking-wide text-muted underline-draw"
-                >
-                  GitHub
-                </a>
-                <a
-                  href="https://gronn.studio"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="tap-target text-xs tracking-wide text-muted underline-draw"
-                >
-                  GRØNN Studio
-                </a>
+              {/* Labeled control groups — "Auto / Golden Hour / Blue Hour"
+                  meant nothing without a heading. */}
+              <div className="mt-6 space-y-5 border-t border-line px-3 pt-5">
+                <div>
+                  <p className="mb-2.5 font-mono text-[10px] uppercase tracking-[0.22em] text-faint">
+                    {ui("theme")}
+                  </p>
+                  <ThemeModePicker />
+                </div>
+                <div>
+                  <p className="mb-2.5 font-mono text-[10px] uppercase tracking-[0.22em] text-faint">
+                    {ui("language")}
+                  </p>
+                  <LanguageToggle />
+                </div>
+                <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-line pt-4">
+                  <a
+                    href="https://github.com/gronnstudio/g-eog"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="tap-target text-xs tracking-wide text-muted underline-draw"
+                  >
+                    GitHub
+                  </a>
+                  <a
+                    href="https://gronn.studio"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="tap-target text-xs tracking-wide text-muted underline-draw"
+                  >
+                    GRØNN Studio
+                  </a>
+                </div>
               </div>
             </motion.div>
           </motion.div>

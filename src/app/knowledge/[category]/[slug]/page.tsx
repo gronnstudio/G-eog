@@ -18,6 +18,9 @@ import {
 import { ReadingProgress } from "@/components/knowledge/reading-progress"
 import { ArticleCard } from "@/components/knowledge/article-card"
 import { ArticleEmbed } from "@/components/knowledge/article-embed"
+import { CitationList } from "@/components/knowledge/citation-list"
+import { CitedBy } from "@/components/knowledge/cited-by"
+import { TocSpy } from "@/components/knowledge/toc-spy"
 import { DifficultyBadge } from "@/components/ui/badges"
 import { UIText } from "@/components/ui/ui-text"
 import {
@@ -51,6 +54,17 @@ export async function generateMetadata({
 
 const GH = "https://github.com/gronnstudio/g-eog"
 
+/** Stable, URL-safe id derived from a section heading. */
+function slugifyHeading(heading: string): string {
+  return heading
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+}
+
 export default async function ArticlePage({
   params,
 }: {
@@ -62,6 +76,15 @@ export default async function ArticlePage({
 
   const cat = getCategory(article.category)
   const related = relatedArticles(article)
+  // Backlinks: other articles whose `related` edges point here. Articles
+  // already shown in the outgoing "threads" grid are skipped to avoid
+  // listing the same card twice.
+  const citedBy = ARTICLES.filter(
+    (a) => a.slug !== article.slug && a.related.includes(article.slug) && !article.related.includes(a.slug),
+  )
+  const toc = article.sections
+    .filter((s): s is typeof s & { heading: string } => Boolean(s.heading))
+    .map((s) => ({ id: slugifyHeading(s.heading), title: s.heading }))
   const { prev, next } = articleNeighbors(article)
   const sourcePath = `content/${article.category}/${article.slug}.mdx`
 
@@ -147,7 +170,11 @@ export default async function ArticlePage({
           <div className="eog-prose">
           {article.sections.map((section, i) => (
             <section key={i}>
-              {section.heading && <h2>{section.heading}</h2>}
+              {section.heading && (
+                <h2 id={slugifyHeading(section.heading)} className="scroll-mt-28">
+                  {section.heading}
+                </h2>
+              )}
               {section.body.map((para, j) => (
                 <p key={j}>{para}</p>
               ))}
@@ -163,21 +190,7 @@ export default async function ArticlePage({
               <h2 className="!mt-0 flex items-center gap-2 font-heading text-2xl">
                 <BookMarked className="h-5 w-5 text-accent" /> <UIText k="artReferences" />
               </h2>
-              <ol className="mt-4 space-y-3">
-                {article.citations.map((c) => (
-                  <li key={c.id} className="text-sm leading-relaxed text-muted">
-                    {c.authors} ({c.year}). <span className="text-foreground">{c.title}</span>. <em>{c.source}</em>
-                    {c.url && (
-                      <>
-                        {" "}
-                        <a href={c.url} className="text-accent underline">
-                          <UIText k="artSourceLink" />
-                        </a>
-                      </>
-                    )}
-                  </li>
-                ))}
-              </ol>
+              <CitationList citations={article.citations} />
             </section>
           )}
 
@@ -222,15 +235,7 @@ export default async function ArticlePage({
           <div className="sticky top-28 space-y-8">
             <div>
               <p className="font-mono text-xs uppercase tracking-widest text-faint"><UIText k="artOnThisPage" /></p>
-              <ul className="mt-3 space-y-2 border-l border-line">
-                {article.sections
-                  .filter((s) => s.heading)
-                  .map((s, i) => (
-                    <li key={i} className="-ml-px border-l border-transparent pl-4 text-sm text-muted hover:border-accent hover:text-foreground">
-                      {s.heading}
-                    </li>
-                  ))}
-              </ul>
+              <TocSpy items={toc} />
             </div>
 
             <div>
@@ -330,6 +335,9 @@ export default async function ArticlePage({
           </div>
         </section>
       )}
+
+      {/* Backlinks — who cites this article */}
+      <CitedBy articles={citedBy} />
     </article>
   )
 }

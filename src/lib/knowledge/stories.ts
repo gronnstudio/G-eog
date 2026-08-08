@@ -180,6 +180,132 @@ export const STORIES: Story[] = [
     ],
     related: ["watershed-thinking", "keyline-design", "swales-and-earthworks", "rainwater-harvesting"],
   },
+  {
+    slug: "voedselbos-ketelbroek",
+    title: "Voedselbos Ketelbroek",
+    subtitle: "On a former maize field near Groesbeek, the Netherlands' pioneering food forest has been proving for over fifteen years that a farm can feed people while it rewilds itself.",
+    place: "Groesbeek, NL",
+    category: "food-forests",
+    hue: 88,
+    updated: "2026-04-02",
+    readingMinutes: 10,
+    lead: "In 2009 this was two and a half hectares of maize monoculture — ploughed, sprayed, fed from a bag, and quiet. Wouter van Eck planted it with trees and then did something almost no farmer dares: nothing. No fertiliser, no pesticides, no irrigation, no tillage. Ketelbroek has been yielding more, not less, every year since — and the nightingale has come back to sing about it.",
+    stats: [
+      { label: "Area", value: "2.5 ha" },
+      { label: "Planted", value: "2009" },
+      { label: "Edible species", value: "~400" },
+      { label: "External inputs", value: "0" },
+    ],
+    chapters: [
+      {
+        title: "The maize field",
+        paragraphs: [
+          "The starting point could hardly have been less promising or more ordinary: a flat Dutch maize field on the edge of the De Bruuk nature reserve, farmed the conventional way for decades. One crop, one harvest, one annual cycle of plough, spray and feed — a system that only ran as long as somebody kept paying its bills in diesel and nitrogen.",
+          "Van Eck, a former campaigner with a farmer's patience, saw the field differently. If a natural forest can build fertility, hold water and defend itself with no one's help, then a forest designed around edible species should be able to do the same — and hand over a harvest as well. In the winter of 2009, with co-designer Pieter Jansen, he planted the counter-argument.",
+        ],
+        pullQuote: "If a wild forest needs no inputs, why should an edible one?",
+      },
+      {
+        title: "Designing an ecosystem you can eat",
+        paragraphs: [
+          "Ketelbroek is not an orchard with extra steps. It is a forest ecosystem in which nearly every chosen species happens to be edible or useful: walnuts and chestnuts in the canopy, Asian pears and persimmons below them, Szechuan pepper, honeyberries and hundreds of other shrubs and herbs filling the layers down to the ground. Around four hundred edible species share the site, arranged the way a young woodland arranges itself.",
+          "The design does the work management would otherwise have to do. Alders fix nitrogen for their neighbours. Deep roots pump minerals up from the subsoil. Fallen leaves are the fertiliser programme; the predators that moved into the tangle are the pest control. After the establishment years, the intervention budget settled at almost nothing — the forest is the machinery.",
+        ],
+      },
+      {
+        title: "Rising yields, rising life",
+        paragraphs: [
+          "Conventional intuition says an unmanaged field slides towards weeds and losses. Ketelbroek slid the other way. As the trees matured, harvests climbed year on year — nuts, fruit, shoots and leaves that go to restaurants and markets, picked from a system that was never once ploughed, sprayed or fed after planting.",
+          "The biodiversity ledger climbed with it. Surveys by ecologists who began following the site found bird numbers and species multiplying far beyond the surrounding farmland, along with beetles, butterflies and other invertebrates rare in the region. The return that made the news was the nightingale — a bird of dense, scrubby young woodland, absent from tidy fields, now breeding in a place grown expressly for dinner.",
+        ],
+        pullQuote: "The harvest and the nightingale arrived by the same door: complexity.",
+      },
+      {
+        title: "What Ketelbroek proves",
+        paragraphs: [
+          "One small site cannot feed a country, and Van Eck has never claimed it could. What Ketelbroek is, is an existence proof: food production and rich nature on the same hectares, with the input bill at zero — not a compromise between farming and ecology but a system where each carries the other.",
+          "The proof is spreading. Ketelbroek became the reference site for a Dutch food-forest movement — the Green Deal Voedselbossen, larger successors like Voedselbos Schijndel, and a national foundation carrying the model onto hundreds of hectares. Every one of them is, in a sense, a cutting taken from a former maize field near Groesbeek.",
+        ],
+      },
+    ],
+    species: [
+      { common: "Sweet chestnut", latin: "Castanea sativa", role: "Canopy · nuts" },
+      { common: "Walnut", latin: "Juglans regia", role: "Canopy · nuts" },
+      { common: "Italian alder", latin: "Alnus cordata", role: "Pioneer · nitrogen-fixer" },
+      { common: "Asian pear", latin: "Pyrus pyrifolia", role: "Sub-canopy · fruit" },
+      { common: "Szechuan pepper", latin: "Zanthoxylum simulans", role: "Shrub · spice" },
+      { common: "Honeyberry", latin: "Lonicera caerulea", role: "Shrub · early berries" },
+      { common: "Ramsons", latin: "Allium ursinum", role: "Ground · edible" },
+    ],
+    guardians: [
+      { name: "Wouter van Eck", role: "Founder · design & harvest" },
+      { name: "Pieter Jansen", role: "Co-designer · ecology" },
+    ],
+    related: ["seven-layer-food-forest", "ecological-succession", "urban-food-forests", "no-till-agriculture"],
+  },
+  {
+    slug: "marker-wadden",
+    title: "The Marker Wadden",
+    subtitle: "How five islands built from mud turned one of Europe's deadest lakes back into a place worth flying to.",
+    place: "Markermeer, NL",
+    category: "biodiversity",
+    hue: 197,
+    updated: "2026-04-02",
+    readingMinutes: 9,
+    lead: "The Markermeer was an accident of engineering: a vast lake sealed off by a dike in 1976 for a land reclamation that never came, left to stew in its own suspended silt until the water turned to grey soup and the life drained out of it. The answer, when it finally arrived, was more engineering — but this time in nature's service. Since 2016, dredgers have been raising an archipelago out of the very mud that was killing the lake.",
+    stats: [
+      { label: "Lake area", value: "700 km²" },
+      { label: "First island", value: "2016" },
+      { label: "Archipelago", value: "1,300 ha" },
+      { label: "Bird species", value: "150+" },
+    ],
+    chapters: [
+      {
+        title: "A lake in limbo",
+        paragraphs: [
+          "When the Houtribdijk cut the Markermeer off from the IJsselmeer, it created a shallow basin with no tides, no rivers to speak of, and no way out for its sediment. Every storm stirred the soft clay floor into the water column, where it hung as a permanent murk — smothering light, clogging the filter-feeding mussels, starving the fish that fed on them and the birds that fed on the fish.",
+          "For decades the counts went one way. Ecologists watched populations of smelt, mussels and waterbirds slide, and filed the Markermeer under a bleak heading: a lake too engineered to live and too expensive to undo.",
+        ],
+        pullQuote: "The lake was drowning in its own stirred-up floor.",
+      },
+      {
+        title: "Building with the enemy",
+        paragraphs: [
+          "The idea that broke the stalemate came from Natuurmonumenten, the Dutch conservation society: if the sediment is the problem, make it the raw material. Working with Boskalis and the national water authorities, they began in 2016 to dredge the troublesome silt and clay and spray it, layer by layer, into ring dikes of sand — letting mud settle, drain and consolidate into land.",
+          "It was a genuine experiment. Nobody had built islands from material this soft at this scale, and the ground itself had to be coaxed: as the mud dewatered it shrank and sank, and the builders learned to over-fill, to plant pioneering vegetation whose roots knit the surface, and to let wind and wave finish the sculpting. Building with nature, they call it — engineering that recruits natural processes instead of overruling them.",
+        ],
+      },
+      {
+        title: "The birds vote first",
+        paragraphs: [
+          "Life did not wait for the ribbon-cutting. Bare, wet, predator-free mudflats are the rarest of commodities in north-west Europe, and the first breeding season on the unfinished islands brought colonies of common terns nesting on ground the dredgers had barely left. Avocets, plovers and shelduck followed; by the archipelago's fifth year, surveys were recording well over a hundred and fifty bird species, with thousands of pairs breeding.",
+          "Below the waterline the gradient did its work. The sheltered bays between the islands let silt drop out of suspension, clearing the water locally; light reached the bottom again, plants and insects returned, and fish moved into the warm shallows to spawn — rebuilding, link by link, the food web the murk had dismantled.",
+        ],
+        pullQuote: "Bare mud, safe from foxes — the rarest luxury a coastal bird can be offered.",
+      },
+      {
+        title: "Lessons from a made place",
+        paragraphs: [
+          "The Marker Wadden are unapologetically artificial, and that is the point. In a country where almost every hectare is designed, the archipelago demonstrates that design can run in nature's favour — that the same dredgers, dikes and delta expertise that once erased Dutch wetlands can be turned around to build them.",
+          "The deeper lesson is about incompleteness. The islands were handed over unfinished on purpose: low, soft, mobile, with room for storms and succession to redraw them. A nature reserve, the builders argue, should not be a finished product but a starting condition — you supply the substrate and the safety, and the ecosystem writes the rest itself.",
+        ],
+      },
+    ],
+    species: [
+      { common: "Common tern", latin: "Sterna hirundo", role: "Pioneer coloniser · fish-eater" },
+      { common: "Pied avocet", latin: "Recurvirostra avosetta", role: "Mudflat breeder" },
+      { common: "Kentish plover", latin: "Anarhynchus alexandrinus", role: "Rare pioneer breeder" },
+      { common: "Common reed", latin: "Phragmites australis", role: "Soil-binder · marsh builder" },
+      { common: "Zebra mussel", latin: "Dreissena polymorpha", role: "Filter-feeder · water clarity" },
+      { common: "European smelt", latin: "Osmerus eperlanus", role: "Keystone forage fish" },
+    ],
+    guardians: [
+      { name: "Natuurmonumenten", role: "Initiator · site management" },
+      { name: "Rijkswaterstaat", role: "Water authority · co-funder" },
+      { name: "Boskalis crews", role: "Dredging & construction" },
+    ],
+    related: ["rewilding", "trophic-cascades", "keystone-species", "watershed-thinking"],
+  },
 ]
 
 export const STORY_BY_SLUG = new Map(STORIES.map((s) => [s.slug, s]))

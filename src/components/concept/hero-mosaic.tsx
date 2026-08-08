@@ -100,7 +100,9 @@ function Row({ row, reduced, small }: { row: number; reduced: boolean; small: bo
               <img
                 src={t.src}
                 alt=""
-                loading="eager"
+                // the second loop copy scrolls in later — no need to
+                // compete with the first paint
+                loading={copy === 0 ? "eager" : "lazy"}
                 decoding="async"
                 draggable={false}
                 className="h-full w-full object-cover"
