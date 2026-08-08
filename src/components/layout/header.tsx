@@ -105,7 +105,7 @@ export function Header() {
       <div className="relative z-50 mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-4 sm:px-6">
         <Link
           href="/"
-          aria-label="Equilibrium — Home"
+          aria-label={ui("menuHomeAria")}
           inert={open || undefined}
           className={cn(
             "group pointer-events-auto flex items-center gap-2.5",
@@ -141,7 +141,7 @@ export function Header() {
             draggable={false}
             className="h-9 w-auto select-none transition-transform duration-300 group-hover:scale-[1.03] dark:hidden"
           />
-          <span className="sr-only">Equilibrium — Home</span>
+          <span className="sr-only">{ui("menuHomeAria")}</span>
         </Link>
 
         <div className="pointer-events-auto flex items-center gap-2 lg:gap-4">
@@ -222,7 +222,7 @@ export function Header() {
             id="site-menu"
             role="dialog"
             aria-modal="true"
-            aria-label="Site menu"
+            aria-label={ui("menuSiteMenu")}
             initial={{ clipPath: "inset(0 0 100% 0)" }}
             animate={{ clipPath: "inset(0 0 0% 0)" }}
             exit={{ clipPath: "inset(0 0 100% 0)" }}

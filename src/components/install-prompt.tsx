@@ -4,6 +4,7 @@ import Image from "next/image"
 import { useEffect, useRef, useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 
+import { useUI } from "@/components/language-provider"
 import { EASE_ORGANIC } from "@/lib/motion"
 
 const DISMISS_KEY = "eog-install-dismissed"
@@ -22,6 +23,7 @@ type BeforeInstallPromptEvent = Event & {
  * is remembered for 14 days.
  */
 export function InstallPrompt() {
+  const ui = useUI()
   const [mode, setMode] = useState<"ios" | "android" | "menu" | null>(null)
   const deferred = useRef<BeforeInstallPromptEvent | null>(null)
 
@@ -98,7 +100,7 @@ export function InstallPrompt() {
           transition={{ duration: 0.6, ease: EASE_ORGANIC }}
           className="fixed inset-x-3 bottom-24 z-[88] pb-[env(safe-area-inset-bottom)] md:hidden"
           role="dialog"
-          aria-label="Install Equilibrium"
+          aria-label={ui("pwaInstallAria")}
         >
           <div className="eog-glass flex items-center gap-4 rounded-2xl border border-line p-4 shadow-float">
             <Image
@@ -111,23 +113,23 @@ export function InstallPrompt() {
             />
             <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold text-foreground">
-                Keep Equilibrium on your home screen
+                {ui("pwaTitle")}
               </p>
               {mode === "ios" ? (
                 <p className="mt-1 text-xs leading-relaxed text-muted">
-                  Tap the <span className="text-ember-text">share</span> button below,
-                  then <span className="text-ember-text">&ldquo;Add to Home Screen&rdquo;</span>{" "}
-                  — it opens like an app.
+                  {ui("pwaTapThe")} <span className="text-ember-text">{ui("pwaShare")}</span>{" "}
+                  {ui("pwaIosMid")} <span className="text-ember-text">{ui("pwaA2HS")}</span>{" "}
+                  {ui("pwaOpensLikeApp")}
                 </p>
               ) : mode === "menu" ? (
                 <p className="mt-1 text-xs leading-relaxed text-muted">
-                  Open the browser <span className="text-ember-text">menu (⋮)</span> and
-                  choose <span className="text-ember-text">&ldquo;Add to Home Screen&rdquo;</span>{" "}
-                  — it opens like an app.
+                  {ui("pwaOpenMenu")} <span className="text-ember-text">{ui("pwaMenuGlyph")}</span>{" "}
+                  {ui("pwaMenuMid")} <span className="text-ember-text">{ui("pwaA2HS")}</span>{" "}
+                  {ui("pwaOpensLikeApp")}
                 </p>
               ) : (
                 <p className="mt-1 text-xs leading-relaxed text-muted">
-                  Installs in a second — opens fullscreen, straight to the living graph.
+                  {ui("pwaAndroidBody")}
                 </p>
               )}
             </div>
@@ -135,15 +137,15 @@ export function InstallPrompt() {
               <button
                 type="button"
                 onClick={install}
-                className="shrink-0 rounded-full bg-ember-strong px-4 py-2 text-[0.65rem] font-semibold tracking-[0.18em] text-white"
+                className="shrink-0 rounded-full bg-ember-strong px-4 py-2 text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-white"
               >
-                INSTALL
+                {ui("pwaInstall")}
               </button>
             )}
             <button
               type="button"
               onClick={dismiss}
-              aria-label="Dismiss"
+              aria-label={ui("pwaDismiss")}
               className="shrink-0 self-start text-faint transition-colors hover:text-foreground"
             >
               ✕

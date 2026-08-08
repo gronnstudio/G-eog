@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import { AnimatePresence, motion } from "framer-motion"
 import { CornerDownLeft, Search, Sparkles } from "lucide-react"
 
+import { useUI } from "@/components/language-provider"
 import { ARTICLES, searchArticles, getCategory } from "@/lib/knowledge"
 import { EASE_ORGANIC } from "@/lib/motion"
 
@@ -21,6 +22,7 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
   const [cursor, setCursor] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
+  const ui = useUI()
 
   const open = useCallback(() => setOpen(true), [])
   const close = useCallback(() => {
@@ -78,14 +80,14 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
             exit={{ opacity: 0 }}
           >
             <button
-              aria-label="Close search"
+              aria-label={ui("palClose")}
               className="absolute inset-0 bg-forest/70 backdrop-blur-sm"
               onClick={close}
             />
             <motion.div
               role="dialog"
               aria-modal="true"
-              aria-label="Search Equilibrium"
+              aria-label={ui("palDialogLabel")}
               className="eog-glass relative w-full max-w-2xl overflow-hidden rounded-2xl shadow-float"
               initial={{ opacity: 0, y: -16, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -106,7 +108,7 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
                     if (e.key === "ArrowUp") { e.preventDefault(); setCursor((c) => Math.max(c - 1, 0)) }
                     if (e.key === "Enter") onEnter()
                   }}
-                  placeholder="Search the ecosystem — try &ldquo;fungi&rdquo; or &ldquo;water&rdquo;"
+                  placeholder={ui("palPlaceholder")}
                   className="w-full bg-transparent text-lg text-foreground outline-none placeholder:text-faint"
                 />
                 <kbd className="hidden rounded border border-line px-2 py-1 font-mono text-xs text-faint sm:block">
@@ -117,12 +119,12 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
               <div className="max-h-[52vh] overflow-y-auto p-2">
                 {!query.trim() && (
                   <p className="flex items-center gap-2 px-3 pb-1 pt-2 font-mono text-xs uppercase tracking-widest text-faint">
-                    <Sparkles className="h-3 w-3" /> Trending
+                    <Sparkles className="h-3 w-3" /> {ui("palTrending")}
                   </p>
                 )}
                 {results.length === 0 && (
                   <p className="px-4 py-10 text-center text-muted">
-                    No matches yet — the ecosystem is always growing.
+                    {ui("palEmpty")}
                   </p>
                 )}
                 {results.map((a, i) => {
