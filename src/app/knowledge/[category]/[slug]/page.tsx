@@ -23,12 +23,15 @@ import { CitedBy } from "@/components/knowledge/cited-by"
 import { TocSpy } from "@/components/knowledge/toc-spy"
 import { DifficultyBadge } from "@/components/ui/badges"
 import { UIText } from "@/components/ui/ui-text"
+import { ConnectionList } from "@/components/knowledge/connection-list"
 import {
   ARTICLES,
   articleNeighbors,
   getArticle,
   getCategory,
   relatedArticles,
+  relationshipsFor,
+  untypedConnections,
 } from "@/lib/knowledge"
 
 const SITE = "https://equilibrium.gronn.studio"
@@ -75,12 +78,22 @@ export default async function ArticlePage({
   if (!article) notFound()
 
   const cat = getCategory(article.category)
-  const related = relatedArticles(article)
+  // Typed edges are the primary connection view. `relatedArticles` is kept
+  // as the fallback for any pair the typed graph hasn't reached yet, so a
+  // newly-authored article never silently loses its connections.
+  const connections = relationshipsFor(article.slug)
+  const untyped = untypedConnections(article)
+  const related = relatedArticles(article).filter((a) => untyped.includes(a.slug))
   // Backlinks: other articles whose `related` edges point here. Articles
   // already shown in the outgoing "threads" grid are skipped to avoid
   // listing the same card twice.
+  const shown = new Set(connections.map((c) => c.other.slug))
   const citedBy = ARTICLES.filter(
-    (a) => a.slug !== article.slug && a.related.includes(article.slug) && !article.related.includes(a.slug),
+    (a) =>
+      a.slug !== article.slug &&
+      a.related.includes(article.slug) &&
+      !article.related.includes(a.slug) &&
+      !shown.has(a.slug),
   )
   const toc = article.sections
     .filter((s): s is typeof s & { heading: string } => Boolean(s.heading))
@@ -152,7 +165,7 @@ export default async function ArticlePage({
               <Clock className="h-4 w-4" /> {article.readingMinutes} <UIText k="artMinRead" />
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <Link2 className="h-4 w-4" /> {article.related.length} <UIText k="artConnectionsWord" />
+              <Link2 className="h-4 w-4" /> {connections.length} <UIText k="artConnectionsWord" />
             </span>
             <span className="inline-flex items-center gap-1.5">
               <Users className="h-4 w-4" /> {article.contributors.length} <UIText k="artContributorsWord" />
@@ -319,7 +332,10 @@ export default async function ArticlePage({
         </nav>
       )}
 
-      {/* Connections */}
+      {/* Typed connections — each edge says why it exists */}
+      <ConnectionList title={cat ? `${article.title} in context` : article.title} connections={connections} />
+
+      {/* Any connection the typed graph hasn't covered yet */}
       {related.length > 0 && (
         <section className="border-t border-line bg-surface/30">
           <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
