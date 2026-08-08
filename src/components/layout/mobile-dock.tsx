@@ -51,6 +51,15 @@ const icons = {
       <path d="M12 10.5c0-3 2-5.5 6.5-5.5 0 4.5-2.5 6.5-6.5 6Z" {...stroke} />
     </svg>
   ),
+  // Two figures side by side — the community.
+  community: (
+    <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden>
+      <circle cx="9" cy="8.5" r="3" {...stroke} />
+      <path d="M3.5 19.5c0-3 2.5-5 5.5-5s5.5 2 5.5 5" {...stroke} />
+      <circle cx="16.5" cy="9.5" r="2.4" {...stroke} />
+      <path d="M16 14.6c2.6.3 4.5 2.1 4.5 4.6" {...stroke} />
+    </svg>
+  ),
   menu: (
     <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden fill="currentColor">
       <circle cx="5.5" cy="5.5" r="2" /><circle cx="12" cy="5.5" r="2" /><circle cx="18.5" cy="5.5" r="2" />
@@ -170,10 +179,10 @@ export function MobileDock() {
   // arrow shows; near the top = tuck as before.
   const wingsHidden = compact && !menuOpen && !scrolled
   // 2 slots × 56px + the 6px gap between them.
-  const WING = 118
+  const WING = 144
 
   const slot =
-    "flex h-11 w-14 items-center justify-center rounded-full transition-all duration-300 active:scale-90"
+    "flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 active:scale-90"
   // Active wing icon carries GRØNN's ember, matching gronn.studio's dock.
   const slotActive = "bg-foreground/10 text-ember"
   const swapSlot =
@@ -356,6 +365,13 @@ export function MobileDock() {
               >
                 {icons.knowledge}
               </Link>
+              <Link
+                href="/community"
+                aria-label={ui("nav_community")}
+                className={cn(slot, active("/community") ? slotActive : "text-muted")}
+              >
+                {icons.community}
+              </Link>
             </motion.div>
             <Link
               href="/explore"
@@ -387,9 +403,17 @@ export function MobileDock() {
               >
                 {icons.learn}
               </Link>
+              <button
+                type="button"
+                onClick={openSearch}
+                aria-label={ui("search")}
+                className={cn(slot, "text-muted")}
+              >
+                {icons.search}
+              </button>
               {/* Shared last slot: grid button normally, back-to-top once
                   a viewport deep. */}
-              <div className="relative h-11 w-14">
+              <div className="relative h-11 w-11">
                 <AnimatePresence initial={false}>
                   {scrolled && !menuOpen ? (
                     <motion.button
