@@ -40,6 +40,8 @@ const COLUMNS: { title: UIKey; links: FooterLink[] }[] = [
       { href: BRAND.github, label: "ftViewGithub" },
       { href: repoUrl("issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22"), label: "ftGoodFirstIssues" },
       { href: "/community#peer-review", label: "ftPeerReview" },
+      { href: repoUrl("blob/main/docs/SOURCES.md"), label: "megaSources" },
+      { href: "/feed.xml", label: "megaRss" },
       { href: "/about", label: "ftOurMission" },
     ],
   },

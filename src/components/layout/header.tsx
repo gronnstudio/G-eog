@@ -10,7 +10,7 @@ import { Search } from "lucide-react"
 import { LanguageToggle } from "@/components/language-toggle"
 import { useUI } from "@/components/language-provider"
 import { LetterFlip } from "@/components/motion/letter-flip"
-import { ThemeModePicker } from "@/components/theme-toggle"
+import { ThemeModePicker, ThemeToggle } from "@/components/theme-toggle"
 import { useCommandPalette } from "@/components/search/command-palette"
 import { ARTICLES, getCategory, totalStats } from "@/lib/knowledge"
 import { DURATION_CURTAIN, EASE_CURTAIN } from "@/lib/motion"
@@ -173,6 +173,12 @@ export function Header() {
               ))}
             </nav>
 
+            {/* Theme lives here from lg up, because that is where the MENU
+                button (and the curtain that used to hold it) is gone. */}
+            <span className="hidden lg:block">
+              <ThemeToggle />
+            </span>
+
             <span className="hidden sm:block">
               <LanguageToggle />
             </span>
@@ -202,7 +208,11 @@ export function Header() {
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-controls="site-menu"
-            className="tap-target glass hidden items-center gap-2.5 rounded-full px-4 py-2.5 text-sm text-foreground transition-colors hover:text-accent md:flex"
+            // A MENU button beside a complete nav is two answers to the same
+            // question, and it was eating the width the sixth nav item needed.
+            // It earns its place only between md and lg, where the nav is
+            // hidden and the curtain is the only way through the site.
+            className="tap-target glass hidden items-center gap-2.5 rounded-full px-4 py-2.5 text-sm text-foreground transition-colors hover:text-accent md:flex lg:hidden"
           >
             {/* Hamburger that morphs into a cross */}
             <span aria-hidden className="relative block h-2.5 w-4">
