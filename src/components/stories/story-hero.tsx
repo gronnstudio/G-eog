@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from "framer-motion"
 import { MapPin } from "lucide-react"
 
 import { StoryAtmosphere } from "./story-atmosphere"
+import { useUI } from "@/components/language-provider"
 import { EASE_ORGANIC } from "@/lib/motion"
 import type { StoryStat } from "@/lib/knowledge"
 
@@ -25,6 +26,7 @@ export function StoryHero({
   lead: string
   stats: StoryStat[]
 }) {
+  const ui = useUI()
   const ref = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] })
   const yArt = useTransform(scrollYProgress, [0, 1], ["0%", "22%"])
@@ -56,7 +58,7 @@ export function StoryHero({
           className="inline-flex items-center gap-2 rounded-full border border-line px-4 py-1.5 font-mono text-xs uppercase tracking-widest text-muted"
         >
           <MapPin className="h-3.5 w-3.5" style={{ color: `hsl(${hue} 50% 65%)` }} />
-          {place} · Field Story
+          {place} · {ui("knFieldStory")}
         </motion.p>
 
         <motion.h1

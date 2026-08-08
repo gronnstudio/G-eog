@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 
-import { useT } from "@/components/language-provider"
+import { useUI } from "@/components/language-provider"
 import { useReducedMotion } from "@/lib/use-reduced-motion"
 
 // Pull-to-refresh for the installed PWA, ported from GRØNN Studio. The
@@ -18,7 +18,7 @@ const MAX_PULL = 110
 const RESISTANCE = 0.45
 
 export function PullToRefresh() {
-  const t = useT()
+  const ui = useUI()
   const reduced = useReducedMotion()
 
   const [standalone, setStandalone] = useState(false)
@@ -162,10 +162,10 @@ export function PullToRefresh() {
       </div>
       <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.25em] text-muted">
         {phase === "refreshing"
-          ? t({ en: "Refreshing", nl: "Vernieuwen" })
+          ? ui("pwaRefreshing")
           : armed
-            ? t({ en: "Release to refresh", nl: "Loslaten om te vernieuwen" })
-            : t({ en: "Pull to refresh", nl: "Trek om te vernieuwen" })}
+            ? ui("pwaReleaseRefresh")
+            : ui("pwaPullRefresh")}
       </p>
     </div>
   )

@@ -64,9 +64,14 @@ export function pick(l: L, locale: Locale): string {
   return l[locale] ?? l.en
 }
 
+import { UI_CHROME } from "./i18n-chrome"
+import { UI_PAGES } from "./i18n-pages"
+
 // Interface strings across every offered language; anything missing falls
-// back to English via pick(). Generated with a localization pass.
-export const UI = {
+// back to English via pick(). Generated with a localization pass. Chrome
+// (footer/dock/menus) and inner-page strings live in sibling modules and
+// merge here so sweeps don't collide in one file.
+const UI_CORE = {
   nav_home: { en: "Home", nl: "Home", zh: "首页", hi: "होम", es: "Inicio", fr: "Accueil", ar: "الرئيسية", pt: "Início", ru: "Главная", de: "Startseite", ja: "ホーム" },
   nav_explore: { en: "Explore", nl: "Verkennen", zh: "探索", hi: "अन्वेषण", es: "Explorar", fr: "Explorer", ar: "استكشاف", pt: "Explorar", ru: "Обзор", de: "Entdecken", ja: "探索" },
   nav_knowledge: { en: "Knowledge", nl: "Kennis", zh: "知识", hi: "ज्ञान", es: "Conocimiento", fr: "Savoir", ar: "المعرفة", pt: "Conhecimento", ru: "Знание", de: "Wissen", ja: "知識" },
@@ -133,3 +138,5 @@ export const UI = {
   man3em: { en: "accessible", nl: "toegankelijk", zh: "触手可及", hi: "सुलभ", es: "accesible", fr: "accessible", ar: "متاحاً", pt: "acessível", ru: "доступным", de: "zugänglich", ja: "身近" },
   man3post: { en: ", structured, beautiful and practical.", nl: ", gestructureerd, mooi en praktisch te maken.", zh: "、有序、美观且实用。", hi: ", संरचित, सुंदर और व्यावहारिक बनाए।", es: ", estructurada, bella y práctica.", fr: ", structurée, belle et pratique.", ar: "، منظماً، جميلاً وعملياً.", pt: ", estruturada, bela e prática.", ru: ", структурированным, красивым и практичным.", de: ", strukturiert, schön und praktisch zu machen.", ja: "で、構造化され、美しく、実用的なものにするために存在します。" },
 } satisfies Record<string, L>
+
+export const UI = { ...UI_CORE, ...UI_CHROME, ...UI_PAGES }

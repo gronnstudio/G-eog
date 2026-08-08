@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import type Lenis from "lenis"
 
 import { LanguageToggle } from "@/components/language-toggle"
-import { useT, useUI } from "@/components/language-provider"
+import { useUI } from "@/components/language-provider"
 import { ThemeModePicker } from "@/components/theme-toggle"
 import { useCommandPalette } from "@/components/search/command-palette"
 import { EASE_REVEAL } from "@/lib/motion"
@@ -83,18 +83,17 @@ const PRIMARY = [
 ] as const
 
 const SECONDARY = [
-  { href: "/explore", label: { en: "Knowledge Graph", nl: "Kennisgraaf" } },
-  { href: "/knowledge/soil", label: { en: "Soil", nl: "Bodem" } },
-  { href: "/knowledge/water", label: { en: "Water", nl: "Water" } },
-  { href: "/knowledge/fungi", label: { en: "Fungi", nl: "Schimmels" } },
-  { href: "/knowledge/permaculture", label: { en: "Permaculture", nl: "Permacultuur" } },
-]
+  { href: "/explore", key: "ftKnowledgeGraph" },
+  { href: "/knowledge/soil", key: "dockSoil" },
+  { href: "/knowledge/water", key: "dockWater" },
+  { href: "/knowledge/fungi", key: "dockFungi" },
+  { href: "/knowledge/permaculture", key: "dockPermaculture" },
+] as const
 
 export function MobileDock() {
   const [menuOpen, setMenuOpen] = useState(false)
   const pathname = usePathname()
   const reduced = useReducedMotion()
-  const t = useT()
   const ui = useUI()
   const { open: openSearch } = useCommandPalette()
 
@@ -200,7 +199,7 @@ export function MobileDock() {
               id="dock-sheet"
               role="dialog"
               aria-modal="true"
-              aria-label="Site navigation"
+              aria-label={ui("dockSheetLabel")}
               initial={reduced ? false : { y: "100%" }}
               animate={{ y: 0 }}
               exit={reduced ? { opacity: 0 } : { y: "100%" }}
@@ -243,7 +242,7 @@ export function MobileDock() {
                         : "border-line text-muted hover:border-accent/40 hover:text-foreground active:border-accent/40 active:text-foreground",
                     )}
                   >
-                    {t(item.label)}
+                    {ui(item.key)}
                   </Link>
                 ))}
                 <button
@@ -312,7 +311,7 @@ export function MobileDock() {
 
       {/* The floating pill */}
       <nav
-        aria-label="Mobile dock"
+        aria-label={ui("dockLabel")}
         className="safe-x fixed inset-x-0 z-[61] flex justify-center md:hidden"
         style={{
           bottom: "max(1rem, calc(env(safe-area-inset-bottom) + 0.5rem))",
@@ -347,12 +346,12 @@ export function MobileDock() {
               inert={wingsHidden || undefined}
               className="flex items-center justify-end gap-1.5 overflow-hidden"
             >
-              <Link href="/" aria-label="Home" className={cn(slot, active("/") ? slotActive : "text-muted")}>
+              <Link href="/" aria-label={ui("nav_home")} className={cn(slot, active("/") ? slotActive : "text-muted")}>
                 {icons.home}
               </Link>
               <Link
                 href="/knowledge"
-                aria-label="Knowledge"
+                aria-label={ui("nav_knowledge")}
                 className={cn(slot, active("/knowledge") ? slotActive : "text-muted")}
               >
                 {icons.knowledge}
@@ -360,7 +359,7 @@ export function MobileDock() {
             </motion.div>
             <Link
               href="/explore"
-              aria-label="Explore the knowledge graph"
+              aria-label={ui("exploreGraph")}
               className={cn(
                 "flex h-11 w-14 shrink-0 items-center justify-center rounded-full transition duration-300 active:scale-90",
                 active("/explore")
@@ -383,7 +382,7 @@ export function MobileDock() {
             >
               <Link
                 href="/learn"
-                aria-label="Learn"
+                aria-label={ui("nav_learn")}
                 className={cn(slot, active("/learn") ? slotActive : "text-muted")}
               >
                 {icons.learn}
@@ -401,7 +400,7 @@ export function MobileDock() {
                       transition={{ duration: reduced ? 0 : 0.25, ease: EASE_REVEAL }}
                       type="button"
                       onClick={toTop}
-                      aria-label="Back to top"
+                      aria-label={ui("dockBackToTop")}
                       className={cn(swapSlot, "text-foreground/80")}
                     >
                       <span className="relative flex h-6 w-6 items-center justify-center">
@@ -419,7 +418,7 @@ export function MobileDock() {
                       exit={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.6 }}
                       transition={{ duration: reduced ? 0 : 0.25, ease: EASE_REVEAL }}
                       type="button"
-                      aria-label="Navigate"
+                      aria-label={ui("navigate")}
                       aria-expanded={menuOpen}
                       aria-controls="dock-sheet"
                       onClick={() => setMenuOpen((v) => !v)}

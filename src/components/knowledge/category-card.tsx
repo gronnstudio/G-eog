@@ -1,12 +1,16 @@
+"use client"
+
 import Link from "next/link"
 import * as Icons from "lucide-react"
 
 import { categoryStats, type Category } from "@/lib/knowledge"
+import { useUI } from "@/components/language-provider"
 
 type IconName = keyof typeof Icons
 
 export function CategoryCard({ category, index = 0 }: { category: Category; index?: number }) {
   const stats = categoryStats(category.id)
+  const ui = useUI()
   const Icon = (Icons[category.icon as IconName] ?? Icons.Circle) as React.ComponentType<{
     className?: string
   }>
@@ -38,7 +42,8 @@ export function CategoryCard({ category, index = 0 }: { category: Category; inde
       <h3 className="relative font-heading text-xl text-foreground">{category.title}</h3>
       <p className="relative mt-1.5 flex-1 text-sm leading-relaxed text-muted">{category.tagline}</p>
       <p className="relative mt-5 font-mono text-xs text-faint">
-        {stats.articles} article{stats.articles === 1 ? "" : "s"} · {stats.connections} links
+        {stats.articles} {ui(stats.articles === 1 ? "knArticleWord" : "knArticlesWord")} ·{" "}
+        {stats.connections} {ui("knLinksWord")}
       </p>
     </Link>
   )

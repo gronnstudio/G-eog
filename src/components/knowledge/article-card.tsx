@@ -1,11 +1,15 @@
+"use client"
+
 import Link from "next/link"
 import { ArrowUpRight, Clock, Link2 } from "lucide-react"
 
 import { getCategory, type Article } from "@/lib/knowledge"
 import { DifficultyBadge } from "@/components/ui/badges"
+import { useUI } from "@/components/language-provider"
 
 export function ArticleCard({ article }: { article: Article }) {
   const cat = getCategory(article.category)
+  const ui = useUI()
   return (
     <Link
       href={`/knowledge/${article.category}/${article.slug}`}
@@ -29,7 +33,7 @@ export function ArticleCard({ article }: { article: Article }) {
       <div className="mt-5 flex items-center gap-4 border-t border-line pt-4 text-xs text-faint">
         <DifficultyBadge level={article.difficulty} />
         <span className="inline-flex items-center gap-1">
-          <Clock className="h-3.5 w-3.5" /> {article.readingMinutes} min
+          <Clock className="h-3.5 w-3.5" /> {article.readingMinutes} {ui("knMin")}
         </span>
         <span className="inline-flex items-center gap-1">
           <Link2 className="h-3.5 w-3.5" /> {article.related.length}

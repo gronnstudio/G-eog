@@ -6,6 +6,7 @@ import * as Icons from "lucide-react"
 import { ArticleCard } from "@/components/knowledge/article-card"
 import { Reveal } from "@/components/motion/reveal"
 import { SectionLabel } from "@/components/ui/badges"
+import { UIText } from "@/components/ui/ui-text"
 import {
   CATEGORIES,
   articlesInCategory,
@@ -60,9 +61,9 @@ export default async function CategoryPage({
         />
         <div className="relative mx-auto max-w-7xl px-4 pb-14 sm:px-6">
           <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted">
-            <Link href="/" className="hover:text-foreground">Home</Link>
+            <Link href="/" className="hover:text-foreground"><UIText k="nav_home" /></Link>
             <Icons.ChevronRight className="h-3.5 w-3.5 text-faint" />
-            <Link href="/knowledge" className="hover:text-foreground">Knowledge</Link>
+            <Link href="/knowledge" className="hover:text-foreground"><UIText k="nav_knowledge" /></Link>
             <Icons.ChevronRight className="h-3.5 w-3.5 text-faint" />
             <span className="text-foreground" aria-current="page">{cat.title}</span>
           </nav>
@@ -82,13 +83,15 @@ export default async function CategoryPage({
             {cat.description}
           </p>
           <dl className="mt-8 flex gap-10">
-            {[
-              { k: "Articles", v: stats.articles },
-              { k: "Connections", v: stats.connections },
-              { k: "Reading", v: `${stats.minutes} min` },
-            ].map((s) => (
+            {(
+              [
+                { k: "statArticles", v: <>{stats.articles}</> },
+                { k: "statConnections", v: <>{stats.connections}</> },
+                { k: "knReading", v: <>{stats.minutes} <UIText k="knMin" /></> },
+              ] as const
+            ).map((s) => (
               <div key={s.k}>
-                <dt className="font-mono text-xs uppercase tracking-widest text-faint">{s.k}</dt>
+                <dt className="font-mono text-xs uppercase tracking-widest text-faint"><UIText k={s.k} /></dt>
                 <dd className="font-heading text-2xl text-foreground">{s.v}</dd>
               </div>
             ))}
@@ -98,7 +101,7 @@ export default async function CategoryPage({
 
       {/* Articles */}
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
-        <SectionLabel>Articles</SectionLabel>
+        <SectionLabel><UIText k="statArticles" /></SectionLabel>
         {articles.length ? (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {articles.map((a, i) => (
@@ -110,9 +113,9 @@ export default async function CategoryPage({
         ) : (
           <div className="rounded-2xl border border-dashed border-line p-12 text-center">
             <p className="text-muted">
-              This domain is still taking root. Seed articles are on the way —{" "}
+              <UIText k="knEmptyLead" />{" "}
               <Link href="/community" className="text-accent underline">
-                contribute the first one
+                <UIText k="knEmptyLink" />
               </Link>
               .
             </p>
@@ -122,7 +125,7 @@ export default async function CategoryPage({
 
       {/* Related domains */}
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
-        <SectionLabel>Related domains</SectionLabel>
+        <SectionLabel><UIText k="knRelatedDomains" /></SectionLabel>
         <div className="flex flex-wrap gap-2">
           {related.map((c) => (
             <Link
