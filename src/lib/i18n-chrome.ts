@@ -36,6 +36,7 @@ export const UI_CHROME = {
   menuSiteMenu: { en: "Site menu", nl: "Sitemenu", zh: "网站菜单", hi: "साइट मेन्यू", es: "Menú del sitio", fr: "Menu du site", ar: "قائمة الموقع", pt: "Menu do site", ru: "Меню сайта", de: "Seitenmenü", ja: "サイトメニュー" },
   // ── Mega menu ──────────────────────────────────────────────────
   megaDiscover: { en: "Discover", nl: "Ontdek", zh: "发现", hi: "खोजें", es: "Descubre", fr: "Découvrir", ar: "اكتشف", pt: "Descubra", ru: "Открывайте", de: "Entdecken", ja: "発見" },
+  megaPartners: { en: "Partners", nl: "Partners", zh: "合作伙伴", hi: "साझेदार", es: "Socios", fr: "Partenaires", ar: "الشركاء", pt: "Parceiros", ru: "Партнёры", de: "Partner", ja: "パートナー" },
   megaSeasonal: { en: "Seasonal guide", nl: "Seizoensgids", zh: "时令指南", hi: "मौसमी मार्गदर्शिका", es: "Guía estacional", fr: "Guide saisonnier", ar: "دليل الفصول", pt: "Guia sazonal", ru: "Сезонный гид", de: "Saisonführer", ja: "季節ガイド" },
   megaWizard: { en: "Contribution wizard", nl: "Bijdrage-wizard", zh: "贡献向导", hi: "योगदान विज़ार्ड", es: "Asistente de contribución", fr: "Assistant de contribution", ar: "معالج المساهمة", pt: "Assistente de contribuição", ru: "Мастер вклада", de: "Beitrags-Assistent", ja: "貢献ウィザード" },
   megaSources: { en: "Source registry", nl: "Bronnenregister", zh: "来源登记", hi: "स्रोत सूची", es: "Registro de fuentes", fr: "Registre des sources", ar: "سجل المصادر", pt: "Registro de fontes", ru: "Реестр источников", de: "Quellenregister", ja: "ソース登録" },

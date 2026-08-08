@@ -12,6 +12,7 @@ import { SectionLabel } from "@/components/ui/badges"
 import { DomainsMarquee } from "@/components/play/domains-marquee"
 import { SuccessionTimeline } from "@/components/play/succession-timeline"
 import { ARTICLES, CATEGORIES, LEARNING_PATHS, getCategory, totalStats } from "@/lib/knowledge"
+import { PARTNERS } from "@/lib/knowledge/partners"
 
 /**
  * The home page body, client-rendered so every heading, label and CTA
@@ -214,6 +215,46 @@ export function HomeContent() {
                 </div>
               )
             })}
+          </div>
+        </Reveal>
+      </section>
+
+      {/* Knowledge in practice — the practitioner layer */}
+      <section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6">
+        <Reveal>
+          <div className="rounded-3xl border border-line bg-surface/40 p-8 sm:p-12">
+            <SectionLabel>
+              {t({ en: "Knowledge in practice", nl: "Kennis in de praktijk" })}
+            </SectionLabel>
+            <h2 className="max-w-2xl font-heading text-3xl text-foreground sm:text-4xl">
+              {t({
+                en: "Theory is only half of it.",
+                nl: "Theorie is maar de helft.",
+              })}
+            </h2>
+            <p className="mt-4 max-w-2xl text-pretty text-lg leading-relaxed text-muted">
+              {t({
+                en: "Meet the organisations applying this knowledge on real ground — their methods, and the concepts behind them.",
+                nl: "Maak kennis met de organisaties die deze kennis op echte grond toepassen — hun methodes, en de concepten erachter.",
+              })}
+            </p>
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              {PARTNERS.map((p) => (
+                <span
+                  key={p.slug}
+                  className="rounded-full border border-line px-4 py-1.5 font-mono text-xs uppercase tracking-[0.18em] text-muted"
+                >
+                  {p.name}
+                </span>
+              ))}
+            </div>
+            <Link
+              href="/partners"
+              className="group mt-7 inline-flex items-center gap-2 text-sm text-accent"
+            >
+              {t({ en: "See the partners", nl: "Bekijk de partners" })}
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
           </div>
         </Reveal>
       </section>
