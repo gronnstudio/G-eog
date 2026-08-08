@@ -41,8 +41,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }))
 
-  // Field Stories live under /concept and are deliberately excluded from
-  // the sitemap — a hidden concept, reachable only by direct URL.
-
   return [...staticRoutes, ...categoryRoutes, ...articleRoutes]
 }

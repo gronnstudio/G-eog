@@ -216,16 +216,12 @@ export function MobileDock() {
   // Scrolling up unfolds it (and deep pages then show back-to-top).
   const wingsHidden = compact && !menuOpen
   // 2 slots × 56px + the 6px gap between them.
-  const WING = 144
+  // Two 44px slots + one 6px gap per wing. This was 144 (sized for three
+  // slots) after the pill slimmed to five items, which spread the icons
+  // across dead space — the pill should hug its contents.
+  const WING = 94
 
-  const CONCEPTS = [
-  { href: "/concept/stories", label: "Field Stories" },
-  { href: "/concept/play", label: "Play" },
-  { href: "/concept/flow", label: "Flow" },
-  { href: "/concept/hero-mosaic", label: "Mosaic" },
-] as const
-
-const slot =
+  const slot =
     "flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 active:scale-90"
   // Active wing icon carries GRØNN's ember, matching gronn.studio's dock.
   const slotActive = "bg-foreground/10 text-ember"
@@ -336,25 +332,6 @@ const slot =
                   <LanguageToggle />
                 </div>
 
-                {/* The lab: unlisted concept routes, given a home rather
-                    than existing only as URLs someone has to remember. */}
-                <div className="border-t border-line pt-5">
-                  <p className="mb-2.5 font-mono text-[10px] uppercase tracking-[0.22em] text-faint">
-                    {ui("megaConcepts")}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {CONCEPTS.map((c) => (
-                      <Link
-                        key={c.href}
-                        href={c.href}
-                        onClick={() => setSwitchesOpen(false)}
-                        className="tap-target rounded-full border border-line px-3.5 py-1.5 text-xs tracking-wide text-muted transition-colors hover:border-ember/40 hover:text-foreground"
-                      >
-                        {c.label}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
               </div>
             </motion.div>
           </motion.div>
