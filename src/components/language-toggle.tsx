@@ -11,7 +11,7 @@ import { useMounted } from "@/lib/use-mounted"
 import { cn } from "@/lib/utils"
 
 const PANEL_W = 240
-const PANEL_MAX_H = 288
+const PANEL_MAX_H = 520
 
 /**
  * Language switcher as a flag dropdown across the world's most-spoken
@@ -132,7 +132,7 @@ export function LanguageToggle() {
               width: PANEL_W,
               maxHeight: pos.maxH,
             }}
-            className="no-scrollbar z-[100] overflow-y-auto rounded-2xl border border-line bg-surface p-1.5 shadow-float"
+            className="z-[100] overflow-y-auto rounded-2xl border border-line bg-surface p-1.5 shadow-float"
           >
           {LOCALES.map((l) => {
             const active = mounted && l.locale === locale
