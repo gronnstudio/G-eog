@@ -121,6 +121,14 @@ export function KnowledgeGraph({
     let alpha = reduce ? 0 : 1
     let raf = 0
     let parked = false
+    let running = false
+
+    /** (Re)start the frame loop — no-op if already running or offscreen. */
+    const kick = () => {
+      if (running || parked) return
+      running = true
+      raf = requestAnimationFrame(step)
+    }
 
     const step = () => {
       // Simulation
@@ -173,7 +181,14 @@ export function KnowledgeGraph({
       }
 
       draw()
-      raf = requestAnimationFrame(step)
+      // Sleep once the layout has settled and nothing is being dragged —
+      // redrawing a static graph every frame was pure battery burn.
+      // Interaction handlers call kick() to wake the loop back up.
+      if (alpha > 0.002 || state.current.dragging) {
+        raf = requestAnimationFrame(step)
+      } else {
+        running = false
+      }
     }
 
     const draw = () => {
@@ -365,6 +380,7 @@ export function KnowledgeGraph({
       const n = pick(e.clientX, e.clientY)
       canvas.style.cursor = n ? "pointer" : "grab"
       setHover(n?.id ?? null)
+      kick()
     }
     const onDown = (e: PointerEvent) => {
       const s = state.current
@@ -375,6 +391,7 @@ export function KnowledgeGraph({
       downY = e.clientY
       canvas.style.cursor = "grabbing"
       canvas.setPointerCapture(e.pointerId)
+      kick()
     }
     const onUp = (e: PointerEvent) => {
       const s = state.current
@@ -406,6 +423,7 @@ export function KnowledgeGraph({
       s.offsetX = mx - (mx - s.offsetX) * (next / s.scale)
       s.offsetY = my - (my - s.offsetY) * (next / s.scale)
       s.scale = next
+      kick()
     }
 
     // With touch-action: pan-y the browser reclaims vertical swipes and
@@ -425,6 +443,7 @@ export function KnowledgeGraph({
       s.offsetX = mx - (mx - s.offsetX) * (next / s.scale)
       s.offsetY = my - (my - s.offsetY) * (next / s.scale)
       s.scale = next
+      kick()
     }
 
     if (interactive) {
@@ -443,12 +462,11 @@ export function KnowledgeGraph({
     const io = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          if (parked) {
-            parked = false
-            raf = requestAnimationFrame(step)
-          }
+          parked = false
+          kick()
         } else if (!parked) {
           parked = true
+          running = false
           cancelAnimationFrame(raf)
         }
       },
@@ -462,9 +480,9 @@ export function KnowledgeGraph({
       for (let k = 0; k < 240; k++) {
         // reuse step math without raf
       }
-      raf = requestAnimationFrame(step)
+      kick()
     } else {
-      raf = requestAnimationFrame(step)
+      kick()
     }
 
     return () => {

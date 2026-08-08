@@ -39,7 +39,20 @@ export default function HomePage() {
           </div>
         </Reveal>
         <Reveal delay={0.1} className="mt-10">
-          <KnowledgeGraph height={560} />
+          {/* Phones: a calm non-interactive preview — the interactive
+              canvas captured touch and trapped page scrolling. Tapping
+              anywhere opens the real graph. Desktop keeps the live one. */}
+          <div className="relative md:hidden">
+            <KnowledgeGraph height={380} interactive={false} />
+            <Link
+              href="/explore"
+              aria-label="Open the full knowledge graph"
+              className="absolute inset-0 z-10"
+            />
+          </div>
+          <div className="hidden md:block">
+            <KnowledgeGraph height={560} />
+          </div>
         </Reveal>
       </section>
 
