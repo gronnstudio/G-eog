@@ -89,8 +89,8 @@ const icons = {
 
 // Only destinations the pill itself lacks — the sheet is "everything else".
 const PRIMARY = [
-  { href: "/seasonal", key: "megaSeasonal" },
-  { href: "/contribute", key: "megaWizard" },
+  { href: "/apply", key: "nav_apply" },
+  { href: "/evidence", key: "nav_evidence" },
   { href: "/about", key: "nav_about" },
 ] as const
 
