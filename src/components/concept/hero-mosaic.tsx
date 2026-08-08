@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 
+import { useOnScreen } from "@/lib/use-on-screen"
 import { useReducedMotion } from "@/lib/use-reduced-motion"
 import { cn } from "@/lib/utils"
 
@@ -118,9 +119,14 @@ function Row({ row, reduced, small }: { row: number; reduced: boolean; small: bo
 export function HeroMosaic({ reducedOverride }: { reducedOverride?: boolean }) {
   const reduced = useReducedMotion() || Boolean(reducedOverride)
   const small = useIsSmall()
+  const { ref, onScreen } = useOnScreen<HTMLDivElement>()
 
   return (
-    <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
+    <div
+      ref={ref}
+      className={cn("absolute inset-0 overflow-hidden", !onScreen && "eog-anim-paused")}
+      aria-hidden="true"
+    >
       {/* Steeply tilted, oversized so rotated corners never show. Phones
           get a tighter bleed (-45% covers the -24° rotation on tall
           screens) so the animated layers stay much smaller. */}

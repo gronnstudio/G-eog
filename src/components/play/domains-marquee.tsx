@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useId } from "react"
 
 import { CATEGORIES } from "@/lib/knowledge"
+import { useOnScreen } from "@/lib/use-on-screen"
 import { useReducedMotion } from "@/lib/use-reduced-motion"
 import { cn } from "@/lib/utils"
 
@@ -55,6 +56,7 @@ export function DomainsMarquee({ className }: { className?: string }) {
   const reduced = useReducedMotion()
   const rawId = useId()
   const cls = `marquee-${rawId.replace(/[^a-zA-Z0-9]/g, "")}`
+  const { ref, onScreen } = useOnScreen<HTMLDivElement>()
 
   const mask =
     "linear-gradient(to right, transparent, #000 8%, #000 92%, transparent)"
@@ -80,7 +82,12 @@ export function DomainsMarquee({ className }: { className?: string }) {
 
   return (
     <div
-      className={cn("group w-full overflow-hidden", className)}
+      ref={ref}
+      className={cn(
+        "group w-full overflow-hidden",
+        !onScreen && "eog-anim-paused",
+        className
+      )}
       role="region"
       aria-label="Knowledge domains"
     >
