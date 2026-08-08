@@ -10,12 +10,12 @@ import { LanguageToggle } from "@/components/language-toggle"
 import { useUI } from "@/components/language-provider"
 import { ThemeModePicker } from "@/components/theme-toggle"
 import { useCommandPalette } from "@/components/search/command-palette"
-import { DOCK_CENTRE, DOCK_WINGS, SHEET_EXTRAS } from "@/lib/site-tree"
+import { DOCK_CENTRE, DOCK_WINGS } from "@/lib/site-tree"
+import { MobileMegaMenu } from "@/components/layout/mobile-mega-menu"
 import { EASE_REVEAL } from "@/lib/motion"
 import { useFocusTrap } from "@/lib/use-focus-trap"
 import { useReducedMotion } from "@/lib/use-reduced-motion"
 import { cn } from "@/lib/utils"
-import { BRAND } from "@/lib/brand"
 
 // The mobile dock, ported from the GRØNN base: a floating glass pill
 // within thumb reach, phones only (the desktop keeps the header). Seven
@@ -35,11 +35,6 @@ const stroke = {
 }
 
 const icons = {
-  home: (
-    <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden>
-      <path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1v-9.5Z" {...stroke} />
-    </svg>
-  ),
   // An open field-guide — the knowledge library.
   knowledge: (
     <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden>
@@ -62,14 +57,6 @@ const icons = {
       <path d="M3.5 19.5c0-3 2.5-5 5.5-5s5.5 2 5.5 5" {...stroke} />
       <circle cx="16.5" cy="9.5" r="2.4" {...stroke} />
       <path d="M16 14.6c2.6.3 4.5 2.1 4.5 4.6" {...stroke} />
-    </svg>
-  ),
-  // Ask — a question mark inside the graph's node language.
-  ask: (
-    <svg width="21" height="21" viewBox="0 0 24 24" aria-hidden>
-      <circle cx="12" cy="12" r="8.5" {...stroke} />
-      <path d="M9.6 9.6a2.5 2.5 0 1 1 3.2 2.4c-.6.2-.9.7-.9 1.3v.4" {...stroke} />
-      <circle cx="12" cy="16.6" r="1" fill="currentColor" stroke="none" />
     </svg>
   ),
   // Apply — a watering can. The trowel shape read as a download arrow.
@@ -95,7 +82,38 @@ const icons = {
       <circle cx="5.5" cy="18.5" r="2" /><circle cx="12" cy="18.5" r="2" /><circle cx="18.5" cy="18.5" r="2" />
     </svg>
   ),
-  // The graph — three connected nodes, the centre slot's identity.
+  // Home — a seedling breaking ground.
+  home: (
+    <svg width="21" height="21" viewBox="0 0 24 24" aria-hidden>
+      <path d="M12 20v-7" {...stroke} />
+      <path d="M12 13c0-3 2-5 5-5 0 3-2 5-5 5Z" {...stroke} />
+      <path d="M12 15c0-2.4-1.6-4-4-4 0 2.4 1.6 4 4 4Z" {...stroke} />
+      <path d="M5 20h14" {...stroke} />
+    </svg>
+  ),
+  // Sections — soil horizons, the archive read as strata.
+  strata: (
+    <svg width="21" height="21" viewBox="0 0 24 24" aria-hidden>
+      <path d="M3 7c3-1.6 6-1.6 9 0s6 1.6 9 0" {...stroke} />
+      <path d="M3 12c3-1.6 6-1.6 9 0s6 1.6 9 0" {...stroke} />
+      <path d="M3 17c3-1.6 6-1.6 9 0s6 1.6 9 0" {...stroke} />
+    </svg>
+  ),
+  // Ask — a fern crozier: a question mark that grows.
+  ask: (
+    <svg width="21" height="21" viewBox="0 0 24 24" aria-hidden>
+      <path d="M7 21c0-7 1.5-12 5.5-14.5C15.8 4.4 19 5.6 19 8.8c0 2.6-2.2 4.2-4.3 4.2-1.8 0-3.2-1.2-3.2-2.8 0-1.3 1-2.3 2.2-2.3" {...stroke} />
+    </svg>
+  ),
+  // Display — sun over a horizon line.
+  horizon: (
+    <svg width="21" height="21" viewBox="0 0 24 24" aria-hidden>
+      <circle cx="12" cy="11" r="3.6" {...stroke} />
+      <path d="M12 3.5v1.6M12 16.9v1.1M4.6 11h1.6M17.8 11h1.6M6.8 5.8l1.1 1.1M16.1 5.8l-1.1 1.1" {...stroke} />
+      <path d="M3 20.5h18" {...stroke} />
+    </svg>
+  ),
+  // The graph — mycelial nodes, the centre slot's identity.
   graph: (
     <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden>
       <circle cx="12" cy="5" r="2.4" {...stroke} />
@@ -113,19 +131,9 @@ const icons = {
 }
 
 // Only destinations the pill itself lacks — the sheet is "everything else".
-// Only what the pill itself lacks. The pill mirrors the header's areas,
-// so the sheet is the level below them plus Home.
-const PRIMARY = [{ href: "/", key: "nav_home" }, ...SHEET_EXTRAS] as const
-
-const SECONDARY = [
-  { href: "/knowledge/soil", key: "dockSoil" },
-  { href: "/knowledge/water", key: "dockWater" },
-  { href: "/knowledge/fungi", key: "dockFungi" },
-  { href: "/knowledge/permaculture", key: "dockPermaculture" },
-] as const
-
 export function MobileDock() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [switchesOpen, setSwitchesOpen] = useState(false)
   const pathname = usePathname()
   const reduced = useReducedMotion()
   const ui = useUI()
@@ -186,7 +194,7 @@ export function MobileDock() {
   }
 
   const sheetRef = useRef<HTMLDivElement>(null)
-  useFocusTrap(sheetRef, menuOpen, () => setMenuOpen(false))
+  useFocusTrap(sheetRef, switchesOpen, () => setSwitchesOpen(false))
 
   const toTop = () => {
     const lenis = (window as unknown as { __lenis?: Lenis }).__lenis
@@ -210,27 +218,86 @@ export function MobileDock() {
   // 2 slots × 56px + the 6px gap between them.
   const WING = 144
 
-  const slot =
+  const CONCEPTS = [
+  { href: "/concept/stories", label: "Field Stories" },
+  { href: "/concept/play", label: "Play" },
+  { href: "/concept/flow", label: "Flow" },
+  { href: "/concept/hero-mosaic", label: "Mosaic" },
+] as const
+
+const slot =
     "flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 active:scale-90"
   // Active wing icon carries GRØNN's ember, matching gronn.studio's dock.
   const slotActive = "bg-foreground/10 text-ember"
   const swapSlot =
     "absolute inset-0 flex items-center justify-center rounded-full transition-colors duration-300 active:scale-90"
 
+  /** Wing slot: a destination links, an action slot opens a panel. */
+  const renderSlot = (n: (typeof DOCK_WINGS)[number]) => {
+    if (n.href === "#menu") {
+      return (
+        <button
+          key={n.href}
+          type="button"
+          aria-label={ui("navigate")}
+          aria-expanded={menuOpen}
+          aria-controls="site-mega-menu"
+          onClick={() => setMenuOpen(true)}
+          className={cn(slot, menuOpen ? slotActive : "text-muted")}
+        >
+          {icons.strata}
+        </button>
+      )
+    }
+    if (n.href === "#switches") {
+      return (
+        <button
+          key={n.href}
+          type="button"
+          aria-label={`${ui("theme")} & ${ui("language")}`}
+          aria-expanded={switchesOpen}
+          aria-controls="dock-sheet"
+          onClick={() => setSwitchesOpen(true)}
+          className={cn(slot, switchesOpen ? slotActive : "text-muted")}
+        >
+          {icons.horizon}
+        </button>
+      )
+    }
+    return (
+      <Link
+        key={n.href}
+        href={n.href}
+        aria-label={ui(n.key)}
+        className={cn(slot, active(n.href) ? slotActive : "text-muted")}
+      >
+        {icons[n.icon!]}
+      </Link>
+    )
+  }
+
   if (headerMenuOpen) return null
 
   return (
     <>
-      {/* Slide-up sheet with the remaining pages + site controls */}
+      {/* Full-screen mega menu: the site structure, one level visible. */}
+      <MobileMegaMenu
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        onOpenSearch={openSearch}
+        onOpenSwitches={() => setSwitchesOpen(true)}
+      />
+
+      {/* Slide-up sheet — switches only. */}
       <AnimatePresence>
-        {menuOpen && (
+        {switchesOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: reduced ? 0 : 0.25 }}
-            className="fixed inset-0 z-[60] bg-forest/60 backdrop-blur-sm md:hidden"
-            onClick={() => setMenuOpen(false)}
+            className="fixed inset-0 z-[75] bg-forest/60 backdrop-blur-sm md:hidden"
+            onClick={() => setSwitchesOpen(false)}
           >
             <motion.div
               ref={sheetRef}
@@ -248,57 +315,14 @@ export function MobileDock() {
                 paddingBottom: "max(6.5rem, calc(env(safe-area-inset-bottom) + 6rem))",
               }}
             >
-              <button
-                type="button"
-                onClick={() => {
-                  setMenuOpen(false)
-                  openSearch()
-                }}
-                className="mb-6 flex w-full items-center gap-3 rounded-full border border-line px-5 py-3 text-left text-muted transition-colors hover:text-foreground"
-              >
-                {icons.search}
-                <span className="text-base">{ui("search")}</span>
-              </button>
-
-              <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.25em] text-muted">
-                {ui("navigate")}
+              {/* Switches only. Navigation moved to the mega menu — the
+                  sheet was trying to be a nav list and a settings panel at
+                  once, and neither had room. */}
+              <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.25em] text-muted">
+                {ui("theme")} &amp; {ui("language")}
               </p>
-              <nav className="flex flex-col gap-y-1">
-                {PRIMARY.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setMenuOpen(false)}
-                    className={cn(
-                      "rounded-xl px-3 py-3 font-heading text-2xl font-semibold tracking-tight transition-colors duration-300",
-                      active(item.href) ? "text-accent" : "text-foreground",
-                    )}
-                  >
-                    {ui(item.key)}
-                  </Link>
-                ))}
-              </nav>
-              <div className="mx-3 mb-4 mt-6 border-t border-line" />
-              <nav className="flex flex-wrap gap-x-2 gap-y-4 px-3">
-                {SECONDARY.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setMenuOpen(false)}
-                    className={cn(
-                      "tap-target rounded-full border px-3.5 py-1.5 text-xs tracking-wide transition-colors duration-300",
-                      active(item.href)
-                        ? "border-accent/50 bg-accent-soft text-accent"
-                        : "border-line text-muted hover:border-accent/40 hover:text-foreground active:border-accent/40 active:text-foreground",
-                    )}
-                  >
-                    {ui(item.key)}
-                  </Link>
-                ))}
-              </nav>
-              {/* Labeled control groups — "Auto / Golden Hour / Blue Hour"
-                  meant nothing without a heading. */}
-              <div className="mt-6 space-y-5 border-t border-line px-3 pt-5">
+
+              <div className="space-y-6 px-1">
                 <div>
                   <p className="mb-2.5 font-mono text-[10px] uppercase tracking-[0.22em] text-faint">
                     {ui("theme")}
@@ -311,23 +335,25 @@ export function MobileDock() {
                   </p>
                   <LanguageToggle />
                 </div>
-                <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-line pt-4">
-                  <a
-                    href={BRAND.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="tap-target text-xs tracking-wide text-muted underline-draw"
-                  >
-                    GitHub
-                  </a>
-                  <a
-                    href="https://gronn.studio"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="tap-target text-xs tracking-wide text-muted underline-draw"
-                  >
-                    GRØNN Studio
-                  </a>
+
+                {/* The lab: unlisted concept routes, given a home rather
+                    than existing only as URLs someone has to remember. */}
+                <div className="border-t border-line pt-5">
+                  <p className="mb-2.5 font-mono text-[10px] uppercase tracking-[0.22em] text-faint">
+                    {ui("megaConcepts")}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {CONCEPTS.map((c) => (
+                      <Link
+                        key={c.href}
+                        href={c.href}
+                        onClick={() => setSwitchesOpen(false)}
+                        className="tap-target rounded-full border border-line px-3.5 py-1.5 text-xs tracking-wide text-muted transition-colors hover:border-ember/40 hover:text-foreground"
+                      >
+                        {c.label}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -400,18 +426,10 @@ export function MobileDock() {
               inert={wingsHidden || undefined}
               className="flex items-center justify-end gap-1.5 overflow-hidden"
             >
-              {/* Same areas as the header, same order — the pill is the
-                  header on a phone, not a different site. */}
-              {DOCK_WINGS.slice(0, 3).map((n) => (
-                <Link
-                  key={n.href}
-                  href={n.href}
-                  aria-label={ui(n.key)}
-                  className={cn(slot, active(n.href) ? slotActive : "text-muted")}
-                >
-                  {icons[n.icon!]}
-                </Link>
-              ))}
+              {/* Home, then the whole structure. The mega menu opens from
+                  a slot of its own rather than a grid icon tacked on the
+                  end — it is a destination, not an overflow bin. */}
+              {DOCK_WINGS.slice(0, 2).map(renderSlot)}
             </motion.div>
             <Link
               href={DOCK_CENTRE.href}
@@ -436,21 +454,13 @@ export function MobileDock() {
               inert={wingsHidden || undefined}
               className="flex items-center justify-start gap-1.5 overflow-hidden"
             >
-              {DOCK_WINGS.slice(3).map((n) => (
-                <Link
-                  key={n.href}
-                  href={n.href}
-                  aria-label={ui(n.key)}
-                  className={cn(slot, active(n.href) ? slotActive : "text-muted")}
-                >
-                  {icons[n.icon!]}
-                </Link>
-              ))}
-              {/* Shared last slot: grid button normally, back-to-top once
-                  a viewport deep. */}
+              {DOCK_WINGS.slice(2, 3).map(renderSlot)}
+              {/* Shared last slot: display switches normally, back-to-top
+                  once a viewport deep. The mega menu used to live here;
+                  it has its own slot now, so this one carries the toggles. */}
               <div className="relative h-11 w-11">
                 <AnimatePresence initial={false}>
-                  {scrolled && !menuOpen ? (
+                  {scrolled && !menuOpen && !switchesOpen ? (
                     <motion.button
                       key="top"
                       initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.6 }}
@@ -477,13 +487,13 @@ export function MobileDock() {
                       exit={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.6 }}
                       transition={{ duration: reduced ? 0 : 0.25, ease: EASE_REVEAL }}
                       type="button"
-                      aria-label={ui("navigate")}
-                      aria-expanded={menuOpen}
+                      aria-label={`${ui("theme")} & ${ui("language")}`}
+                      aria-expanded={switchesOpen}
                       aria-controls="dock-sheet"
-                      onClick={() => setMenuOpen((v) => !v)}
-                      className={cn(swapSlot, menuOpen ? slotActive : "text-muted")}
+                      onClick={() => setSwitchesOpen(true)}
+                      className={cn(swapSlot, switchesOpen ? slotActive : "text-muted")}
                     >
-                      {icons.menu}
+                      {icons.horizon}
                     </motion.button>
                   )}
                 </AnimatePresence>
