@@ -77,6 +77,7 @@ const UI_CORE = {
   nav_knowledge: { en: "Knowledge", nl: "Kennis", zh: "知识", hi: "ज्ञान", es: "Conocimiento", fr: "Savoir", ar: "المعرفة", pt: "Conhecimento", ru: "Знание", de: "Wissen", ja: "知識" },
   nav_learn: { en: "Learn", nl: "Leren", zh: "学习", hi: "सीखें", es: "Aprender", fr: "Apprendre", ar: "التعلّم", pt: "Aprender", ru: "Учиться", de: "Lernen", ja: "学ぶ" },
   nav_apply: { en: "Apply", nl: "Toepassen", zh: "应用", hi: "लागू करें", es: "Aplicar", fr: "Appliquer", ar: "التطبيق", pt: "Aplicar", ru: "Применение", de: "Anwenden", ja: "実践" },
+  nav_ask: { en: "Ask", nl: "Vragen", zh: "提问", hi: "पूछें", es: "Preguntar", fr: "Demander", ar: "اسأل", pt: "Perguntar", ru: "Спросить", de: "Fragen", ja: "質問" },
   nav_evidence: { en: "Evidence", nl: "Onderbouwing", zh: "证据", hi: "प्रमाण", es: "Evidencia", fr: "Preuves", ar: "الأدلة", pt: "Evidência", ru: "Доказательства", de: "Belege", ja: "エビデンス" },
   nav_community: { en: "Community", nl: "Gemeenschap", zh: "社区", hi: "समुदाय", es: "Comunidad", fr: "Communauté", ar: "المجتمع", pt: "Comunidade", ru: "Сообщество", de: "Gemeinschaft", ja: "コミュニティ" },
   nav_about: { en: "About", nl: "Over", zh: "关于", hi: "परिचय", es: "Acerca de", fr: "À propos", ar: "حول", pt: "Sobre", ru: "О проекте", de: "Über", ja: "概要" },

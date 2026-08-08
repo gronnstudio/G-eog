@@ -10,6 +10,7 @@ import { LanguageToggle } from "@/components/language-toggle"
 import { useUI } from "@/components/language-provider"
 import { ThemeModePicker } from "@/components/theme-toggle"
 import { useCommandPalette } from "@/components/search/command-palette"
+import { DOCK_CENTRE, DOCK_WINGS, SHEET_EXTRAS } from "@/lib/site-tree"
 import { EASE_REVEAL } from "@/lib/motion"
 import { useFocusTrap } from "@/lib/use-focus-trap"
 import { useReducedMotion } from "@/lib/use-reduced-motion"
@@ -63,6 +64,30 @@ const icons = {
       <path d="M16 14.6c2.6.3 4.5 2.1 4.5 4.6" {...stroke} />
     </svg>
   ),
+  // Ask — a question mark inside the graph's node language.
+  ask: (
+    <svg width="21" height="21" viewBox="0 0 24 24" aria-hidden>
+      <circle cx="12" cy="12" r="8.5" {...stroke} />
+      <path d="M9.6 9.6a2.5 2.5 0 1 1 3.2 2.4c-.6.2-.9.7-.9 1.3v.4" {...stroke} />
+      <circle cx="12" cy="16.6" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  ),
+  // Apply — a watering can. The trowel shape read as a download arrow.
+  apply: (
+    <svg width="21" height="21" viewBox="0 0 24 24" aria-hidden>
+      <path d="M4 10h9v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7Z" {...stroke} />
+      <path d="M13 12.5 20 9v6l-7-3.5" {...stroke} />
+      <path d="M6.5 10V8.5a2.5 2.5 0 0 1 5 0V10" {...stroke} />
+    </svg>
+  ),
+  // Evidence — a document with a check.
+  evidence: (
+    <svg width="21" height="21" viewBox="0 0 24 24" aria-hidden>
+      <path d="M6 3.5h8l4 4v13H6z" {...stroke} />
+      <path d="M14 3.5v4h4" {...stroke} />
+      <path d="m9 14 2 2 4-4" {...stroke} />
+    </svg>
+  ),
   menu: (
     <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden fill="currentColor">
       <circle cx="5.5" cy="5.5" r="2" /><circle cx="12" cy="5.5" r="2" /><circle cx="18.5" cy="5.5" r="2" />
@@ -88,11 +113,9 @@ const icons = {
 }
 
 // Only destinations the pill itself lacks — the sheet is "everything else".
-const PRIMARY = [
-  { href: "/apply", key: "nav_apply" },
-  { href: "/evidence", key: "nav_evidence" },
-  { href: "/about", key: "nav_about" },
-] as const
+// Only what the pill itself lacks. The pill mirrors the header's areas,
+// so the sheet is the level below them plus Home.
+const PRIMARY = [{ href: "/", key: "nav_home" }, ...SHEET_EXTRAS] as const
 
 const SECONDARY = [
   { href: "/knowledge/soil", key: "dockSoil" },
@@ -225,6 +248,18 @@ export function MobileDock() {
                 paddingBottom: "max(6.5rem, calc(env(safe-area-inset-bottom) + 6rem))",
               }}
             >
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false)
+                  openSearch()
+                }}
+                className="mb-6 flex w-full items-center gap-3 rounded-full border border-line px-5 py-3 text-left text-muted transition-colors hover:text-foreground"
+              >
+                {icons.search}
+                <span className="text-base">{ui("search")}</span>
+              </button>
+
               <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.25em] text-muted">
                 {ui("navigate")}
               </p>
@@ -365,26 +400,21 @@ export function MobileDock() {
               inert={wingsHidden || undefined}
               className="flex items-center justify-end gap-1.5 overflow-hidden"
             >
-              <Link href="/" aria-label={ui("nav_home")} className={cn(slot, active("/") ? slotActive : "text-muted")}>
-                {icons.home}
-              </Link>
-              <Link
-                href="/knowledge"
-                aria-label={ui("nav_knowledge")}
-                className={cn(slot, active("/knowledge") ? slotActive : "text-muted")}
-              >
-                {icons.knowledge}
-              </Link>
-              <Link
-                href="/community"
-                aria-label={ui("nav_community")}
-                className={cn(slot, active("/community") ? slotActive : "text-muted")}
-              >
-                {icons.community}
-              </Link>
+              {/* Same areas as the header, same order — the pill is the
+                  header on a phone, not a different site. */}
+              {DOCK_WINGS.slice(0, 3).map((n) => (
+                <Link
+                  key={n.href}
+                  href={n.href}
+                  aria-label={ui(n.key)}
+                  className={cn(slot, active(n.href) ? slotActive : "text-muted")}
+                >
+                  {icons[n.icon!]}
+                </Link>
+              ))}
             </motion.div>
             <Link
-              href="/explore"
+              href={DOCK_CENTRE.href}
               aria-label={ui("exploreGraph")}
               className={cn(
                 "flex h-11 w-14 shrink-0 items-center justify-center rounded-full transition duration-300 active:scale-90",
@@ -406,21 +436,16 @@ export function MobileDock() {
               inert={wingsHidden || undefined}
               className="flex items-center justify-start gap-1.5 overflow-hidden"
             >
-              <Link
-                href="/learn"
-                aria-label={ui("nav_learn")}
-                className={cn(slot, active("/learn") ? slotActive : "text-muted")}
-              >
-                {icons.learn}
-              </Link>
-              <button
-                type="button"
-                onClick={openSearch}
-                aria-label={ui("search")}
-                className={cn(slot, "text-muted")}
-              >
-                {icons.search}
-              </button>
+              {DOCK_WINGS.slice(3).map((n) => (
+                <Link
+                  key={n.href}
+                  href={n.href}
+                  aria-label={ui(n.key)}
+                  className={cn(slot, active(n.href) ? slotActive : "text-muted")}
+                >
+                  {icons[n.icon!]}
+                </Link>
+              ))}
               {/* Shared last slot: grid button normally, back-to-top once
                   a viewport deep. */}
               <div className="relative h-11 w-11">

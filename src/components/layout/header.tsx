@@ -10,7 +10,7 @@ import { Search } from "lucide-react"
 import { LanguageToggle } from "@/components/language-toggle"
 import { useUI } from "@/components/language-provider"
 import { LetterFlip } from "@/components/motion/letter-flip"
-import { ThemeModePicker } from "@/components/theme-toggle"
+import { ThemeModePicker, ThemeToggle } from "@/components/theme-toggle"
 import { useCommandPalette } from "@/components/search/command-palette"
 import { ARTICLES, getCategory, totalStats } from "@/lib/knowledge"
 import { DURATION_CURTAIN, EASE_CURTAIN } from "@/lib/motion"
@@ -18,21 +18,12 @@ import { useFocusTrap } from "@/lib/use-focus-trap"
 import { useReducedMotion } from "@/lib/use-reduced-motion"
 import { cn } from "@/lib/utils"
 import { BRAND, repoUrl } from "@/lib/brand"
+import { PRIMARY_AREAS } from "@/lib/site-tree"
 
-// Five product areas, in the order a visitor actually moves through them:
-// find something, learn it properly, do something with it, check it, help
-// improve it. The site previously listed ten destinations with no
-// hierarchy, so nothing was predictable — Evidence and the applied pages
-// were reachable only by opening a menu and reading a list.
-const NAV = [
-  { href: "/", key: "nav_home" },
-  { href: "/explore", key: "nav_explore" },
-  { href: "/learn", key: "nav_learn" },
-  { href: "/apply", key: "nav_apply" },
-  { href: "/evidence", key: "nav_evidence" },
-  { href: "/community", key: "nav_community" },
-  { href: "/about", key: "nav_about" },
-] as const
+// Navigation is derived from the site tree, never hand-listed here — the
+// header, the dock and the footer disagreeing about the structure is what
+// made the site hard to navigate in the first place.
+const NAV = PRIMARY_AREAS
 
 // Topographic contour lines for the menu backdrop (GRØNN base).
 const CONTOURS = [
@@ -157,7 +148,7 @@ export function Header() {
         <div className="pointer-events-auto flex items-center gap-2 lg:gap-4">
           <div inert={open || undefined} className="flex items-center gap-2 lg:gap-4">
             <nav className="hidden items-center gap-7 lg:flex">
-              {NAV.slice(1, -1).map((item) => (
+              {NAV.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
@@ -171,6 +162,12 @@ export function Header() {
                 </Link>
               ))}
             </nav>
+
+            {/* Theme lives here from lg up, because that is where the MENU
+                button (and the curtain that used to hold it) is gone. */}
+            <span className="hidden lg:block">
+              <ThemeToggle />
+            </span>
 
             <span className="hidden sm:block">
               <LanguageToggle />
@@ -190,7 +187,7 @@ export function Header() {
 
             <Link
               href="/explore"
-              className="tap-target hidden rounded-full bg-gronn-green px-5 py-2.5 text-sm font-medium text-gronn-white transition-transform hover:scale-[1.03] sm:inline-block"
+              className="tap-target hidden whitespace-nowrap rounded-full bg-gronn-green px-5 py-2.5 text-sm font-medium text-gronn-white transition-transform hover:scale-[1.03] sm:inline-block"
             >
               {ui("exploreGraph")}
             </Link>
@@ -201,7 +198,11 @@ export function Header() {
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-controls="site-menu"
-            className="tap-target glass hidden items-center gap-2.5 rounded-full px-4 py-2.5 text-sm text-foreground transition-colors hover:text-accent md:flex"
+            // A MENU button beside a complete nav is two answers to the same
+            // question, and it was eating the width the sixth nav item needed.
+            // It earns its place only between md and lg, where the nav is
+            // hidden and the curtain is the only way through the site.
+            className="tap-target glass hidden items-center gap-2.5 rounded-full px-4 py-2.5 text-sm text-foreground transition-colors hover:text-accent md:flex lg:hidden"
           >
             {/* Hamburger that morphs into a cross */}
             <span aria-hidden className="relative block h-2.5 w-4">
