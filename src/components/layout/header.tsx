@@ -17,6 +17,7 @@ import { DURATION_CURTAIN, EASE_CURTAIN } from "@/lib/motion"
 import { useFocusTrap } from "@/lib/use-focus-trap"
 import { useReducedMotion } from "@/lib/use-reduced-motion"
 import { cn } from "@/lib/utils"
+import { BRAND, repoUrl } from "@/lib/brand"
 
 const NAV = [
   { href: "/", key: "nav_home" },
@@ -327,7 +328,7 @@ export function Header() {
                     { href: "/partners", label: ui("megaPartners") },
                     { href: "/contribute", label: ui("megaWizard") },
                     {
-                      href: "https://github.com/gronnstudio/g-eog/blob/main/docs/SOURCES.md",
+                      href: repoUrl("blob/main/docs/SOURCES.md"),
                       label: ui("megaSources"),
                       external: true,
                     },
@@ -373,7 +374,7 @@ export function Header() {
 
                 <div className="flex flex-wrap items-center gap-x-6 gap-y-5 text-sm text-muted">
                   <a
-                    href="https://github.com/gronnstudio/g-eog"
+                    href={BRAND.github}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="tap-target underline-draw hover:text-foreground"

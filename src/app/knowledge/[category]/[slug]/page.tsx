@@ -33,8 +33,9 @@ import {
   relationshipsFor,
   untypedConnections,
 } from "@/lib/knowledge"
+import { BRAND } from "@/lib/brand"
 
-const SITE = "https://equilibrium.gronn.studio"
+const SITE = BRAND.url
 
 export function generateStaticParams() {
   return ARTICLES.map((a) => ({ category: a.category, slug: a.slug }))
@@ -55,7 +56,7 @@ export async function generateMetadata({
   }
 }
 
-const GH = "https://github.com/gronnstudio/g-eog"
+const GH = BRAND.github
 
 /** Stable, URL-safe id derived from a section heading. */
 function slugifyHeading(heading: string): string {

@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next"
+import { BRAND } from "@/lib/brand"
 
-const SITE = "https://equilibrium.gronn.studio"
+const SITE = BRAND.url
 
 export default function robots(): MetadataRoute.Robots {
   return {

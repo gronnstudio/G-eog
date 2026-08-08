@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next"
 
 import { ARTICLES, CATEGORIES } from "@/lib/knowledge"
+import { BRAND } from "@/lib/brand"
 
-const SITE = "https://equilibrium.gronn.studio"
+const SITE = BRAND.url
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = [

@@ -1,7 +1,8 @@
+import { BRAND } from "@/lib/brand"
 import { ImageResponse } from "next/og"
 
 export const runtime = "edge"
-export const alt = "Equilibrium — the living knowledge ecosystem for regenerative thinking"
+export const alt = `${BRAND.name} — the living knowledge ecosystem for regenerative thinking`
 export const size = { width: 1200, height: 630 }
 export const contentType = "image/png"
 
@@ -32,7 +33,7 @@ export default function OpengraphImage() {
               display: "flex",
             }}
           />
-          <div style={{ fontSize: 30, letterSpacing: -0.5 }}>Equilibrium</div>
+          <div style={{ fontSize: 30, letterSpacing: -0.5 }}>{BRAND.name}</div>
         </div>
         <div style={{ fontSize: 76, lineHeight: 1.05, maxWidth: 900, letterSpacing: -2 }}>
           Knowledge grows when everything connects.

@@ -6,6 +6,7 @@ import { GitBranch, Heart } from "lucide-react"
 import { useUI } from "@/components/language-provider"
 import { totalStats } from "@/lib/knowledge"
 import type { UI } from "@/lib/i18n"
+import { BRAND, repoUrl } from "@/lib/brand"
 
 type UIKey = keyof typeof UI
 
@@ -27,8 +28,8 @@ const COLUMNS: { title: UIKey; links: FooterLink[] }[] = [
     title: "contribute",
     links: [
       { href: "/community", label: "ftHowItWorks" },
-      { href: "https://github.com/gronnstudio/g-eog", label: "ftViewGithub" },
-      { href: "https://github.com/gronnstudio/g-eog/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22", label: "ftGoodFirstIssues" },
+      { href: BRAND.github, label: "ftViewGithub" },
+      { href: repoUrl("issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22"), label: "ftGoodFirstIssues" },
       { href: "/community#peer-review", label: "ftPeerReview" },
       { href: "/about", label: "ftOurMission" },
     ],
@@ -83,7 +84,7 @@ export function Footer() {
               {ui("ftBuiltWith")} <Heart className="h-3.5 w-3.5 text-rust" /> {ui("ftForBiosphere")}
             </span>
             <Link
-              href="https://github.com/gronnstudio/g-eog"
+              href={BRAND.github}
               className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"
             >
               <GitBranch className="h-4 w-4" /> {ui("ftSource")}

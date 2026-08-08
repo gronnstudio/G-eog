@@ -25,6 +25,7 @@ import { PullToRefresh } from "@/components/pull-to-refresh"
 import { Thread } from "@/components/thread"
 import { InstallPrompt } from "@/components/install-prompt"
 import { Preloader } from "@/components/preloader"
+import { BRAND } from "@/lib/brand"
 
 // Type system shared with GRØNN Studio: Syne SemiBold for headings,
 // Montserrat for body/interface, Geist Mono for technical annotations.
@@ -41,13 +42,13 @@ const syne = localFont({
   display: "swap",
 })
 
-const SITE = "https://equilibrium.gronn.studio"
+const SITE = BRAND.url
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
   title: {
-    default: "Equilibrium — The living knowledge ecosystem for regenerative thinking",
-    template: "%s — Equilibrium",
+    default: `${BRAND.name} — The living knowledge ecosystem for regenerative thinking`,
+    template: `%s — ${BRAND.name}`,
   },
   description:
     "Equilibrium makes humanity's ecological knowledge freely accessible, beautifully organized and endlessly connected. Explore soil, water, forests, fungi, climate and regenerative design as one living graph.",
@@ -57,16 +58,16 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     type: "website",
-    siteName: "Equilibrium",
+    siteName: BRAND.name,
     url: SITE,
-    title: "Equilibrium — The living knowledge ecosystem",
+    title: `${BRAND.name} — The living knowledge ecosystem`,
     description: "Humanity's ecological knowledge, freely accessible and endlessly connected.",
-    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Equilibrium" }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: BRAND.name }],
   },
   twitter: { card: "summary_large_image" },
   alternates: {
     types: {
-      "application/rss+xml": [{ url: "/feed.xml", title: "Equilibrium — RSS feed" }],
+      "application/rss+xml": [{ url: "/feed.xml", title: `${BRAND.name} — RSS feed` }],
     },
   },
 }
@@ -74,7 +75,7 @@ export const metadata: Metadata = {
 const JSON_LD = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "Equilibrium",
+  name: BRAND.name,
   url: SITE,
   description: "The living knowledge ecosystem for regenerative thinking.",
   potentialAction: {

@@ -1,3 +1,4 @@
+import { BRAND } from "@/lib/brand"
 import { ARTICLES } from "@/lib/knowledge"
 
 const SITE = "https://g-eog.vercel.app"
@@ -31,9 +32,9 @@ export function GET() {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Equilibrium — The living knowledge ecosystem</title>
+    <title>${BRAND.name} — The living knowledge ecosystem</title>
     <link>${SITE}</link>
-    <description>Humanity's ecological knowledge, freely accessible and endlessly connected. New and freshly grown articles from the Equilibrium knowledge graph.</description>
+    <description>Humanity's ecological knowledge, freely accessible and endlessly connected. New and freshly grown articles from the ${BRAND.name} knowledge graph.</description>
     <language>en</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
     <atom:link href="${SITE}/feed.xml" rel="self" type="application/rss+xml"/>

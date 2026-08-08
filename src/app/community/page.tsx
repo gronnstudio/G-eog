@@ -17,6 +17,7 @@ import {
 import { Reveal } from "@/components/motion/reveal"
 import { SectionLabel } from "@/components/ui/badges"
 import { UIText } from "@/components/ui/ui-text"
+import { BRAND } from "@/lib/brand"
 
 export const metadata: Metadata = {
   title: "Community — Contribute",
@@ -24,7 +25,7 @@ export const metadata: Metadata = {
     "Equilibrium is open source and built in public. Learn how contributions flow from a first edit to peer review and expert verification.",
 }
 
-const GH = "https://github.com/gronnstudio/g-eog"
+const GH = BRAND.github
 
 const STEPS = [
   { icon: GitFork, title: "comStep1t", body: "comStep1b" },
