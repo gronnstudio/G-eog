@@ -6,12 +6,12 @@ import { ArrowRight, GitFork, Network, Sparkles } from "lucide-react"
 import { Hero } from "@/components/home/hero"
 import { CategoryCard } from "@/components/knowledge/category-card"
 import { ArticleCard } from "@/components/knowledge/article-card"
-import { useUI } from "@/components/language-provider"
+import { useT, useUI } from "@/components/language-provider"
 import { Reveal } from "@/components/motion/reveal"
 import { SectionLabel } from "@/components/ui/badges"
 import { DomainsMarquee } from "@/components/play/domains-marquee"
 import { SuccessionTimeline } from "@/components/play/succession-timeline"
-import { ARTICLES, CATEGORIES, LEARNING_PATHS, totalStats } from "@/lib/knowledge"
+import { ARTICLES, CATEGORIES, LEARNING_PATHS, getCategory, totalStats } from "@/lib/knowledge"
 
 /**
  * The home page body, client-rendered so every heading, label and CTA
@@ -22,7 +22,11 @@ import { ARTICLES, CATEGORIES, LEARNING_PATHS, totalStats } from "@/lib/knowledg
  */
 export function HomeContent() {
   const ui = useUI()
+  const t = useT()
   const stats = totalStats()
+  const recent = [...ARTICLES]
+    .sort((a, b) => b.updated.localeCompare(a.updated))
+    .slice(0, 4)
   const featured = ARTICLES.slice(0, 6)
   const previewCats = CATEGORIES.slice(0, 8)
 
@@ -181,6 +185,37 @@ export function HomeContent() {
             </Reveal>
           ))}
         </div>
+      </section>
+
+      {/* Recently grown */}
+      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
+        <Reveal>
+          <SectionLabel>{t({ en: "Recently grown", nl: "Onlangs gegroeid" })}</SectionLabel>
+          <div className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface/40">
+            {recent.map((a) => {
+              const cat = getCategory(a.category)
+              return (
+                <div
+                  key={a.slug}
+                  className="flex flex-col gap-2 p-5 sm:flex-row sm:items-center sm:gap-6"
+                >
+                  <time dateTime={a.updated} className="w-28 shrink-0 font-mono text-xs text-faint">
+                    {a.updated}
+                  </time>
+                  <Link
+                    href={`/knowledge/${a.category}/${a.slug}`}
+                    className="flex-1 font-heading text-lg text-foreground transition-colors hover:text-accent"
+                  >
+                    {a.title}
+                  </Link>
+                  <span className="w-fit rounded-full border border-line px-3 py-1 text-xs text-muted">
+                    {cat?.title ?? a.category}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+        </Reveal>
       </section>
 
       {/* CTA */}
