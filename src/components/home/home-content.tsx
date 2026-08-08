@@ -13,6 +13,7 @@ import { DomainsMarquee } from "@/components/play/domains-marquee"
 import { SuccessionTimeline } from "@/components/play/succession-timeline"
 import { ARTICLES, CATEGORIES, LEARNING_PATHS, getCategory, totalStats } from "@/lib/knowledge"
 import { PARTNERS } from "@/lib/knowledge/partners"
+import { DailyDiscoveryCard } from "@/components/discover/daily-discovery"
 
 /**
  * The home page body, client-rendered so every heading, label and CTA
@@ -216,6 +217,13 @@ export function HomeContent() {
               )
             })}
           </div>
+        </Reveal>
+      </section>
+
+      {/* One shared discovery per day — a reason to come back */}
+      <section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6">
+        <Reveal>
+          <DailyDiscoveryCard />
         </Reveal>
       </section>
 

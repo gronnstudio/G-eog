@@ -24,6 +24,7 @@ import { TocSpy } from "@/components/knowledge/toc-spy"
 import { DifficultyBadge } from "@/components/ui/badges"
 import { UIText } from "@/components/ui/ui-text"
 import { ConnectionList } from "@/components/knowledge/connection-list"
+import { HorizonBlock } from "@/components/discover/horizon-block"
 import { articleSourceUrl } from "@/lib/knowledge/source-location"
 import {
   ARTICLES,
@@ -360,6 +361,9 @@ export default async function ArticlePage({
 
       {/* Backlinks — who cites this article */}
       <CitedBy articles={citedBy} />
+
+      {/* Two hops out — serendipity with a visible path */}
+      <HorizonBlock slug={article.slug} />
     </article>
   )
 }
