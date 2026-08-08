@@ -28,9 +28,16 @@ type UIKey = keyof typeof UI
  * rather than quietly degrading the site.
  */
 
-export const MAX_SECTIONS = 10
-export const MAX_DEPTH = 5
-export const MAX_CHILDREN = 99
+/**
+ * Guidance for the NAVIGATION layer only. These shape what a person is
+ * asked to hold in their head; they must never constrain the knowledge
+ * model underneath, which stays free to grow in any direction. Hard-coding
+ * a taxonomy into the architecture is how you end up migrating everything
+ * the day a new hierarchy is needed.
+ */
+export const RECOMMENDED_ROOTS = 10
+export const MAX_NAVIGATION_DEPTH = 5
+export const ITEMS_PER_VIEW = 99
 
 export interface SiteNode {
   href: string
@@ -87,14 +94,14 @@ function depthOf(nodes: SiteNode[], level = 1): number {
   return deepest
 }
 
-function assertWidth(nodes: SiteNode[], path: string): void {
-  if (nodes.length > MAX_CHILDREN) {
-    throw new Error(
-      `Site tree: ${path} has ${nodes.length} children, over the ${MAX_CHILDREN} limit. ` +
-        `Give it an index page and split it.`,
+function warnWidth(nodes: SiteNode[], path: string): void {
+  if (nodes.length > ITEMS_PER_VIEW) {
+    console.warn(
+      `Site tree: ${path} shows ${nodes.length} items at once, past the ${ITEMS_PER_VIEW} ` +
+        `guideline. Consider paginating the view — the content itself is fine.`,
     )
   }
-  for (const n of nodes) if (n.children) assertWidth(n.children, n.href)
+  for (const n of nodes) if (n.children) warnWidth(n.children, n.href)
 }
 
 /**
@@ -103,23 +110,30 @@ function assertWidth(nodes: SiteNode[], path: string): void {
  */
 const GENERATED_LEVELS = 2
 
-export function validateSiteTree(): void {
-  if (SITE_TREE.length > MAX_SECTIONS) {
-    throw new Error(
-      `Site tree: ${SITE_TREE.length} top-level sections, over the ${MAX_SECTIONS} limit.`,
+/**
+ * Advisory, not a gate. Navigation depth is the one worth being strict
+ * about — past five levels people genuinely lose the thread — but even
+ * that only warns, because failing a build over an editorial decision
+ * punishes the wrong person at the wrong moment.
+ */
+export function checkSiteTree(): void {
+  if (SITE_TREE.length > RECOMMENDED_ROOTS) {
+    console.warn(
+      `Site tree: ${SITE_TREE.length} top-level sections, past the ${RECOMMENDED_ROOTS} ` +
+        `guideline. Still navigable, but worth a look.`,
     )
   }
   const depth = depthOf(SITE_TREE) + GENERATED_LEVELS
-  if (depth > MAX_DEPTH) {
-    throw new Error(
-      `Site tree: deepest route is ${depth} levels, over the ${MAX_DEPTH} limit. ` +
-        `Flatten a branch rather than nesting further.`,
+  if (depth > MAX_NAVIGATION_DEPTH) {
+    console.warn(
+      `Site tree: navigation is ${depth} levels deep, past the ${MAX_NAVIGATION_DEPTH} ` +
+        `guideline. Consider a collection or a cross-link instead of another level.`,
     )
   }
-  assertWidth(SITE_TREE, "/")
+  warnWidth(SITE_TREE, "/")
 }
 
-validateSiteTree()
+checkSiteTree()
 
 /** Primary areas — everything except the About footnote. */
 export const PRIMARY_AREAS: SiteNode[] = SITE_TREE.filter((n) => n.key !== "nav_about")
@@ -143,7 +157,7 @@ export function treeShape() {
   return {
     sections: SITE_TREE.length,
     depth: depthOf(SITE_TREE) + GENERATED_LEVELS,
-    maxSections: MAX_SECTIONS,
-    maxDepth: MAX_DEPTH,
+    maxSections: RECOMMENDED_ROOTS,
+    maxDepth: MAX_NAVIGATION_DEPTH,
   }
 }

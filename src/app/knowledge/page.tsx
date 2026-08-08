@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 
 import { CategoryCard } from "@/components/knowledge/category-card"
+import { KnowledgeExplorer } from "@/components/knowledge/explorer"
 import { Reveal } from "@/components/motion/reveal"
 import { SectionLabel } from "@/components/ui/badges"
 import { UIText } from "@/components/ui/ui-text"
@@ -22,7 +23,17 @@ export default function KnowledgePage() {
       <p className="mt-6 max-w-xl text-pretty text-lg text-muted">
         <UIText k="knBody" />
       </p>
-      <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {/* Browse the collection like a filesystem — shelves, contents,
+          and a path. Relationships stay in the graph, not the folders. */}
+      <div className="mt-14">
+        <KnowledgeExplorer />
+      </div>
+
+      {/* Every domain, flat, for when you already know what you want. */}
+      <h2 className="mt-20 font-heading text-2xl text-foreground sm:text-3xl">
+        <UIText k="allCategories" />
+      </h2>
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {CATEGORIES.map((c, i) => (
           <Reveal key={c.id} delay={(i % 3) * 0.04}>
             <CategoryCard category={c} index={i} />
