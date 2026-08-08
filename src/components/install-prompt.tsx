@@ -7,7 +7,9 @@ import { AnimatePresence, motion } from "framer-motion"
 import { useUI } from "@/components/language-provider"
 import { EASE_ORGANIC } from "@/lib/motion"
 
-const DISMISS_KEY = "eog-install-dismissed"
+// Versioned so bumping it resurfaces the prompt for visitors whose old
+// dismissal would otherwise snooze it for the full 14 days.
+const DISMISS_KEY = "eog-install-dismissed-v2"
 const DISMISS_DAYS = 14
 
 type BeforeInstallPromptEvent = Event & {
