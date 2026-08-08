@@ -16,8 +16,9 @@ import {
 import { useT } from "@/components/language-provider"
 import { SectionLabel } from "@/components/ui/badges"
 import { CATEGORIES } from "@/lib/knowledge"
+import { repoUrl } from "@/lib/brand"
 
-const GH_NEW_ISSUE = "https://github.com/gronnstudio/g-eog/issues/new"
+const GH_NEW_ISSUE = repoUrl("issues/new")
 
 type Kind = "new-article" | "improve-article" | "translation" | "source-suggestion"
 

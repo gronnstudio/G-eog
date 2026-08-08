@@ -1,9 +1,10 @@
+import { BRAND } from "@/lib/brand"
 import type { MetadataRoute } from "next"
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Equilibrium — Living Knowledge Ecosystem",
-    short_name: "Equilibrium",
+    name: `${BRAND.name} — Living Knowledge Ecosystem`,
+    short_name: BRAND.shortName,
     description: "The world's living knowledge ecosystem for regenerative thinking.",
     start_url: "/",
     display: "standalone",

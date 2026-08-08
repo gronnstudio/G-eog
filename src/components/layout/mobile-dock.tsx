@@ -14,6 +14,7 @@ import { EASE_REVEAL } from "@/lib/motion"
 import { useFocusTrap } from "@/lib/use-focus-trap"
 import { useReducedMotion } from "@/lib/use-reduced-motion"
 import { cn } from "@/lib/utils"
+import { BRAND } from "@/lib/brand"
 
 // The mobile dock, ported from the GRØNN base: a floating glass pill
 // within thumb reach, phones only (the desktop keeps the header). Seven
@@ -277,7 +278,7 @@ export function MobileDock() {
                 </div>
                 <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-line pt-4">
                   <a
-                    href="https://github.com/gronnstudio/g-eog"
+                    href={BRAND.github}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="tap-target text-xs tracking-wide text-muted underline-draw"

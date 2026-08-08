@@ -5,6 +5,7 @@ import { Reveal } from "@/components/motion/reveal"
 import { SectionLabel } from "@/components/ui/badges"
 import { UIText } from "@/components/ui/ui-text"
 import { totalStats } from "@/lib/knowledge"
+import { BRAND } from "@/lib/brand"
 
 export const metadata: Metadata = {
   title: "About — Our Mission",
@@ -50,7 +51,7 @@ export default function AboutPage() {
           <UIText k="abLicPre" />{" "}
           <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons BY-SA 4.0</a>
           <UIText k="abLicMid" />{" "}
-          <a href="https://github.com/gronnstudio/g-eog">GitHub</a>
+          <a href={BRAND.github}>GitHub</a>
           <UIText k="abLicPost" />
         </p>
       </div>

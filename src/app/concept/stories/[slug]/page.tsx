@@ -8,8 +8,9 @@ import { ReadingProgress } from "@/components/knowledge/reading-progress"
 import { ArticleCard } from "@/components/knowledge/article-card"
 import { Reveal } from "@/components/motion/reveal"
 import { STORIES, getStory, getArticle, getCategory } from "@/lib/knowledge"
+import { BRAND } from "@/lib/brand"
 
-const SITE = "https://equilibrium.gronn.studio"
+const SITE = BRAND.url
 
 export function generateStaticParams() {
   return STORIES.map((s) => ({ slug: s.slug }))

@@ -8,8 +8,9 @@ import { Reveal } from "@/components/motion/reveal"
 import { SectionLabel } from "@/components/ui/badges"
 import { getArticle, getCategory } from "@/lib/knowledge"
 import { PARTNERS } from "@/lib/knowledge/partners"
+import { repoUrl } from "@/lib/brand"
 
-const GH_ISSUES = "https://github.com/gronnstudio/g-eog/issues/new"
+const GH_ISSUES = repoUrl("issues/new")
 
 /**
  * Partners — the practitioner layer of the knowledge base. Each profile is
