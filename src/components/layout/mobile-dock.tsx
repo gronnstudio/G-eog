@@ -256,25 +256,39 @@ export function MobileDock() {
                   </Link>
                 ))}
               </nav>
-              <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-4 border-t border-line px-3 pt-5">
-                <ThemeModePicker />
-                <LanguageToggle />
-                <a
-                  href="https://github.com/gronnstudio/g-eog"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="tap-target text-xs tracking-wide text-muted underline-draw"
-                >
-                  GitHub
-                </a>
-                <a
-                  href="https://gronn.studio"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="tap-target text-xs tracking-wide text-muted underline-draw"
-                >
-                  GRØNN Studio
-                </a>
+              {/* Labeled control groups — "Auto / Golden Hour / Blue Hour"
+                  meant nothing without a heading. */}
+              <div className="mt-6 space-y-5 border-t border-line px-3 pt-5">
+                <div>
+                  <p className="mb-2.5 font-mono text-[10px] uppercase tracking-[0.22em] text-faint">
+                    {ui("theme")}
+                  </p>
+                  <ThemeModePicker />
+                </div>
+                <div>
+                  <p className="mb-2.5 font-mono text-[10px] uppercase tracking-[0.22em] text-faint">
+                    {ui("language")}
+                  </p>
+                  <LanguageToggle />
+                </div>
+                <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-line pt-4">
+                  <a
+                    href="https://github.com/gronnstudio/g-eog"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="tap-target text-xs tracking-wide text-muted underline-draw"
+                  >
+                    GitHub
+                  </a>
+                  <a
+                    href="https://gronn.studio"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="tap-target text-xs tracking-wide text-muted underline-draw"
+                  >
+                    GRØNN Studio
+                  </a>
+                </div>
               </div>
             </motion.div>
           </motion.div>
