@@ -16,6 +16,7 @@ import {
 import { SmoothScroll } from "@/components/motion/smooth-scroll"
 import { CommandPaletteProvider } from "@/components/search/command-palette"
 import { Header } from "@/components/layout/header"
+import { TopVeil } from "@/components/layout/top-veil"
 import { MobileDock } from "@/components/layout/mobile-dock"
 import { Footer } from "@/components/layout/footer"
 import { RegisterSW } from "@/components/register-sw"
@@ -126,6 +127,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <SmoothScroll />
           <CommandPaletteProvider>
             <PullToRefresh />
+            <TopVeil />
             <Header />
             <Thread />
             <main id="main">{children}</main>
