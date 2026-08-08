@@ -5,7 +5,17 @@ import { ARTICLES, CATEGORIES } from "@/lib/knowledge"
 const SITE = "https://equilibrium.gronn.studio"
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticRoutes = ["", "/explore", "/knowledge", "/learn", "/community", "/about"].map(
+  const staticRoutes = [
+    "",
+    "/explore",
+    "/knowledge",
+    "/learn",
+    "/community",
+    "/partners",
+    "/seasonal",
+    "/contribute",
+    "/about",
+  ].map(
     (path) => ({
       url: `${SITE}${path}`,
       lastModified: new Date(),

@@ -324,6 +324,7 @@ export function Header() {
                   </p>
                   {[
                     { href: "/seasonal", label: ui("megaSeasonal") },
+                    { href: "/partners", label: ui("megaPartners") },
                     { href: "/contribute", label: ui("megaWizard") },
                     {
                       href: "https://github.com/gronnstudio/g-eog/blob/main/docs/SOURCES.md",

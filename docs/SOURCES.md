@@ -39,3 +39,12 @@ the URL, language, and one line on why it is useful to Equilibrium.
 |---|---|---|---|
 | SUGi Project | [www.sugiproject.com](https://www.sugiproject.com) | EN | Miyawaki-method pocket forests and urban rewilding; outcomes data used for the Miyawaki mini-forests article. |
 | Learn Dirt | [www.learndirt.com](https://www.learndirt.com) | EN | Soil health and regenerative growing education — background material for the Soil domain. |
+
+## Partners (practitioners)
+
+Organisations profiled on [/partners](https://equilibrium.gronn.studio/partners). Their public
+material is the source for those profiles; figures quoted there are theirs, not our measurements.
+
+| Source | URL | Language | What it offers |
+|---|---|---|---|
+| Grnfix (Greenfix B.V.) | [grnfix.nl](https://grnfix.nl) | NL | 100% natural soil improvers and plant strengtheners, and the three-step Grnfix method (soil life → minerals → nutrition). Grown out of agriculture; also serves professional gardeners with training, advice and purchasing. Useful reference for applied soil-biology practice in a Western-European climate. |
