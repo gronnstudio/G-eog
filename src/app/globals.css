@@ -375,6 +375,11 @@ h1, h2, h3, h4 {
 .eog-mosaic-right { animation: eog-mosaic-r var(--mosaic-dur, 80s) linear infinite; }
 
 /* Utility: hide scrollbars on horizontal rails. */
+/* Manifesto: deep-water blob drift + mycelium pulse lines. */
+@keyframes eog-waterA { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(12vw, 8vh); } }
+@keyframes eog-waterB { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-10vw, -9vh); } }
+@keyframes eog-pulseline { from { stroke-dashoffset: 1; } to { stroke-dashoffset: -0.05; } }
+
 /* Perf: sections stamp this while offscreen so their infinite CSS
    animations (mosaic drift, marquee) stop burning the compositor. */
 .eog-anim-paused, .eog-anim-paused * { animation-play-state: paused !important; }

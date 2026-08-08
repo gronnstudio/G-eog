@@ -2,6 +2,7 @@ import Link from "next/link"
 import { ArrowRight, GitFork, Network, Sparkles } from "lucide-react"
 
 import { Hero } from "@/components/home/hero"
+import { Manifesto } from "@/components/home/manifesto"
 import { KnowledgeGraph } from "@/components/graph/knowledge-graph"
 import { CategoryCard } from "@/components/knowledge/category-card"
 import { ArticleCard } from "@/components/knowledge/article-card"
@@ -72,6 +73,9 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* Manifesto — read on scroll */}
+      <Manifesto />
 
       {/* Living ribbon */}
       <section className="border-y border-line bg-surface/20 py-6">
