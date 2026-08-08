@@ -14,26 +14,27 @@ import { cn } from "@/lib/utils"
  * 50%), under EOG's time-of-day wash with an ember light-leak.
  *
  * Pure CSS drift (no GSAP) — the same seamless-loop technique as the domains
- * marquee. Reduced motion freezes the wall. Placeholder imagery is Lorem
- * Picsum with ecological labels; curated nature photography can be swapped in
- * per tile later.
+ * marquee. Reduced motion freezes the wall. Placeholder imagery is local
+ * abstract nature renders with ecological labels; curated nature photography
+ * can be swapped in per tile later.
  */
 
 type Tile = { id: string; label: string; src: string }
 
-// Portrait placeholders (Lorem Picsum). Swap `src` for curated ecological
-// photography when available; the labels are the intended subjects.
+// Portrait placeholders (local abstract nature renders in /public/mosaic).
+// Swap `src` for curated ecological photography when available; the labels
+// are the intended subjects.
 const TILES: Tile[] = [
-  { id: "01", label: "Moss colonies", src: "https://picsum.photos/id/28/600/800" },
-  { id: "02", label: "Living water", src: "https://picsum.photos/id/15/600/800" },
-  { id: "03", label: "Mycelium web", src: "https://picsum.photos/id/18/600/800" },
-  { id: "04", label: "Root systems", src: "https://picsum.photos/id/10/600/800" },
-  { id: "05", label: "Leaf structure", src: "https://picsum.photos/id/17/600/800" },
-  { id: "06", label: "Food-forest layers", src: "https://picsum.photos/id/11/600/800" },
-  { id: "07", label: "Seed heads", src: "https://picsum.photos/id/14/600/800" },
-  { id: "08", label: "Pollinator habitat", src: "https://picsum.photos/id/19/600/800" },
-  { id: "09", label: "Topographic memory", src: "https://picsum.photos/id/29/600/800" },
-  { id: "10", label: "Regenerative garden", src: "https://picsum.photos/id/12/600/800" },
+  { id: "01", label: "Moss colonies", src: "/mosaic/tile-01.jpg" },
+  { id: "02", label: "Living water", src: "/mosaic/tile-02.jpg" },
+  { id: "03", label: "Mycelium web", src: "/mosaic/tile-03.jpg" },
+  { id: "04", label: "Root systems", src: "/mosaic/tile-04.jpg" },
+  { id: "05", label: "Leaf structure", src: "/mosaic/tile-05.jpg" },
+  { id: "06", label: "Food-forest layers", src: "/mosaic/tile-06.jpg" },
+  { id: "07", label: "Seed heads", src: "/mosaic/tile-07.jpg" },
+  { id: "08", label: "Pollinator habitat", src: "/mosaic/tile-08.jpg" },
+  { id: "09", label: "Topographic memory", src: "/mosaic/tile-09.jpg" },
+  { id: "10", label: "Regenerative garden", src: "/mosaic/tile-10.jpg" },
 ]
 
 // 1:1 with the equilibrium reference: three full-height rows on the
@@ -51,8 +52,8 @@ const ROW_COUNT = 3
  * Phones can't afford the desktop wall: three perpetually-animated GPU
  * layers, each 2 copies × 8 full-res tiles wide on a plane 2.4× the
  * viewport, at 3× DPR — that's what made scrolling crawl. On small
- * screens the loop carries 5 lighter tiles (a narrower plane needs
- * fewer to wrap seamlessly) at 384px source width.
+ * screens the loop carries 5 tiles (a narrower plane needs fewer to
+ * wrap seamlessly).
  */
 function useIsSmall(): boolean {
   const [small, setSmall] = useState(false)
@@ -64,11 +65,6 @@ function useIsSmall(): boolean {
     return () => mq.removeEventListener("change", read)
   }, [])
   return small
-}
-
-/** picsum URLs carry their size in the path — swap dims for mobile */
-function sized(src: string, small: boolean): string {
-  return small ? src.replace("/600/800", "/384/512") : src
 }
 
 /** Deterministic tile list for a row: rotate the archive by the row index. */
@@ -96,12 +92,13 @@ function Row({ row, reduced, small }: { row: number; reduced: boolean; small: bo
               className="relative h-full shrink-0 overflow-hidden rounded-lg bg-surface-2"
               style={{ aspectRatio: "3 / 4" }}
             >
-              {/* Plain img: remote picsum placeholders, no next config
-                  needed. Decorative background — no alt (see aria-hidden
-                  wrapper), so a slow/failed load never leaks a broken label. */}
+              {/* Plain img: local placeholders in /public/mosaic, no next
+                  config needed. Decorative background — no alt (see
+                  aria-hidden wrapper), so a slow/failed load never leaks a
+                  broken label. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={sized(t.src, small)}
+                src={t.src}
                 alt=""
                 loading="eager"
                 decoding="async"
