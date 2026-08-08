@@ -27,6 +27,7 @@ import { BRAND, repoUrl } from "@/lib/brand"
 const NAV = [
   { href: "/", key: "nav_home" },
   { href: "/explore", key: "nav_explore" },
+  { href: "/diagnose", key: "nav_ask" },
   { href: "/learn", key: "nav_learn" },
   { href: "/apply", key: "nav_apply" },
   { href: "/evidence", key: "nav_evidence" },
@@ -190,7 +191,7 @@ export function Header() {
 
             <Link
               href="/explore"
-              className="tap-target hidden rounded-full bg-gronn-green px-5 py-2.5 text-sm font-medium text-gronn-white transition-transform hover:scale-[1.03] sm:inline-block"
+              className="tap-target hidden whitespace-nowrap rounded-full bg-gronn-green px-5 py-2.5 text-sm font-medium text-gronn-white transition-transform hover:scale-[1.03] sm:inline-block"
             >
               {ui("exploreGraph")}
             </Link>

@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { ArrowRight, CalendarDays, Handshake, Sprout } from "lucide-react"
+import { ArrowRight, CalendarDays, Handshake, Sparkles, Sprout } from "lucide-react"
 
 import { useT } from "@/components/language-provider"
 import { Reveal } from "@/components/motion/reveal"
@@ -27,6 +27,18 @@ export function ApplyView() {
   const taskCount = SEASONAL.reduce((n, m) => n + m.tasks.length, 0)
 
   const cards = [
+    {
+      href: "/diagnose",
+      icon: Sparkles,
+      eyebrow: t({ en: "Start here", nl: "Begin hier" }),
+      title: t({ en: "Ask the graph", nl: "Vraag het de graaf" }),
+      body: t({
+        en: "Describe what is going wrong and get the mechanisms behind it, with evidence levels — reasoned from the graph, not generated.",
+        nl: "Beschrijf wat er misgaat en krijg de mechanismen erachter, met bewijsniveaus — geredeneerd uit de graaf, niet gegenereerd.",
+      }),
+      meta: t({ en: "No account, no cost", nl: "Geen account, geen kosten" }),
+      cta: t({ en: "Ask", nl: "Vragen" }),
+    },
     {
       href: "/seasonal",
       icon: CalendarDays,
@@ -80,7 +92,7 @@ export function ApplyView() {
         </p>
       </Reveal>
 
-      <div className="mt-12 grid gap-4 md:grid-cols-3">
+      <div className="mt-12 grid gap-4 md:grid-cols-2">
         {cards.map((c) => (
           <Reveal key={c.href}>
             <Link
