@@ -24,6 +24,7 @@ import { TocSpy } from "@/components/knowledge/toc-spy"
 import { DifficultyBadge } from "@/components/ui/badges"
 import { UIText } from "@/components/ui/ui-text"
 import { ConnectionList } from "@/components/knowledge/connection-list"
+import { articleSourceUrl } from "@/lib/knowledge/source-location"
 import {
   ARTICLES,
   articleNeighbors,
@@ -100,7 +101,11 @@ export default async function ArticlePage({
     .filter((s): s is typeof s & { heading: string } => Boolean(s.heading))
     .map((s) => ({ id: slugifyHeading(s.heading), title: s.heading }))
   const { prev, next } = articleNeighbors(article)
-  const sourcePath = `content/${article.category}/${article.slug}.mdx`
+  // Real repo paths — these links used to point at a content/*.mdx tree
+  // that does not exist, so every one of them 404'd.
+  const editUrl = articleSourceUrl(GH, article.slug, "edit")
+  const blobUrl = articleSourceUrl(GH, article.slug, "blob")
+  const historyUrl = articleSourceUrl(GH, article.slug, "commits")
 
   const breadcrumbLd = {
     "@context": "https://schema.org",
@@ -126,9 +131,9 @@ export default async function ArticlePage({
   }
 
   const actions = [
-    { icon: GitPullRequest, k: "artImprove", href: `${GH}/edit/main/${sourcePath}` },
-    { icon: FileText, k: "artViewSource", href: `${GH}/blob/main/${sourcePath}` },
-    { icon: History, k: "artHistory", href: `${GH}/commits/main/${sourcePath}` },
+    { icon: GitPullRequest, k: "artImprove", href: editUrl },
+    { icon: FileText, k: "artViewSource", href: blobUrl },
+    { icon: History, k: "artHistory", href: historyUrl },
     { icon: MessageSquare, k: "artDiscussion", href: `${GH}/discussions` },
   ] as const
 
@@ -229,7 +234,7 @@ export default async function ArticlePage({
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               <a
-                href={`${GH}/edit/main/${sourcePath}`}
+                href={editUrl}
                 className="inline-flex items-center gap-2 rounded-full bg-gronn-green px-4 py-2 text-sm font-medium text-gronn-white"
               >
                 <GitPullRequest className="h-4 w-4" /> <UIText k="artEditGitHub" />
