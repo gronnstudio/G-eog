@@ -168,16 +168,19 @@ export function MobileDock() {
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
-  // The header's full-screen menu locks scroll on <html>; the dock steps
-  // aside while it is open instead of floating over it.
+  // The header's full-screen menu: the dock steps aside while it is open.
+  // Detected via an explicit data attribute the header sets — NOT by
+  // sniffing overflow:hidden, because the dock's own mega menu locks
+  // scroll the same way and the dock would mistake its own menu for the
+  // header's and unmount it in a loop.
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false)
   useEffect(() => {
     const read = () =>
-      setHeaderMenuOpen(document.documentElement.style.overflow === "hidden")
+      setHeaderMenuOpen(document.documentElement.hasAttribute("data-header-menu"))
     const observer = new MutationObserver(read)
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ["style"],
+      attributeFilter: ["data-header-menu"],
     })
     const id = requestAnimationFrame(read)
     return () => {
