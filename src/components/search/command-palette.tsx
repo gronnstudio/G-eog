@@ -203,7 +203,10 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
             >
               <div className="border-b border-line px-4 pb-3 pt-4">
                 {/* Ember rim glow — matches the mobile dock pill's orbit-ring accent. */}
-                <div className="flex items-center gap-3 rounded-full border border-line px-4 py-2.5 transition-all duration-200 focus-within:border-ember/60 focus-within:shadow-[0_0_0_1px_rgba(249,90,8,0.5),0_0_18px_-2px_rgba(249,90,8,0.45)]">
+                <div className="relative flex items-center gap-3 rounded-full border border-line px-4 py-2.5 transition-colors duration-200 focus-within:border-ember/40">
+                  {/* The dock pill's ember comet, orbiting the field —
+                      the shared signature of primary navigation surfaces. */}
+                  <span aria-hidden className="orbit-ring pointer-events-none absolute inset-0 rounded-full" />
                   <Search className="h-5 w-5 shrink-0 text-muted" />
                   <input
                     ref={inputRef}
@@ -218,7 +221,10 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
                       if (e.key === "Enter") onEnter()
                     }}
                     placeholder={ui("palPlaceholder")}
-                    className="w-full bg-transparent text-lg text-foreground outline-none focus:outline-none placeholder:text-faint"
+                    // appearance-none + inline outline kill iOS Safari's
+                    // native green text-field ring inside the pill
+                    className="w-full appearance-none border-0 bg-transparent text-lg text-foreground outline-none focus:outline-none focus-visible:outline-none placeholder:text-faint"
+                    style={{ WebkitAppearance: "none", outline: "none", boxShadow: "none" }}
                   />
                   <kbd className="hidden rounded border border-line px-2 py-1 font-mono text-xs text-faint sm:block">
                     ESC
