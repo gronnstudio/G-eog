@@ -22,17 +22,17 @@ export function CategoryCard({ category, index = 0 }: { category: Category; inde
       className="group relative flex flex-col rounded-2xl border border-line bg-surface/40 p-6 transition-all duration-500 hover:-translate-y-1 hover:shadow-float"
       style={{ animationDelay: `${index * 40}ms` }}
     >
-      {/* Dedicated clip layer for the corner glow. A blurred child is not
-          clipped by a plain overflow-hidden+rounded parent on iOS Safari
-          (the blur box bleeds past the corner); translateZ forces a
-          compositing layer that respects the rounding. Kept off the card's
-          hover transform, and separate so the card's box-shadow still shows. */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl [transform:translateZ(0)]">
-        <div
-          className="absolute -right-8 -top-8 h-32 w-32 rounded-full opacity-30 blur-2xl transition-opacity duration-500 group-hover:opacity-60"
-          style={{ background: `hsl(${hue} 50% 45%)` }}
-        />
-      </div>
+      {/* Corner glow as a painted radial-gradient, not a blurred child:
+          iOS Safari lets filter() output bleed past a rounded
+          overflow-hidden clip no matter the compositing hints, so the
+          soft falloff is baked into the gradient itself — clipping is
+          then just ordinary painting. */}
+      <div
+        className="pointer-events-none absolute inset-0 rounded-2xl opacity-60 transition-opacity duration-500 group-hover:opacity-100"
+        style={{
+          background: `radial-gradient(140px 140px at calc(100% - 8px) 8px, hsl(${hue} 50% 45% / 0.30), hsl(${hue} 50% 45% / 0.10) 55%, transparent 75%)`,
+        }}
+      />
       <div
         className="relative mb-5 grid h-12 w-12 place-items-center rounded-xl"
         style={{ background: `hsl(${hue} 45% 50% / 0.16)`, color: `hsl(${hue} 50% 66%)` }}

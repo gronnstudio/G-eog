@@ -39,12 +39,14 @@ export function PeekCard({ category, articles }: PeekCardProps) {
     >
       {/* Corner glow — isolated in a translateZ wrapper to dodge the iOS
           Safari blur-clipping bug, and non-interactive. */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl [transform:translateZ(0)]">
-        <div
-          className="absolute -right-8 -top-8 size-32 rounded-full opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-40 group-focus-within:opacity-40"
-          style={{ background: iconTint }}
-        />
-      </div>
+      {/* Painted radial gradient instead of a blurred child — iOS Safari
+          lets filter() output bleed past rounded overflow clips. */}
+      <div
+        className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 group-focus-within:opacity-100 group-hover:opacity-100"
+        style={{
+          background: `radial-gradient(140px 140px at calc(100% - 8px) 8px, color-mix(in srgb, ${iconTint} 40%, transparent), color-mix(in srgb, ${iconTint} 14%, transparent) 55%, transparent 75%)`,
+        }}
+      />
 
       {/* Primary link overlay — covers the card, names the category. Peek
           links sit above it via relative z-10 so they stay clickable. */}
