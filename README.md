@@ -92,6 +92,7 @@ _Improve this page_, _View source_, _Discussion_ and _Version history_ links.
 Contributions flow through GitHub: fork → edit Markdown → pull request → peer
 review → expert verification → merge. See [`/community`](src/app/community) and
 [`docs/08-auth-and-contribution.md`](docs/08-auth-and-contribution.md).
+Research starting points for new content live in [`docs/SOURCES.md`](docs/SOURCES.md).
 
 ## Licence
 

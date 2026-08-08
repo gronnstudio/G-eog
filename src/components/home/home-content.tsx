@@ -4,8 +4,6 @@ import Link from "next/link"
 import { ArrowRight, GitFork, Network, Sparkles } from "lucide-react"
 
 import { Hero } from "@/components/home/hero"
-import { Manifesto } from "@/components/home/manifesto"
-import { KnowledgeGraph } from "@/components/graph/knowledge-graph"
 import { CategoryCard } from "@/components/knowledge/category-card"
 import { ArticleCard } from "@/components/knowledge/article-card"
 import { useUI } from "@/components/language-provider"
@@ -50,22 +48,6 @@ export function HomeContent() {
             </Link>
           </div>
         </Reveal>
-        <Reveal delay={0.1} className="mt-10">
-          {/* Phones: a calm non-interactive preview — the interactive
-              canvas captured touch and trapped page scrolling. Tapping
-              anywhere opens the real graph. Desktop keeps the live one. */}
-          <div className="relative md:hidden">
-            <KnowledgeGraph height={380} interactive={false} />
-            <Link
-              href="/explore"
-              aria-label={ui("openFullGraph")}
-              className="absolute inset-0 z-10"
-            />
-          </div>
-          <div className="hidden md:block">
-            <KnowledgeGraph height={560} />
-          </div>
-        </Reveal>
       </section>
 
       {/* Philosophy strip */}
@@ -84,9 +66,6 @@ export function HomeContent() {
           ))}
         </div>
       </section>
-
-      {/* Manifesto — read on scroll */}
-      <Manifesto />
 
       {/* Living ribbon */}
       <section className="border-y border-line bg-surface/20 py-6">
