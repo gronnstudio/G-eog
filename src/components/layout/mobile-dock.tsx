@@ -10,12 +10,12 @@ import { LanguageToggle } from "@/components/language-toggle"
 import { useUI } from "@/components/language-provider"
 import { ThemeModePicker } from "@/components/theme-toggle"
 import { useCommandPalette } from "@/components/search/command-palette"
-import { DOCK_CENTRE, DOCK_WINGS, SHEET_EXTRAS } from "@/lib/site-tree"
+import { DOCK_CENTRE, DOCK_WINGS } from "@/lib/site-tree"
+import { MobileMegaMenu } from "@/components/layout/mobile-mega-menu"
 import { EASE_REVEAL } from "@/lib/motion"
 import { useFocusTrap } from "@/lib/use-focus-trap"
 import { useReducedMotion } from "@/lib/use-reduced-motion"
 import { cn } from "@/lib/utils"
-import { BRAND } from "@/lib/brand"
 
 // The mobile dock, ported from the GRØNN base: a floating glass pill
 // within thumb reach, phones only (the desktop keeps the header). Seven
@@ -113,19 +113,9 @@ const icons = {
 }
 
 // Only destinations the pill itself lacks — the sheet is "everything else".
-// Only what the pill itself lacks. The pill mirrors the header's areas,
-// so the sheet is the level below them plus Home.
-const PRIMARY = [{ href: "/", key: "nav_home" }, ...SHEET_EXTRAS] as const
-
-const SECONDARY = [
-  { href: "/knowledge/soil", key: "dockSoil" },
-  { href: "/knowledge/water", key: "dockWater" },
-  { href: "/knowledge/fungi", key: "dockFungi" },
-  { href: "/knowledge/permaculture", key: "dockPermaculture" },
-] as const
-
 export function MobileDock() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [switchesOpen, setSwitchesOpen] = useState(false)
   const pathname = usePathname()
   const reduced = useReducedMotion()
   const ui = useUI()
@@ -186,7 +176,7 @@ export function MobileDock() {
   }
 
   const sheetRef = useRef<HTMLDivElement>(null)
-  useFocusTrap(sheetRef, menuOpen, () => setMenuOpen(false))
+  useFocusTrap(sheetRef, switchesOpen, () => setSwitchesOpen(false))
 
   const toTop = () => {
     const lenis = (window as unknown as { __lenis?: Lenis }).__lenis
@@ -221,16 +211,24 @@ export function MobileDock() {
 
   return (
     <>
-      {/* Slide-up sheet with the remaining pages + site controls */}
+      {/* Full-screen mega menu: the site structure, one level visible. */}
+      <MobileMegaMenu
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        onOpenSearch={openSearch}
+        onOpenSwitches={() => setSwitchesOpen(true)}
+      />
+
+      {/* Slide-up sheet — switches only. */}
       <AnimatePresence>
-        {menuOpen && (
+        {switchesOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: reduced ? 0 : 0.25 }}
-            className="fixed inset-0 z-[60] bg-forest/60 backdrop-blur-sm md:hidden"
-            onClick={() => setMenuOpen(false)}
+            className="fixed inset-0 z-[75] bg-forest/60 backdrop-blur-sm md:hidden"
+            onClick={() => setSwitchesOpen(false)}
           >
             <motion.div
               ref={sheetRef}
@@ -248,57 +246,14 @@ export function MobileDock() {
                 paddingBottom: "max(6.5rem, calc(env(safe-area-inset-bottom) + 6rem))",
               }}
             >
-              <button
-                type="button"
-                onClick={() => {
-                  setMenuOpen(false)
-                  openSearch()
-                }}
-                className="mb-6 flex w-full items-center gap-3 rounded-full border border-line px-5 py-3 text-left text-muted transition-colors hover:text-foreground"
-              >
-                {icons.search}
-                <span className="text-base">{ui("search")}</span>
-              </button>
-
-              <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.25em] text-muted">
-                {ui("navigate")}
+              {/* Switches only. Navigation moved to the mega menu — the
+                  sheet was trying to be a nav list and a settings panel at
+                  once, and neither had room. */}
+              <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.25em] text-muted">
+                {ui("theme")} &amp; {ui("language")}
               </p>
-              <nav className="flex flex-col gap-y-1">
-                {PRIMARY.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setMenuOpen(false)}
-                    className={cn(
-                      "rounded-xl px-3 py-3 font-heading text-2xl font-semibold tracking-tight transition-colors duration-300",
-                      active(item.href) ? "text-accent" : "text-foreground",
-                    )}
-                  >
-                    {ui(item.key)}
-                  </Link>
-                ))}
-              </nav>
-              <div className="mx-3 mb-4 mt-6 border-t border-line" />
-              <nav className="flex flex-wrap gap-x-2 gap-y-4 px-3">
-                {SECONDARY.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setMenuOpen(false)}
-                    className={cn(
-                      "tap-target rounded-full border px-3.5 py-1.5 text-xs tracking-wide transition-colors duration-300",
-                      active(item.href)
-                        ? "border-accent/50 bg-accent-soft text-accent"
-                        : "border-line text-muted hover:border-accent/40 hover:text-foreground active:border-accent/40 active:text-foreground",
-                    )}
-                  >
-                    {ui(item.key)}
-                  </Link>
-                ))}
-              </nav>
-              {/* Labeled control groups — "Auto / Golden Hour / Blue Hour"
-                  meant nothing without a heading. */}
-              <div className="mt-6 space-y-5 border-t border-line px-3 pt-5">
+
+              <div className="space-y-6 px-1">
                 <div>
                   <p className="mb-2.5 font-mono text-[10px] uppercase tracking-[0.22em] text-faint">
                     {ui("theme")}
@@ -310,24 +265,6 @@ export function MobileDock() {
                     {ui("language")}
                   </p>
                   <LanguageToggle />
-                </div>
-                <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-line pt-4">
-                  <a
-                    href={BRAND.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="tap-target text-xs tracking-wide text-muted underline-draw"
-                  >
-                    GitHub
-                  </a>
-                  <a
-                    href="https://gronn.studio"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="tap-target text-xs tracking-wide text-muted underline-draw"
-                  >
-                    GRØNN Studio
-                  </a>
                 </div>
               </div>
             </motion.div>
@@ -479,7 +416,7 @@ export function MobileDock() {
                       type="button"
                       aria-label={ui("navigate")}
                       aria-expanded={menuOpen}
-                      aria-controls="dock-sheet"
+                      aria-controls="site-mega-menu"
                       onClick={() => setMenuOpen((v) => !v)}
                       className={cn(swapSlot, menuOpen ? slotActive : "text-muted")}
                     >

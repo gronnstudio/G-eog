@@ -84,6 +84,7 @@ const UI_CORE = {
   search: { en: "Search", nl: "Zoeken", zh: "搜索", hi: "खोज", es: "Buscar", fr: "Rechercher", ar: "بحث", pt: "Buscar", ru: "Поиск", de: "Suchen", ja: "検索" },
   exploreGraph: { en: "Explore the Graph", nl: "Verken de graaf", zh: "探索知识图谱", hi: "ग्राफ़ का अन्वेषण करें", es: "Explorar el grafo", fr: "Explorer le graphe", ar: "استكشف الرسم البياني", pt: "Explorar o grafo", ru: "Исследовать граф", de: "Den Graphen entdecken", ja: "グラフを探索する" },
   menu: { en: "Menu", nl: "Menu", zh: "菜单", hi: "मेन्यू", es: "Menú", fr: "Menu", ar: "القائمة", pt: "Menu", ru: "Меню", de: "Menü", ja: "メニュー" },
+  open: { en: "Open", nl: "Openen", zh: "打开", hi: "खोलें", es: "Abrir", fr: "Ouvrir", ar: "فتح", pt: "Abrir", ru: "Открыть", de: "Öffnen", ja: "開く" },
   close: { en: "Close", nl: "Sluiten", zh: "关闭", hi: "बंद करें", es: "Cerrar", fr: "Fermer", ar: "إغلاق", pt: "Fechar", ru: "Закрыть", de: "Schließen", ja: "閉じる" },
   navigate: { en: "Navigate the system", nl: "Navigeer door het systeem", zh: "浏览系统", hi: "सिस्टम में नेविगेट करें", es: "Navega por el sistema", fr: "Naviguer dans le système", ar: "تصفّح النظام", pt: "Navegue pelo sistema", ru: "Навигация по системе", de: "Durch das System navigieren", ja: "システムを巡る" },
   language: { en: "Language", nl: "Taal", zh: "语言", hi: "भाषा", es: "Idioma", fr: "Langue", ar: "اللغة", pt: "Idioma", ru: "Язык", de: "Sprache", ja: "言語" },
