@@ -44,7 +44,7 @@ export interface SiteNode {
   /** UI dictionary key for the label. */
   key: UIKey
   /** Shown in the pill dock — the dock carries only what has an icon. */
-  icon?: "home" | "ask" | "learn" | "apply" | "evidence" | "community" | "graph"
+  icon?: "home" | "ask" | "learn" | "apply" | "evidence" | "community" | "graph" | "strata" | "horizon"
   /** Nested levels. Content routes (categories, articles) are generated
    *  from data and counted separately — they live under their section. */
   children?: SiteNode[]
@@ -138,10 +138,20 @@ checkSiteTree()
 /** Primary areas — everything except the About footnote. */
 export const PRIMARY_AREAS: SiteNode[] = SITE_TREE.filter((n) => n.key !== "nav_about")
 
-/** The five wing slots of the dock, in header order, minus the centre. */
-export const DOCK_WINGS: SiteNode[] = PRIMARY_AREAS.filter(
-  (n) => n.icon && n.icon !== "graph",
-)
+/**
+ * The pill carries four destinations, not the whole nav.
+ *
+ * Mirroring all six areas filled every slot and left the menu on a grid
+ * icon that looked like an afterthought. The full structure lives in the
+ * mega menu — which now opens from a slot of its own — so the pill only
+ * needs the places worth reaching in one tap.
+ */
+export const DOCK_WINGS: SiteNode[] = [
+  SITE_TREE.find((n) => n.href === "/") ?? { href: "/", key: "nav_home", icon: "home" },
+  { href: "#menu", key: "menuSiteMenu", icon: "strata" },
+  SITE_TREE.find((n) => n.href === "/diagnose")!,
+  { href: "#switches", key: "theme", icon: "horizon" },
+]
 
 /** The dock's centre slot. */
 export const DOCK_CENTRE: SiteNode =
