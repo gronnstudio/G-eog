@@ -1,13 +1,17 @@
+"use client"
+
 import { cn } from "@/lib/utils"
+import { useUI } from "@/components/language-provider"
 import type { Difficulty } from "@/lib/knowledge"
 
-const DIFFICULTY_LABEL: Record<Difficulty, string> = {
-  foundational: "Foundational",
-  intermediate: "Intermediate",
-  advanced: "Advanced",
-}
+const DIFFICULTY_KEY = {
+  foundational: "diffFoundational",
+  intermediate: "diffIntermediate",
+  advanced: "diffAdvanced",
+} as const satisfies Record<Difficulty, string>
 
 export function DifficultyBadge({ level, className }: { level: Difficulty; className?: string }) {
+  const ui = useUI()
   const dots = level === "foundational" ? 1 : level === "intermediate" ? 2 : 3
   return (
     <span className={cn("inline-flex items-center gap-1.5 font-mono text-xs text-muted", className)}>
@@ -19,7 +23,7 @@ export function DifficultyBadge({ level, className }: { level: Difficulty; class
           />
         ))}
       </span>
-      {DIFFICULTY_LABEL[level]}
+      {ui(DIFFICULTY_KEY[level])}
     </span>
   )
 }

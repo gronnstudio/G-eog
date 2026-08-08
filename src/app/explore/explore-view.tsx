@@ -4,8 +4,10 @@ import { useState } from "react"
 
 import { KnowledgeGraph } from "@/components/graph/knowledge-graph"
 import { CATEGORIES, buildGraph } from "@/lib/knowledge"
+import { useUI } from "@/components/language-provider"
 
 export function ExploreView() {
+  const ui = useUI()
   const [active, setActive] = useState<string | null>(null)
   const graph = buildGraph()
   const present = new Set(graph.nodes.map((n) => n.category))
@@ -20,7 +22,7 @@ export function ExploreView() {
             active === null ? "border-accent bg-accent-soft text-foreground" : "border-line text-muted hover:text-foreground"
           }`}
         >
-          All domains
+          {ui("allDomains")}
         </button>
         {cats.map((c) => (
           <button

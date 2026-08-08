@@ -4,6 +4,7 @@ import { ArrowRight, BookOpen, CheckCircle2 } from "lucide-react"
 
 import { Reveal } from "@/components/motion/reveal"
 import { SectionLabel, DifficultyBadge } from "@/components/ui/badges"
+import { UIText } from "@/components/ui/ui-text"
 import { LEARNING_PATHS, getArticle } from "@/lib/knowledge"
 
 export const metadata: Metadata = {
@@ -15,13 +16,12 @@ export const metadata: Metadata = {
 export default function LearnPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 pb-24 pt-32 sm:px-6">
-      <SectionLabel>Guided journeys</SectionLabel>
+      <SectionLabel><UIText k="pathsLabel" /></SectionLabel>
       <h1 className="max-w-3xl font-heading text-4xl text-foreground sm:text-6xl">
-        Learn the way ecosystems teach — by connection.
+        <UIText k="learnHeadline" />
       </h1>
       <p className="mt-6 max-w-xl text-pretty text-lg text-muted">
-        Each path is a curated sequence of articles that build on one another. Track progress, take
-        notes, and watch the graph light up as you go.
+        <UIText k="learnBody" />
       </p>
 
       <div className="mt-16 space-y-6">
@@ -42,7 +42,7 @@ export default function LearnPage() {
                 <div className="flex shrink-0 flex-col items-start gap-2 sm:items-end">
                   <DifficultyBadge level={path.difficulty} />
                   <p className="font-mono text-xs text-faint">
-                    {path.hours} hours · {path.steps.length} steps
+                    {path.hours} <UIText k="hours" /> · {path.steps.length} <UIText k="steps" />
                   </p>
                 </div>
               </div>
@@ -63,7 +63,7 @@ export default function LearnPage() {
                               .join(" ")}
                           {!article && (
                             <span className="ml-2 rounded-full border border-line px-2 py-0.5 align-middle font-mono text-[10px] uppercase tracking-wide text-faint">
-                              Soon
+                              <UIText k="learnSoon" />
                             </span>
                           )}
                         </p>
