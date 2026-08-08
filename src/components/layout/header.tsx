@@ -325,6 +325,7 @@ export function Header() {
                   </p>
                   {[
                     { href: "/seasonal", label: ui("megaSeasonal") },
+                    { href: "/evidence", label: ui("megaEvidence") },
                     { href: "/partners", label: ui("megaPartners") },
                     { href: "/contribute", label: ui("megaWizard") },
                     {

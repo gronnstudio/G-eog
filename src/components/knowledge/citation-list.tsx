@@ -5,6 +5,7 @@ import { BookMarked, ExternalLink } from "lucide-react"
 
 import type { Citation } from "@/lib/knowledge"
 import { useT } from "@/components/language-provider"
+import { sourceForCitation, sourceHref } from "@/lib/knowledge/sources"
 
 /**
  * References list where every row opens a small floating card with the
@@ -77,17 +78,37 @@ export function CitationList({ citations }: { citations: Citation[] }) {
                   {c.authors} · {c.year}
                 </p>
                 <p className="mt-0.5 text-sm italic text-muted">{c.source}</p>
-                {c.url && (
-                  <a
-                    href={c.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-3 inline-flex items-center gap-1.5 text-sm text-accent underline underline-offset-2 hover:text-foreground"
-                  >
-                    {t({ en: "Open source", nl: "Open bron" })}
-                    <ExternalLink className="h-3.5 w-3.5" />
-                  </a>
-                )}
+                {(() => {
+                  // The link comes from the source registry rather than the
+                  // article file, so resolving a DOI once makes it appear
+                  // everywhere that source is cited.
+                  const src = sourceForCitation(c)
+                  const href = c.url ?? (src ? sourceHref(src) : undefined)
+                  if (href) {
+                    return (
+                      <a
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-3 inline-flex items-center gap-1.5 text-sm text-accent underline underline-offset-2 hover:text-foreground"
+                      >
+                        {src?.doi
+                          ? t({ en: "Open via DOI", nl: "Open via DOI" })
+                          : t({ en: "Open source", nl: "Open bron" })}
+                        <ExternalLink className="h-3.5 w-3.5" />
+                      </a>
+                    )
+                  }
+                  // Say so plainly rather than leaving a dead-looking card.
+                  return (
+                    <p className="mt-3 text-xs leading-relaxed text-faint">
+                      {t({
+                        en: "No verified link yet — this reference hasn't been resolved to a DOI.",
+                        nl: "Nog geen geverifieerde link — deze verwijzing is nog niet naar een DOI herleid.",
+                      })}
+                    </p>
+                  )
+                })()}
               </div>
             )}
           </li>

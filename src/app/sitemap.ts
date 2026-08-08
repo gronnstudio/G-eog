@@ -13,6 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/learn",
     "/community",
     "/partners",
+    "/evidence",
     "/seasonal",
     "/contribute",
     "/about",
