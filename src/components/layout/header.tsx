@@ -18,22 +18,12 @@ import { useFocusTrap } from "@/lib/use-focus-trap"
 import { useReducedMotion } from "@/lib/use-reduced-motion"
 import { cn } from "@/lib/utils"
 import { BRAND, repoUrl } from "@/lib/brand"
+import { PRIMARY_AREAS } from "@/lib/site-tree"
 
-// Five product areas, in the order a visitor actually moves through them:
-// find something, learn it properly, do something with it, check it, help
-// improve it. The site previously listed ten destinations with no
-// hierarchy, so nothing was predictable — Evidence and the applied pages
-// were reachable only by opening a menu and reading a list.
-const NAV = [
-  { href: "/", key: "nav_home" },
-  { href: "/explore", key: "nav_explore" },
-  { href: "/diagnose", key: "nav_ask" },
-  { href: "/learn", key: "nav_learn" },
-  { href: "/apply", key: "nav_apply" },
-  { href: "/evidence", key: "nav_evidence" },
-  { href: "/community", key: "nav_community" },
-  { href: "/about", key: "nav_about" },
-] as const
+// Navigation is derived from the site tree, never hand-listed here — the
+// header, the dock and the footer disagreeing about the structure is what
+// made the site hard to navigate in the first place.
+const NAV = PRIMARY_AREAS
 
 // Topographic contour lines for the menu backdrop (GRØNN base).
 const CONTOURS = [
@@ -158,7 +148,7 @@ export function Header() {
         <div className="pointer-events-auto flex items-center gap-2 lg:gap-4">
           <div inert={open || undefined} className="flex items-center gap-2 lg:gap-4">
             <nav className="hidden items-center gap-7 lg:flex">
-              {NAV.slice(1, -1).map((item) => (
+              {NAV.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
