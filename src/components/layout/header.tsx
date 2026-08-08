@@ -19,11 +19,17 @@ import { useReducedMotion } from "@/lib/use-reduced-motion"
 import { cn } from "@/lib/utils"
 import { BRAND, repoUrl } from "@/lib/brand"
 
+// Five product areas, in the order a visitor actually moves through them:
+// find something, learn it properly, do something with it, check it, help
+// improve it. The site previously listed ten destinations with no
+// hierarchy, so nothing was predictable — Evidence and the applied pages
+// were reachable only by opening a menu and reading a list.
 const NAV = [
   { href: "/", key: "nav_home" },
   { href: "/explore", key: "nav_explore" },
-  { href: "/knowledge", key: "nav_knowledge" },
   { href: "/learn", key: "nav_learn" },
+  { href: "/apply", key: "nav_apply" },
+  { href: "/evidence", key: "nav_evidence" },
   { href: "/community", key: "nav_community" },
   { href: "/about", key: "nav_about" },
 ] as const
@@ -316,17 +322,15 @@ export function Header() {
                   </Link>
                 )}
 
-                {/* Mega-menu group: the destinations that don't earn a
-                    numbered headline — seasonal guide, contribution
-                    wizard, sources, feed. */}
+                {/* Mega-menu group: only what primary nav does NOT carry.
+                    Seasonal, Partners, Evidence and Contribute moved into
+                    the five areas, and a duplicate here would just make the
+                    hierarchy ambiguous again. */}
                 <nav aria-label={ui("megaDiscover")} className="grid grid-cols-2 gap-x-6 gap-y-3">
                   <p className="col-span-2 font-mono text-[11px] uppercase tracking-[0.22em] text-muted">
                     {ui("megaDiscover")}
                   </p>
                   {[
-                    { href: "/seasonal", label: ui("megaSeasonal") },
-                    { href: "/partners", label: ui("megaPartners") },
-                    { href: "/contribute", label: ui("megaWizard") },
                     {
                       href: repoUrl("blob/main/docs/SOURCES.md"),
                       label: ui("megaSources"),

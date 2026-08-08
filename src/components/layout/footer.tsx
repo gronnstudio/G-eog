@@ -21,7 +21,16 @@ const COLUMNS: { title: UIKey; links: FooterLink[] }[] = [
       { href: "/explore", label: "ftKnowledgeGraph" },
       { href: "/knowledge", label: "allCategories" },
       { href: "/learn", label: "ftLearningPaths" },
-      { href: "/community", label: "nav_community" },
+      { href: "/evidence", label: "nav_evidence" },
+    ],
+  },
+  {
+    title: "nav_apply",
+    links: [
+      { href: "/apply", label: "nav_apply" },
+      { href: "/seasonal", label: "megaSeasonal" },
+      { href: "/partners", label: "megaPartners" },
+      { href: "/contribute", label: "megaWizard" },
     ],
   },
   {
