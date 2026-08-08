@@ -101,6 +101,9 @@ export function Header() {
         "pointer-events-none fixed inset-x-0 top-0 z-50 transition-colors duration-500 md:pointer-events-auto",
         scrolled && !open ? "md:glass" : "bg-transparent",
       )}
+      // Installed as a PWA on notched phones the page runs under the
+      // status bar — keep the wordmark row below the safe-area inset.
+      style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
     >
       <div className="relative z-50 mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-4 sm:px-6">
         <Link
