@@ -3,6 +3,7 @@
 import { useRef } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
 
+import { useUI } from "@/components/language-provider"
 import { useOnScreen } from "@/lib/use-on-screen"
 import { useReducedMotion } from "@/lib/use-reduced-motion"
 import { cn } from "@/lib/utils"
@@ -25,6 +26,7 @@ const LINES = [
 ]
 
 export function Manifesto() {
+  const ui = useUI()
   const reduced = useReducedMotion()
   const section = useRef<HTMLElement>(null)
   const { ref: screenRef, onScreen } = useOnScreen<HTMLDivElement>()
@@ -48,8 +50,8 @@ export function Manifesto() {
         className={reduced ? "" : "[grid-area:1/1]"}
       >
         <p className="font-heading text-[clamp(2rem,5.8vw,5rem)] leading-[0.95] text-foreground">
-          Nature is
-          <span className="mt-3 block italic text-ember-text">infrastructure.</span>
+          {ui("man1a")}
+          <span className="mt-3 block italic text-ember-text">{ui("man1b")}</span>
         </p>
       </motion.div>
       <motion.div
@@ -57,8 +59,9 @@ export function Manifesto() {
         className={reduced ? "mt-10" : "[grid-area:1/1] opacity-0"}
       >
         <p className="font-heading text-[clamp(1.5rem,3.8vw,3.2rem)] leading-tight text-foreground">
-          Living systems learn from <em className="text-ember-text">relationships</em>, not
-          isolated parts.
+          {ui("man2pre")}
+          <em className="text-ember-text">{ui("man2em")}</em>
+          {ui("man2post")}
         </p>
       </motion.div>
       <motion.div
@@ -66,9 +69,9 @@ export function Manifesto() {
         className={reduced ? "mt-10" : "[grid-area:1/1] opacity-0"}
       >
         <p className="mx-auto max-w-3xl text-lg leading-relaxed text-muted md:text-2xl">
-          Equilibrium exists to make ecological intelligence{" "}
-          <span className="text-ember-text">accessible</span>, structured, beautiful and
-          practical.
+          {ui("man3pre")}
+          <span className="text-ember-text">{ui("man3em")}</span>
+          {ui("man3post")}
         </p>
       </motion.div>
     </>
