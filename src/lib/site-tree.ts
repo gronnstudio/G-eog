@@ -75,6 +75,7 @@ export const SITE_TREE: SiteNode[] = [
     key: "nav_apply",
     icon: "apply",
     children: [
+      { href: "/collections", key: "megaCollections" },
       { href: "/seasonal", key: "megaSeasonal" },
       { href: "/partners", key: "megaPartners" },
       { href: "/contribute", key: "megaWizard" },
