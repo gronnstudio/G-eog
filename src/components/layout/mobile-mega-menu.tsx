@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Search, SlidersHorizontal } from "lucide-react"
+import { Search } from "lucide-react"
 
 import { useUI } from "@/components/language-provider"
 import { BRAND } from "@/lib/brand"
@@ -35,12 +35,10 @@ export function MobileMegaMenu({
   open,
   onClose,
   onOpenSearch,
-  onOpenSwitches,
 }: {
   open: boolean
   onClose: () => void
   onOpenSearch: () => void
-  onOpenSwitches: () => void
 }) {
   const ui = useUI()
   const pathname = usePathname()
@@ -160,25 +158,6 @@ export function MobileMegaMenu({
               ))}
             </nav>
 
-            {/* Switches live in their own sheet now — this is the way in. */}
-            <button
-              type="button"
-              onClick={() => {
-                onClose()
-                onOpenSwitches()
-              }}
-              className="mt-8 flex w-full items-center justify-between gap-3 rounded-2xl border border-line px-5 py-4 text-left transition-colors hover:border-ember/40"
-            >
-              <span className="flex items-center gap-3">
-                <SlidersHorizontal className="h-4 w-4 text-ember-text" />
-                <span className="text-base text-foreground">
-                  {ui("theme")} &amp; {ui("language")}
-                </span>
-              </span>
-              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-faint">
-                {ui("open")}
-              </span>
-            </button>
 
             <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-line pt-5">
               <a
