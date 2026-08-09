@@ -4,7 +4,7 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { ArrowUpRight, Compass, Sparkles } from "lucide-react"
 
-import { HeroMosaic } from "@/components/concept/hero-mosaic"
+import { HeroMosaic } from "@/components/home/hero-mosaic"
 import { useLanguage, useUI } from "@/components/language-provider"
 import { EASE_ORGANIC } from "@/lib/motion"
 

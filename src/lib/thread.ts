@@ -25,7 +25,7 @@ const KEY = "eog-thread"
 export const THREAD_MAX = 6
 
 /** routes that are chrome rather than content — never worth a node */
-const IGNORED = ["/offline", "/concept"]
+const IGNORED = ["/offline"]
 
 export function isThreadable(pathname: string): boolean {
   if (pathname === "/") return false

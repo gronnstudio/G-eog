@@ -77,8 +77,16 @@ export function Header() {
   }
   useEffect(() => {
     document.documentElement.style.overflow = open ? "hidden" : ""
+    // Explicit signal for the dock. It used to sniff overflow:hidden to
+    // detect this curtain — but the dock's own mega menu also locks
+    // scroll, so the dock mistook its own menu for the header's, stepped
+    // aside, unmounted its menu, unlocked scroll, came back, remounted…
+    // an infinite mount/unmount loop that froze the page.
+    if (open) document.documentElement.setAttribute("data-header-menu", "open")
+    else document.documentElement.removeAttribute("data-header-menu")
     return () => {
       document.documentElement.style.overflow = ""
+      document.documentElement.removeAttribute("data-header-menu")
     }
   }, [open])
 
