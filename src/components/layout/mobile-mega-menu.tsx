@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Search } from "lucide-react"
+import { Search, X } from "lucide-react"
 
 import { useUI } from "@/components/language-provider"
 import { BRAND } from "@/lib/brand"
@@ -77,18 +77,30 @@ export function MobileMegaMenu({
       }}
     >
           <div className="px-5">
-            {/* Search first — it is the fastest route to anything. */}
-            <button
-              type="button"
-              onClick={() => {
-                onClose()
-                onOpenSearch()
-              }}
-              className="flex w-full items-center gap-3 rounded-full border border-line px-5 py-3.5 text-left text-muted transition-colors hover:text-foreground"
-            >
-              <Search className="h-4 w-4" />
-              <span className="text-base">{ui("search")}</span>
-            </button>
+            {/* Search and close side by side — the menu paints over the
+                pill (it is the whole screen), so it must carry its own
+                way out. */}
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  onClose()
+                  onOpenSearch()
+                }}
+                className="flex min-w-0 flex-1 items-center gap-3 rounded-full border border-line px-5 py-3.5 text-left text-muted transition-colors hover:text-foreground"
+              >
+                <Search className="h-4 w-4" />
+                <span className="text-base">{ui("search")}</span>
+              </button>
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label={ui("close")}
+                className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full border border-line text-muted transition-colors hover:text-foreground"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
 
             <p className="mb-4 mt-8 font-mono text-[10px] uppercase tracking-[0.25em] text-faint">
               {ui("navigate")}
