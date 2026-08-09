@@ -4,10 +4,11 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { AnimatePresence, motion } from "framer-motion"
-import { CornerDownLeft, FileText, FolderOpen, Route, Search, Sparkles } from "lucide-react"
+import { BookMarked, CornerDownLeft, FileText, FolderOpen, History, Route, Search, Sparkles } from "lucide-react"
 
 import { useT, useUI } from "@/components/language-provider"
 import { ARTICLES, CATEGORIES, LEARNING_PATHS, getCategory } from "@/lib/knowledge"
+import { SOURCES } from "@/lib/knowledge/sources"
 import { EASE_ORGANIC } from "@/lib/motion"
 
 type Ctx = { open: () => void }
@@ -16,7 +17,36 @@ export const useCommandPalette = () => useContext(PaletteContext)
 
 const TRENDING = ["mycorrhizal-networks", "the-water-cycle", "keyline-design", "rewilding"]
 
-type SuggestionKind = "article" | "category" | "path"
+/**
+ * Recent searches, on the device. Once history exists it replaces the
+ * hardcoded trending list — what you looked for beats what we guessed.
+ */
+const RECENT_SEARCH_KEY = "eog-recent-search"
+const RECENT_SEARCH_LIMIT = 5
+
+function readRecentSearches(): string[] {
+  try {
+    const raw = window.localStorage.getItem(RECENT_SEARCH_KEY)
+    const parsed = raw ? JSON.parse(raw) : []
+    return Array.isArray(parsed) ? parsed.filter((s) => typeof s === "string") : []
+  } catch {
+    return []
+  }
+}
+
+function recordSearch(slug: string) {
+  try {
+    const next = [slug, ...readRecentSearches().filter((s) => s !== slug)].slice(
+      0,
+      RECENT_SEARCH_LIMIT,
+    )
+    window.localStorage.setItem(RECENT_SEARCH_KEY, JSON.stringify(next))
+  } catch {
+    // History is a convenience; losing it costs nothing.
+  }
+}
+
+type SuggestionKind = "article" | "category" | "path" | "source"
 
 interface Suggestion {
   kind: SuggestionKind
@@ -36,8 +66,8 @@ interface Suggestion {
 
 /**
  * Google-style live suggestions: prefix + substring matching over article
- * titles/summaries, category titles and learning-path titles.
- * Rank: title prefix (0) > title substring (1) > summary substring (2).
+ * titles/summaries/tags, category titles, learning-path titles and source
+ * titles. Rank: title prefix (0) > title substring (1) > sub/tag (2).
  */
 function buildSuggestions(query: string): Suggestion[] {
   const q = query.trim().toLowerCase()
@@ -73,6 +103,14 @@ function buildSuggestions(query: string): Suggestion[] {
 
   for (const a of ARTICLES) {
     consider("article", `a:${a.slug}`, `/knowledge/${a.category}/${a.slug}`, a.title, a.summary, getCategory(a.category)?.title)
+    // Tags match as a fallback tier, so "#compost" style vocabulary finds
+    // articles whose title and summary use different words.
+    if (!scored.some((r) => r.s.key === `a:${a.slug}`) && a.tags.some((tag) => tag.toLowerCase().includes(q))) {
+      scored.push({
+        score: 2,
+        s: { kind: "article", key: `a:${a.slug}`, href: `/knowledge/${a.category}/${a.slug}`, title: a.title, sub: a.tags.map((tag) => `#${tag}`).join("  "), chip: getCategory(a.category)?.title, matchField: "sub", matchStart: -1, matchLen: 0 },
+      })
+    }
   }
   for (const c of CATEGORIES) {
     consider("category", `c:${c.id}`, `/knowledge/${c.id}`, c.title, c.tagline, undefined)
@@ -80,11 +118,25 @@ function buildSuggestions(query: string): Suggestion[] {
   for (const p of LEARNING_PATHS) {
     consider("path", `p:${p.slug}`, `/learn#${p.slug}`, p.title, p.summary, undefined)
   }
+  for (const s of SOURCES) {
+    consider("source", `s:${s.id}`, "/evidence", s.title, `${s.authors} · ${s.year}`, undefined)
+  }
 
-  return scored
-    .sort((x, y) => x.score - y.score || x.s.title.localeCompare(y.s.title))
-    .slice(0, 7)
-    .map((r) => r.s)
+  // Grouped: the best articles first, then a few of each other kind, so
+  // results read in sections rather than one interleaved pile.
+  const byKind = (kind: SuggestionKind, take: number) =>
+    scored
+      .filter((r) => r.s.kind === kind)
+      .sort((x, y) => x.score - y.score || x.s.title.localeCompare(y.s.title))
+      .slice(0, take)
+      .map((r) => r.s)
+
+  return [
+    ...byKind("article", 5),
+    ...byKind("category", 2),
+    ...byKind("path", 2),
+    ...byKind("source", 2),
+  ]
 }
 
 /** Highlight the matched substring in ember. */
@@ -103,6 +155,7 @@ const KIND_ICON: Record<SuggestionKind, typeof FileText> = {
   article: FileText,
   category: FolderOpen,
   path: Route,
+  source: BookMarked,
 }
 
 export function CommandPaletteProvider({ children }: { children: React.ReactNode }) {
@@ -118,6 +171,7 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
     article: t({ en: "Article", nl: "Artikel" }),
     category: t({ en: "Category", nl: "Categorie" }),
     path: t({ en: "Learning path", nl: "Leerpad" }),
+    source: t({ en: "Source", nl: "Bron" }),
   }
 
   const open = useCallback(() => setOpen(true), [])
@@ -140,8 +194,17 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
     return () => window.removeEventListener("keydown", onKey)
   }, [close])
 
+  const [recent, setRecent] = useState<string[]>([])
+
+  // rAF defers the setState out of the effect's synchronous phase — same
+  // hydration-safe pattern as the graph browser's deep-link adoption.
   useEffect(() => {
-    if (isOpen) requestAnimationFrame(() => inputRef.current?.focus())
+    if (!isOpen) return
+    const id = requestAnimationFrame(() => {
+      setRecent(readRecentSearches())
+      inputRef.current?.focus()
+    })
+    return () => cancelAnimationFrame(id)
   }, [isOpen])
 
   const hasQuery = query.trim().length > 0
@@ -152,7 +215,9 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
    */
   const items = useMemo<Suggestion[]>(() => {
     if (hasQuery) return buildSuggestions(query)
-    return TRENDING.map((s) => ARTICLES.find((a) => a.slug === s))
+    // Your history beats our guess, once you have one.
+    const idle = recent.length > 0 ? recent : TRENDING
+    return idle.map((s) => ARTICLES.find((a) => a.slug === s))
       .filter((a): a is (typeof ARTICLES)[number] => Boolean(a))
       .map((a) => ({
         kind: "article" as const,
@@ -165,13 +230,21 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
         matchStart: -1,
         matchLen: 0,
       }))
-  }, [hasQuery, query])
+  }, [hasQuery, query, recent])
+
+  const choose = useCallback(
+    (item: Suggestion) => {
+      if (item.kind === "article") recordSearch(item.key.slice(2))
+      close()
+    },
+    [close],
+  )
 
   const onEnter = () => {
     const item = items[cursor]
     if (item) {
       router.push(item.href)
-      close()
+      choose(item)
     }
   }
 
@@ -235,7 +308,15 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
               <div className="max-h-[52vh] overflow-y-auto p-2">
                 {!hasQuery && (
                   <p className="flex items-center gap-2 px-3 pb-1 pt-2 font-mono text-xs uppercase tracking-widest text-faint">
-                    <Sparkles className="h-3 w-3" /> {ui("palTrending")}
+                    {recent.length > 0 ? (
+                      <>
+                        <History className="h-3 w-3" /> {t({ en: "Recent", nl: "Recent" })}
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="h-3 w-3" /> {ui("palTrending")}
+                      </>
+                    )}
                   </p>
                 )}
                 {items.length === 0 && (
@@ -249,7 +330,7 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
                     <Link
                       key={s.key}
                       href={s.href}
-                      onClick={close}
+                      onClick={() => choose(s)}
                       onMouseEnter={() => setCursor(i)}
                       className={`flex items-center justify-between gap-4 rounded-xl px-3 py-3 transition-colors ${
                         i === cursor ? "bg-accent-soft" : "hover:bg-surface-2"

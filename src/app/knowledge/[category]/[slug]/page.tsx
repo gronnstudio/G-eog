@@ -24,7 +24,10 @@ import { TocSpy } from "@/components/knowledge/toc-spy"
 import { DifficultyBadge } from "@/components/ui/badges"
 import { UIText } from "@/components/ui/ui-text"
 import { ConnectionList } from "@/components/knowledge/connection-list"
+import { DnaPanel, type DnaFacts } from "@/components/knowledge/dna-panel"
+import { RecordVisit } from "@/components/knowledge/record-visit"
 import { HorizonBlock } from "@/components/discover/horizon-block"
+import { groupOf } from "@/lib/knowledge/taxonomy"
 import { articleSourceUrl } from "@/lib/knowledge/source-location"
 import {
   ARTICLES,
@@ -131,6 +134,26 @@ export default async function ArticlePage({
     license: "https://creativecommons.org/licenses/by-sa/4.0/",
   }
 
+  // The node's structured metadata, in one record. All derived — nothing
+  // here is authored twice.
+  const evidenceMix: DnaFacts["evidence"] = {}
+  for (const c of connections) {
+    evidenceMix[c.relationship.evidence] =
+      (evidenceMix[c.relationship.evidence] ?? 0) + 1
+  }
+  const group = groupOf(article.category)
+  const dna: DnaFacts = {
+    type: "Article",
+    domain: group ? group.title.en : cat?.title ?? article.category,
+    relationships: connections.length,
+    sources: article.citations.length,
+    evidence: evidenceMix,
+    updated: new Date(article.updated).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+    }),
+  }
+
   const actions = [
     { icon: GitPullRequest, k: "artImprove", href: editUrl },
     { icon: FileText, k: "artViewSource", href: blobUrl },
@@ -141,6 +164,7 @@ export default async function ArticlePage({
   return (
     <article className="pt-24">
       <ReadingProgress />
+      <RecordVisit slug={article.slug} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
 
@@ -224,9 +248,12 @@ export default async function ArticlePage({
           </div>
           </div>
 
-          {/* Contribute — the sticky rail is desktop-only, so mobile
-              readers get their own on-ramp to editing this page. */}
-          <div className="mt-10 rounded-2xl border border-line bg-surface/40 p-5 lg:hidden">
+          {/* The rail is desktop-only, so mobile readers get the DNA
+              record and the contribute on-ramp inline instead. */}
+          <div className="mt-10 lg:hidden">
+            <DnaPanel facts={dna} />
+          </div>
+          <div className="mt-6 rounded-2xl border border-line bg-surface/40 p-5 lg:hidden">
             <p className="flex items-center gap-2 font-heading text-lg text-foreground">
               <GitPullRequest className="h-5 w-5 text-accent" /> <UIText k="artImprove" />
             </p>
@@ -253,6 +280,7 @@ export default async function ArticlePage({
         {/* Sticky rail */}
         <aside className="hidden lg:block">
           <div className="sticky top-28 space-y-8">
+            <DnaPanel facts={dna} />
             <div>
               <p className="font-mono text-xs uppercase tracking-widest text-faint"><UIText k="artOnThisPage" /></p>
               <TocSpy items={toc} />
@@ -340,7 +368,11 @@ export default async function ArticlePage({
       )}
 
       {/* Typed connections — each edge says why it exists */}
-      <ConnectionList title={cat ? `${article.title} in context` : article.title} connections={connections} />
+      <ConnectionList
+        title={cat ? `${article.title} in context` : article.title}
+        connections={connections}
+        traceHref={`/explore?c=${article.slug}`}
+      />
 
       {/* Any connection the typed graph hasn't covered yet */}
       {related.length > 0 && (
