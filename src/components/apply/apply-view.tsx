@@ -1,13 +1,14 @@
 "use client"
 
 import Link from "next/link"
-import { ArrowRight, CalendarDays, Handshake, Sparkles, Sprout } from "lucide-react"
+import { ArrowRight, CalendarDays, Handshake, Layers, Sparkles, Sprout } from "lucide-react"
 
 import { useT } from "@/components/language-provider"
 import { Reveal } from "@/components/motion/reveal"
 import { SectionLabel } from "@/components/ui/badges"
 import { SEASONAL } from "@/lib/knowledge/seasonal"
 import { PARTNERS } from "@/lib/knowledge/partners"
+import { COLLECTIONS } from "@/lib/knowledge/collections"
 
 /**
  * Apply — where the knowledge stops being reading and starts being work.
@@ -38,6 +39,21 @@ export function ApplyView() {
       }),
       meta: t({ en: "No account, no cost", nl: "Geen account, geen kosten" }),
       cta: t({ en: "Ask", nl: "Vragen" }),
+    },
+    {
+      href: "/collections",
+      icon: Layers,
+      eyebrow: t({ en: "Follow a route", nl: "Volg een route" }),
+      title: t({ en: "Collections", nl: "Collecties" }),
+      body: t({
+        en: "Ordered routes through the archive with a purpose — build a food forest, bring back the water — each step linked to its knowledge.",
+        nl: "Geordende routes door het archief met een doel — bouw een voedselbos, breng het water terug — elke stap gekoppeld aan zijn kennis.",
+      }),
+      meta: t({
+        en: `${COLLECTIONS.length} collections`,
+        nl: `${COLLECTIONS.length} collecties`,
+      }),
+      cta: t({ en: "Pick one", nl: "Kies er één" }),
     },
     {
       href: "/seasonal",

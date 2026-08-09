@@ -11,6 +11,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/explore",
     "/knowledge",
     "/learn",
+    "/collections",
+    "/apply",
     "/community",
     "/partners",
     "/evidence",
