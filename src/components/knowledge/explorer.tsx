@@ -59,6 +59,10 @@ export function KnowledgeExplorer() {
   const t = useT()
   const [groupId, setGroupId] = useState(CATEGORY_GROUPS[0].id)
   const [categoryId, setCategoryId] = useState<string | null>(null)
+  // Phones drill down one level at a time — shelves, THEN a shelf's
+  // contents — never both stacked. `entered` is that mobile position;
+  // desktop shows the two panes side by side and ignores it.
+  const [entered, setEntered] = useState(false)
   const favourites = useFavourites()
   const recent = useRecent()
   const rootRef = useRef<HTMLDivElement>(null)
@@ -72,6 +76,7 @@ export function KnowledgeExplorer() {
       const g = d && CATEGORY_GROUPS.find((x) => x.id === d)
       if (g) {
         setGroupId(g.id)
+        setEntered(true)
         if (c && g.categories.includes(c as (typeof g.categories)[number])) {
           setCategoryId(c)
         }
@@ -85,7 +90,7 @@ export function KnowledgeExplorer() {
   useEffect(() => {
     if (typeof window === "undefined") return
     const url = new URL(window.location.href)
-    if (groupId === CATEGORY_GROUPS[0].id && !categoryId) {
+    if (!entered || (groupId === CATEGORY_GROUPS[0].id && !categoryId)) {
       url.searchParams.delete("d")
       url.searchParams.delete("c")
     } else {
@@ -94,7 +99,7 @@ export function KnowledgeExplorer() {
       else url.searchParams.delete("c")
     }
     window.history.replaceState(null, "", url)
-  }, [groupId, categoryId])
+  }, [groupId, categoryId, entered])
 
   const group =
     CATEGORY_GROUPS.find((g) => g.id === groupId) ?? CATEGORY_GROUPS[0]
@@ -105,6 +110,7 @@ export function KnowledgeExplorer() {
   const openGroup = (g: KnowledgeGroup) => {
     setGroupId(g.id)
     setCategoryId(null)
+    setEntered(true)
   }
 
   // Backspace = up one level, the explorer gesture people's hands know.
@@ -116,9 +122,12 @@ export function KnowledgeExplorer() {
       if (categoryId) {
         e.preventDefault()
         setCategoryId(null)
+      } else if (entered) {
+        e.preventDefault()
+        setEntered(false)
       }
     },
-    [categoryId],
+    [categoryId, entered],
   )
 
   const recentArticles = recent
@@ -134,12 +143,18 @@ export function KnowledgeExplorer() {
     >
       {/* Path — always visible, so "where am I" never needs guessing */}
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1 border-b border-line px-4 py-3 font-mono text-[11px] uppercase tracking-[0.16em] text-faint sm:px-5">
-        <span>{t({ en: "Knowledge", nl: "Kennis" })}</span>
-        <ChevronRight className="h-3 w-3" aria-hidden />
+        <span className={cn(!entered && "text-foreground")}>
+          {t({ en: "Knowledge", nl: "Kennis" })}
+        </span>
+        <ChevronRight className={cn("h-3 w-3", !entered && "hidden lg:block")} aria-hidden />
         <button
           type="button"
           onClick={() => setCategoryId(null)}
-          className={cn("transition-colors hover:text-foreground", !category && "text-foreground")}
+          className={cn(
+            "transition-colors hover:text-foreground",
+            !category && "text-foreground",
+            !entered && "hidden lg:block",
+          )}
         >
           {t(group.title)}
         </button>
@@ -158,7 +173,7 @@ export function KnowledgeExplorer() {
           aria-label={t({ en: "Knowledge shelves", nl: "Kennisplanken" })}
           className={cn(
             "border-line lg:block lg:border-r",
-            category ? "hidden lg:block" : "block",
+            entered ? "hidden lg:block" : "block",
           )}
         >
           <ul className="p-2">
@@ -214,10 +229,19 @@ export function KnowledgeExplorer() {
           </ul>
         </nav>
 
-        {/* Contents */}
-        <div className="min-w-0 p-4 sm:p-6">
+        {/* Contents — on phones this pane exists only after entering a
+            shelf, so exactly one level is ever in view. */}
+        <div className={cn("min-w-0 p-4 sm:p-6", !entered && "hidden lg:block")}>
           {!category ? (
             <>
+              <button
+                type="button"
+                onClick={() => setEntered(false)}
+                className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-line px-3 py-1 text-xs text-muted transition-colors hover:text-foreground lg:hidden"
+              >
+                <CornerUpLeft className="h-3.5 w-3.5" />
+                {t({ en: "All shelves", nl: "Alle planken" })}
+              </button>
               <h2 className="font-heading text-2xl text-foreground">{t(group.title)}</h2>
               <p className="mt-1.5 max-w-xl text-pretty leading-relaxed text-muted">
                 {t(group.blurb)}

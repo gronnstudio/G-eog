@@ -22,6 +22,7 @@ import { MobileDock } from "@/components/layout/mobile-dock"
 import { Footer } from "@/components/layout/footer"
 import { RegisterSW } from "@/components/register-sw"
 import { PullToRefresh } from "@/components/pull-to-refresh"
+import { EdgeSwipeBack } from "@/components/edge-swipe-back"
 import { Thread } from "@/components/thread"
 import { InstallPrompt } from "@/components/install-prompt"
 import { Preloader } from "@/components/preloader"
@@ -134,6 +135,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <SmoothScroll />
           <CommandPaletteProvider>
             <PullToRefresh />
+            <EdgeSwipeBack />
             <TopVeil />
             <ScrollProgress />
             <Header />
