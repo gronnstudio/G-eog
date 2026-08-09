@@ -12,16 +12,8 @@ import {
   relationshipsFor,
 } from "@/lib/knowledge"
 import type { Article, EvidenceLevel, RelationshipType } from "@/lib/knowledge"
+import { EVIDENCE_TONE } from "@/lib/knowledge/evidence-ui"
 import { cn } from "@/lib/utils"
-
-const EVIDENCE_TONE: Record<EvidenceLevel, string> = {
-  strong: "border-gronn-green/40 text-gronn-green",
-  moderate: "border-accent/40 text-accent",
-  emerging: "border-ember/40 text-ember-text",
-  limited: "border-line text-faint",
-  contested: "border-ember/60 text-ember-text",
-  hypothesis: "border-line text-faint",
-}
 
 /** Degree per concept, used to suggest good places to start. */
 const DEGREE = new Map<string, number>(

@@ -1,10 +1,11 @@
 "use client"
 
 import Link from "next/link"
-import { ArrowRight, ArrowLeft } from "lucide-react"
+import { ArrowRight, ArrowLeft, Waypoints } from "lucide-react"
 
 import { useT } from "@/components/language-provider"
 import { getCategory, RELATIONSHIP_LABEL } from "@/lib/knowledge"
+import { EVIDENCE_LABEL, EVIDENCE_TONE } from "@/lib/knowledge/evidence-ui"
 import type { Article, EvidenceLevel, Relationship } from "@/lib/knowledge"
 import { cn } from "@/lib/utils"
 
@@ -12,20 +13,6 @@ export interface Connection {
   relationship: Relationship
   other: Article
   inbound: boolean
-}
-
-/**
- * How confident the graph is in a given edge, shown as a small chip.
- * Colour carries the same information as the word so it reads at a glance
- * without relying on colour alone.
- */
-const EVIDENCE_TONE: Record<EvidenceLevel, string> = {
-  strong: "border-gronn-green/40 text-gronn-green",
-  moderate: "border-accent/40 text-accent",
-  emerging: "border-ember/40 text-ember-text",
-  limited: "border-line text-faint",
-  contested: "border-ember/60 text-ember-text",
-  hypothesis: "border-line text-faint",
 }
 
 /**
@@ -37,21 +24,17 @@ const EVIDENCE_TONE: Record<EvidenceLevel, string> = {
 export function ConnectionList({
   title,
   connections,
+  traceHref,
 }: {
   title: string
   connections: Connection[]
+  /** Deep link into the graph browser focused on this node. */
+  traceHref?: string
 }) {
   const t = useT()
   if (connections.length === 0) return null
 
-  const evidenceLabel: Record<EvidenceLevel, string> = {
-    strong: t({ en: "Strong", nl: "Sterk" }),
-    moderate: t({ en: "Moderate", nl: "Redelijk" }),
-    emerging: t({ en: "Emerging", nl: "Opkomend" }),
-    limited: t({ en: "Limited", nl: "Beperkt" }),
-    contested: t({ en: "Contested", nl: "Omstreden" }),
-    hypothesis: t({ en: "Hypothesis", nl: "Hypothese" }),
-  }
+  const evidenceLabel = (level: EvidenceLevel) => t(EVIDENCE_LABEL[level])
 
   return (
     <section className="border-t border-line bg-surface/30">
@@ -59,7 +42,19 @@ export function ConnectionList({
         <p className="mb-2 font-mono text-xs uppercase tracking-widest text-faint">
           {t({ en: "Why these connect", nl: "Waarom deze samenhangen" })}
         </p>
-        <h2 className="font-heading text-3xl text-foreground">{title}</h2>
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <h2 className="font-heading text-3xl text-foreground">{title}</h2>
+          {traceHref && (
+            <Link
+              href={traceHref}
+              className="group inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-foreground"
+            >
+              <Waypoints className="h-4 w-4" aria-hidden />
+              {t({ en: "Trace these in the graph", nl: "Volg deze in de graaf" })}
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          )}
+        </div>
 
         <ul className="mt-8 grid gap-3 lg:grid-cols-2">
           {connections.map(({ relationship, other, inbound }) => {
@@ -111,7 +106,7 @@ export function ConnectionList({
                         EVIDENCE_TONE[relationship.evidence],
                       )}
                     >
-                      {evidenceLabel[relationship.evidence]}
+                      {evidenceLabel(relationship.evidence)}
                     </span>
                     {cat && (
                       <span

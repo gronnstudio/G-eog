@@ -4,12 +4,12 @@ import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 
 import { Hero } from "@/components/home/hero"
-import { CategoryCard } from "@/components/knowledge/category-card"
+import { KnowledgeExplorer } from "@/components/knowledge/explorer"
 import { ArticleCard } from "@/components/knowledge/article-card"
 import { useT, useUI } from "@/components/language-provider"
 import { Reveal } from "@/components/motion/reveal"
 import { SectionLabel } from "@/components/ui/badges"
-import { ARTICLES, CATEGORIES, LEARNING_PATHS, totalStats } from "@/lib/knowledge"
+import { ARTICLES, LEARNING_PATHS, totalStats } from "@/lib/knowledge"
 import { PARTNERS } from "@/lib/knowledge/partners"
 import { DailyDiscoveryCard } from "@/components/discover/daily-discovery"
 
@@ -25,7 +25,6 @@ export function HomeContent() {
   const t = useT()
   const stats = totalStats()
   const featured = ARTICLES.slice(0, 3)
-  const previewCats = CATEGORIES.slice(0, 8)
 
   return (
     <>
@@ -45,12 +44,11 @@ export function HomeContent() {
             </Link>
           </div>
         </Reveal>
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {previewCats.map((c, i) => (
-            <Reveal key={c.id} delay={(i % 4) * 0.05}>
-              <CategoryCard category={c} index={i} />
-            </Reveal>
-          ))}
+        {/* The archive itself, not a preview of it — explorer-first. */}
+        <div className="mt-10">
+          <Reveal>
+            <KnowledgeExplorer />
+          </Reveal>
         </div>
       </section>
 

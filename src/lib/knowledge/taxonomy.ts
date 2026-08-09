@@ -28,6 +28,14 @@ export interface KnowledgeGroup {
   title: { en: string; nl: string }
   blurb: { en: string; nl: string }
   categories: CategoryId[]
+  /**
+   * A system shelf: it holds no categories and instead opens another
+   * surface of the site. This is how Relationships, Research, Library and
+   * the project itself appear in the archive without duplicating content —
+   * the graph is not a folder of edges, and pretending it is would
+   * conflate the two ideas the whole architecture keeps apart.
+   */
+  href?: string
 }
 
 export const KNOWLEDGE_GROUPS: KnowledgeGroup[] = [
@@ -72,8 +80,19 @@ export const KNOWLEDGE_GROUPS: KnowledgeGroup[] = [
     categories: ["food-forests", "urban-ecology"],
   },
   {
-    id: "practice",
+    id: "relationships",
     ordinal: "05",
+    title: { en: "Relationships", nl: "Relaties" },
+    blurb: {
+      en: "The connections themselves — every typed, evidence-graded link between the shelves above. Lives in the graph, not a folder.",
+      nl: "De verbindingen zelf — elke getypeerde, met bewijs gewogen link tussen bovenstaande planken. Leeft in de graaf, niet in een map.",
+    },
+    categories: [],
+    href: "/explore",
+  },
+  {
+    id: "practice",
+    ordinal: "06",
     title: { en: "Practice", nl: "Praktijk" },
     blurb: {
       en: "Design and craft: what people actually do with all of this on real ground.",
@@ -83,7 +102,7 @@ export const KNOWLEDGE_GROUPS: KnowledgeGroup[] = [
   },
   {
     id: "human-systems",
-    ordinal: "06",
+    ordinal: "07",
     title: { en: "Human Systems", nl: "Menselijke systemen" },
     blurb: {
       en: "Economies, ethics and minds — the human half of every ecological decision.",
@@ -91,7 +110,46 @@ export const KNOWLEDGE_GROUPS: KnowledgeGroup[] = [
     },
     categories: ["economics", "circular-systems", "philosophy", "psychology"],
   },
+  {
+    id: "research",
+    ordinal: "08",
+    title: { en: "Research", nl: "Onderzoek" },
+    blurb: {
+      en: "The evidence behind the claims: every source, what is verified, and what still needs a link.",
+      nl: "Het bewijs achter de beweringen: elke bron, wat geverifieerd is, en wat nog een link nodig heeft.",
+    },
+    categories: [],
+    href: "/evidence",
+  },
+  {
+    id: "library",
+    ordinal: "09",
+    title: { en: "Library", nl: "Bibliotheek" },
+    blurb: {
+      en: "Structured ways through the collection — learning paths from first principles to practice.",
+      nl: "Gestructureerde routes door de collectie — leerpaden van eerste principes naar praktijk.",
+    },
+    categories: [],
+    href: "/learn",
+  },
+  {
+    id: "equilibrium",
+    ordinal: "10",
+    title: { en: "Equilibrium", nl: "Equilibrium" },
+    blurb: {
+      en: "The project itself: principles, methodology, and how to contribute.",
+      nl: "Het project zelf: principes, methodologie, en hoe je bijdraagt.",
+    },
+    categories: [],
+    href: "/about",
+  },
 ]
+
+/** The shelves that hold categories — the browsable half of the archive. */
+export const CATEGORY_GROUPS = KNOWLEDGE_GROUPS.filter((g) => !g.href)
+
+/** The shelves that open another surface of the site. */
+export const SYSTEM_GROUPS = KNOWLEDGE_GROUPS.filter((g) => Boolean(g.href))
 
 const CATEGORY_BY_ID = new Map(CATEGORIES.map((c) => [c.id, c]))
 
