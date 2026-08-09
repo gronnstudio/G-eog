@@ -5,19 +5,12 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Search, X } from "lucide-react"
 
-import { useUI } from "@/components/language-provider"
+import { useT, useUI } from "@/components/language-provider"
 import { BRAND } from "@/lib/brand"
+import { CATEGORY_GROUPS } from "@/lib/knowledge/taxonomy"
 import { SITE_TREE, treeShape } from "@/lib/site-tree"
 import { useFocusTrap } from "@/lib/use-focus-trap"
 import { cn } from "@/lib/utils"
-
-/** Category shortcuts, shown under the section that owns them. */
-const CATEGORY_SHORTCUTS = [
-  { href: "/knowledge/soil", key: "dockSoil" },
-  { href: "/knowledge/water", key: "dockWater" },
-  { href: "/knowledge/fungi", key: "dockFungi" },
-  { href: "/knowledge/permaculture", key: "dockPermaculture" },
-] as const
 
 /**
  * The mobile mega menu: the whole site structure on one screen.
@@ -41,6 +34,7 @@ export function MobileMegaMenu({
   onOpenSearch: () => void
 }) {
   const ui = useUI()
+  const t = useT()
   const pathname = usePathname()
   const ref = useRef<HTMLDivElement>(null)
   const shape = treeShape()
@@ -148,20 +142,20 @@ export function MobileMegaMenu({
                           {ui(child.key)}
                         </Link>
                       ))}
+                      {/* The archive's shelves, straight from the pill —
+                          each chip opens the explorer inside that shelf. */}
                       {section.href === "/explore" &&
-                        CATEGORY_SHORTCUTS.map((c) => (
+                        CATEGORY_GROUPS.map((g) => (
                           <Link
-                            key={c.href}
-                            href={c.href}
+                            key={g.id}
+                            href={`/knowledge?d=${g.id}`}
                             onClick={onClose}
-                            className={cn(
-                              "tap-target rounded-full border px-3.5 py-1.5 text-xs tracking-wide transition-colors",
-                              active(c.href)
-                                ? "border-accent/50 bg-accent-soft text-accent"
-                                : "border-line text-muted hover:border-ember/40 hover:text-foreground",
-                            )}
+                            className="tap-target rounded-full border border-line px-3.5 py-1.5 text-xs tracking-wide text-muted transition-colors hover:border-ember/40 hover:text-foreground"
                           >
-                            {ui(c.key)}
+                            <span className="mr-1.5 font-mono text-[10px] text-faint">
+                              {g.ordinal}
+                            </span>
+                            {t(g.title)}
                           </Link>
                         ))}
                     </div>
