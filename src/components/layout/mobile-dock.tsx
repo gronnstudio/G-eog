@@ -284,7 +284,6 @@ export function MobileDock() {
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
         onOpenSearch={openSearch}
-        onOpenSwitches={() => setSwitchesOpen(true)}
       />
 
       {/* Slide-up sheet — switches only. */}

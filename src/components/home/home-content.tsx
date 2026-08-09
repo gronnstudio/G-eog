@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { ArrowRight, GitFork, Network, Sparkles } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 
 import { Hero } from "@/components/home/hero"
 import { CategoryCard } from "@/components/knowledge/category-card"
@@ -9,9 +9,7 @@ import { ArticleCard } from "@/components/knowledge/article-card"
 import { useT, useUI } from "@/components/language-provider"
 import { Reveal } from "@/components/motion/reveal"
 import { SectionLabel } from "@/components/ui/badges"
-import { DomainsMarquee } from "@/components/play/domains-marquee"
-import { SuccessionTimeline } from "@/components/play/succession-timeline"
-import { ARTICLES, CATEGORIES, LEARNING_PATHS, getCategory, totalStats } from "@/lib/knowledge"
+import { ARTICLES, CATEGORIES, LEARNING_PATHS, totalStats } from "@/lib/knowledge"
 import { PARTNERS } from "@/lib/knowledge/partners"
 import { DailyDiscoveryCard } from "@/components/discover/daily-discovery"
 
@@ -26,67 +24,12 @@ export function HomeContent() {
   const ui = useUI()
   const t = useT()
   const stats = totalStats()
-  const recent = [...ARTICLES]
-    .sort((a, b) => b.updated.localeCompare(a.updated))
-    .slice(0, 4)
-  const featured = ARTICLES.slice(0, 6)
+  const featured = ARTICLES.slice(0, 3)
   const previewCats = CATEGORIES.slice(0, 8)
 
   return (
     <>
       <Hero stats={stats} />
-
-      {/* Living graph */}
-      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
-        <Reveal>
-          <SectionLabel>{ui("crownJewel")}</SectionLabel>
-          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-            <h2 className="max-w-2xl font-heading text-4xl text-foreground sm:text-5xl">
-              {ui("graphHeadline")}
-            </h2>
-            <Link
-              href="/explore"
-              className="group inline-flex shrink-0 items-center gap-2 rounded-full border border-line px-5 py-2.5 text-sm text-foreground transition-colors hover:bg-surface-2"
-            >
-              <Network className="h-4 w-4 text-accent" />
-              {ui("openFullGraph")}
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Link>
-          </div>
-        </Reveal>
-      </section>
-
-      {/* Philosophy strip */}
-      <section className="border-y border-line bg-surface/30">
-        <div className="mx-auto grid max-w-7xl gap-10 px-4 py-20 sm:px-6 md:grid-cols-3">
-          {[
-            { icon: Network, title: ui("phil1t"), body: ui("phil1b") },
-            { icon: Sparkles, title: ui("phil2t"), body: ui("phil2b") },
-            { icon: GitFork, title: ui("phil3t"), body: ui("phil3b") },
-          ].map((p, i) => (
-            <Reveal key={i} delay={i * 0.08}>
-              <p.icon className="h-6 w-6 text-accent" />
-              <h3 className="mt-4 font-heading text-2xl text-foreground">{p.title}</h3>
-              <p className="mt-2 text-pretty leading-relaxed text-muted">{p.body}</p>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      {/* Living ribbon */}
-      <section className="border-y border-line bg-surface/20 py-6">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <Reveal>
-            <SectionLabel>{ui("ribbonLabel")}</SectionLabel>
-            <p className="mt-3 max-w-xl text-pretty leading-relaxed text-muted">
-              {ui("ribbonBody")}
-            </p>
-          </Reveal>
-        </div>
-        <div className="mt-6">
-          <DomainsMarquee />
-        </div>
-      </section>
 
       {/* Categories */}
       <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
@@ -128,31 +71,6 @@ export function HomeContent() {
         </div>
       </section>
 
-      {/* Ecological succession timeline */}
-      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
-        <Reveal>
-          <SectionLabel>{ui("successionLabel")}</SectionLabel>
-          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-            <h2 className="max-w-xl font-heading text-4xl text-foreground sm:text-5xl">
-              {ui("successionHeadline")}
-            </h2>
-            <Link
-              href="/knowledge/ecology/ecological-succession"
-              className="group inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-foreground"
-            >
-              {ui("readFullArticle")}
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Link>
-          </div>
-          <p className="mt-4 max-w-xl text-pretty leading-relaxed text-muted">
-            {ui("successionBody")}
-          </p>
-        </Reveal>
-        <Reveal delay={0.1} className="mt-10">
-          <SuccessionTimeline />
-        </Reveal>
-      </section>
-
       {/* Learning paths */}
       <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
         <Reveal>
@@ -187,37 +105,6 @@ export function HomeContent() {
             </Reveal>
           ))}
         </div>
-      </section>
-
-      {/* Recently grown */}
-      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
-        <Reveal>
-          <SectionLabel>{t({ en: "Recently grown", nl: "Onlangs gegroeid" })}</SectionLabel>
-          <div className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface/40">
-            {recent.map((a) => {
-              const cat = getCategory(a.category)
-              return (
-                <div
-                  key={a.slug}
-                  className="flex flex-col gap-2 p-5 sm:flex-row sm:items-center sm:gap-6"
-                >
-                  <time dateTime={a.updated} className="w-28 shrink-0 font-mono text-xs text-faint">
-                    {a.updated}
-                  </time>
-                  <Link
-                    href={`/knowledge/${a.category}/${a.slug}`}
-                    className="flex-1 font-heading text-lg text-foreground transition-colors hover:text-accent"
-                  >
-                    {a.title}
-                  </Link>
-                  <span className="w-fit rounded-full border border-line px-3 py-1 text-xs text-muted">
-                    {cat?.title ?? a.category}
-                  </span>
-                </div>
-              )
-            })}
-          </div>
-        </Reveal>
       </section>
 
       {/* One shared discovery per day — a reason to come back */}
